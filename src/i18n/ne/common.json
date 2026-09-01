@@ -1,0 +1,53 @@
+{
+  "language": "नेपाली",
+  "sector": {
+    "mart": "पसल",
+    "medical": "औषधि पसल",
+    "restaurant": "रेस्टुरेन्ट"
+  },
+  "role": {
+    "owner": "मालिक",
+    "manager": "प्रबन्धक",
+    "cashier": "क्यासियर",
+    "pharmacist": "फार्मासिस्ट",
+    "waiter": "वेटर",
+    "chef": "भान्से"
+  },
+  "status": {
+    "active": "सक्रिय",
+    "suspended": "निलम्बित",
+    "closed": "बन्द",
+    "issued": "जारी",
+    "credit_note": "क्रेडिट नोट",
+    "voided": "रद्द",
+    "paid": "भुक्तानी भएको",
+    "unpaid": "भुक्तानी नभएको",
+    "partially_paid": "आंशिक भुक्तानी",
+    "pending": "प्रतीक्षामा",
+    "confirmed": "पुष्टि भएको",
+    "received": "प्राप्त भएको",
+    "partially_received": "आंशिक प्राप्त",
+    "canceled": "रद्द भएको",
+    "trialing": "परीक्षण अवधि",
+    "past_due": "बक्यौता"
+  },
+  "action": {
+    "save": "सुरक्षित गर्नुहोस्",
+    "cancel": "रद्द गर्नुहोस्",
+    "print": "प्रिन्ट गर्नुहोस्",
+    "search": "खोज्नुहोस्"
+  },
+  "invoice": {
+    "taxInvoice": "कर बीजक",
+    "invoiceNumber": "बिल नं.",
+    "dateBs": "मिति (वि.सं.)",
+    "dateAd": "मिति (ई.सं.)",
+    "buyerName": "खरिदकर्ताको नाम",
+    "buyerPan": "खरिदकर्ताको स्थायी लेखा नम्बर",
+    "subtotal": "जम्मा",
+    "serviceCharge": "सेवा शुल्क",
+    "vat": "मूल्य अभिवृद्धि कर",
+    "total": "कुल जम्मा",
+    "copy": "प्रतिलिपि"
+  }
+}

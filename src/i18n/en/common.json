@@ -1,0 +1,53 @@
+{
+  "language": "English",
+  "sector": {
+    "mart": "Mart",
+    "medical": "Pharmacy",
+    "restaurant": "Restaurant"
+  },
+  "role": {
+    "owner": "Owner",
+    "manager": "Manager",
+    "cashier": "Cashier",
+    "pharmacist": "Pharmacist",
+    "waiter": "Waiter",
+    "chef": "Chef"
+  },
+  "status": {
+    "active": "Active",
+    "suspended": "Suspended",
+    "closed": "Closed",
+    "issued": "Issued",
+    "credit_note": "Credit note",
+    "voided": "Voided",
+    "paid": "Paid",
+    "unpaid": "Unpaid",
+    "partially_paid": "Partially paid",
+    "pending": "Pending",
+    "confirmed": "Confirmed",
+    "received": "Received",
+    "partially_received": "Partially received",
+    "canceled": "Canceled",
+    "trialing": "Trialing",
+    "past_due": "Past due"
+  },
+  "action": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "print": "Print",
+    "search": "Search"
+  },
+  "invoice": {
+    "taxInvoice": "Tax Invoice",
+    "invoiceNumber": "Invoice No.",
+    "dateBs": "Date (BS)",
+    "dateAd": "Date (AD)",
+    "buyerName": "Buyer Name",
+    "buyerPan": "Buyer PAN",
+    "subtotal": "Subtotal",
+    "serviceCharge": "Service charge",
+    "vat": "VAT",
+    "total": "Total",
+    "copy": "COPY"
+  }
+}

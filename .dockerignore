@@ -1,0 +1,13 @@
+node_modules
+dist
+coverage
+.git
+.github
+docs
+*.log
+.env
+.env.*
+!.env.example
+.DS_Store
+.vscode
+.claude

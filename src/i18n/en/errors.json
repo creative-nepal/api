@@ -1,0 +1,43 @@
+{
+  "business": {
+    "notFound": "Business {businessId} not found",
+    "inactive": "Business {businessId} is {status} and cannot be modified",
+    "idRequired": "An X-Business-Id header or :businessId route parameter is required",
+    "idMismatch": "X-Business-Id header does not match the :businessId route parameter",
+    "tablesRestaurantOnly": "Tables are a restaurant feature; this business is {actual}",
+    "menuRestaurantOnly": "A menu is a restaurant feature; this business is {actual}"
+  },
+  "permission": {
+    "denied": "Your role does not permit this action for this business",
+    "dispenseOnly": "Only a pharmacist may dispense {schedules} items"
+  },
+  "stock": {
+    "insufficient": "Product {productId} is unavailable or has insufficient stock for quantity {quantity}",
+    "insufficientUnexpired": "Insufficient unexpired stock for product {productId}: {shortfall} short",
+    "batchRequired": "batchId is required — medical stock is tracked per batch"
+  },
+  "invoice": {
+    "notFound": "Invoice {invoiceId} not found",
+    "buyerPanRequired": "A buyer name and PAN are required on tax invoices above NPR 10,000",
+    "creditNoteOnCreditNote": "A credit note cannot be issued against another credit note",
+    "quotaExceeded": "Invoice limit reached for this billing period ({limit}); upgrade to continue issuing"
+  },
+  "prescription": {
+    "required": "A prescription (doctor name, patient name, attachment) is required for prescription or controlled items",
+    "buyerIdRequired": "Buyer identification is required for controlled-substance sales"
+  },
+  "purchase": {
+    "duplicateBill": "Bill {billNumber} from this supplier is already recorded",
+    "overReceive": "Cannot receive {quantity} of {productId}: only {outstanding} outstanding",
+    "overPayment": "Payment exceeds the outstanding balance of {outstanding} (TDS of {tds} is withheld, not paid to the supplier)"
+  },
+  "content": {
+    "pageNotFound": "Content page {slug} was not found",
+    "translationMissing": "Page {slug} has no content for locale {locale}",
+    "slugTaken": "A content page with the slug {slug} already exists",
+    "invalidPayload": "Invalid content in {field}: {detail}",
+    "nothingToPublish": "Page {slug} cannot be published until its {locale} content has at least one block",
+    "homeSlugImmutable": "The home page slug cannot be changed",
+    "homeAlwaysPublished": "The home page cannot be unpublished or deleted"
+  }
+}

@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sector Feature Spec — Mart / Medical / Restaurant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0E1116; --surface:#161A22; --surface-2:#1D222C;
+    --border:#2A2F3B; --border-soft:#232833;
+    --text:#E9E7DF; --text-dim:#9AA1AE; --text-faint:#5C6373;
+    --cyan:#6FE3E0; --amber:#F0B24B;
+    --mart:#8FD48A; --medical:#F08A8A; --restaurant:#B79AF0;
+    --mono:'JetBrains Mono', monospace; --sans:'Inter', sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:radial-gradient(circle at 1px 1px, rgba(255,255,255,0.035) 1px, transparent 0) 0 0/28px 28px, var(--bg);
+    color:var(--text); font-family:var(--sans); line-height:1.65; font-size:16px;
+  }
+  a{color:var(--cyan); text-decoration:none;} a:hover{text-decoration:underline;}
+  .shell{display:flex; max-width:1320px; margin:0 auto;}
+  nav.toc{width:260px; flex-shrink:0; position:sticky; top:0; height:100vh; overflow-y:auto; padding:40px 22px 40px 32px; border-right:1px solid var(--border-soft);}
+  nav.toc::-webkit-scrollbar{width:6px;} nav.toc::-webkit-scrollbar-thumb{background:var(--border); border-radius:3px;}
+  .toc-brand{font-family:var(--mono); font-size:11px; letter-spacing:0.14em; color:var(--text-faint); text-transform:uppercase; margin-bottom:20px;}
+  .toc-brand b{color:var(--amber); display:block; font-size:13px; letter-spacing:0.06em; margin-top:4px;}
+  .toc-group{font-family:var(--mono); font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-faint); margin:20px 0 8px;}
+  nav.toc ol{list-style:none;} nav.toc li{margin-bottom:2px;}
+  nav.toc a{display:flex; gap:8px; align-items:baseline; font-size:13.5px; color:var(--text-dim); padding:6px 10px; border-radius:6px; border-left:2px solid transparent;}
+  nav.toc a:hover{color:var(--text); text-decoration:none; background:var(--surface); border-left-color:var(--cyan);}
+  .dot{width:6px; height:6px; border-radius:50%; flex-shrink:0; margin-top:6px;}
+  .dot.mart{background:var(--mart);} .dot.medical{background:var(--medical);} .dot.restaurant{background:var(--restaurant);} .dot.core{background:var(--cyan);}
+
+  main{flex:1; min-width:0; padding:56px 56px 120px;}
+  .hero{margin-bottom:56px; padding-bottom:36px; border-bottom:1px solid var(--border-soft);}
+  .eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:var(--amber); margin-bottom:16px; display:flex; align-items:center; gap:10px;}
+  .eyebrow::before{content:''; width:22px; height:1px; background:var(--amber); display:inline-block;}
+  h1{font-family:var(--mono); font-weight:700; font-size:clamp(26px,3.6vw,38px); line-height:1.18; letter-spacing:-0.01em; margin-bottom:16px; max-width:20ch;}
+  .hero-sub{color:var(--text-dim); font-size:16.5px; max-width:70ch;}
+
+  .sector-band{margin-bottom:88px; scroll-margin-top:24px;}
+  .band-head{display:flex; align-items:center; gap:16px; margin-bottom:6px; padding-bottom:18px; border-bottom:1px solid var(--border-soft);}
+  .band-tag{font-family:var(--mono); font-size:11px; padding:6px 12px; border-radius:20px; letter-spacing:0.06em; text-transform:uppercase; flex-shrink:0;}
+  .band-tag.mart{background:rgba(143,212,138,0.12); color:var(--mart); border:1px solid rgba(143,212,138,0.3);}
+  .band-tag.medical{background:rgba(240,138,138,0.12); color:var(--medical); border:1px solid rgba(240,138,138,0.3);}
+  .band-tag.restaurant{background:rgba(183,154,240,0.12); color:var(--restaurant); border:1px solid rgba(183,154,240,0.3);}
+  .band-tag.core{background:rgba(111,227,224,0.12); color:var(--cyan); border:1px solid rgba(111,227,224,0.3);}
+  h2{font-family:var(--mono); font-size:23px; font-weight:600;}
+  h3{font-family:var(--mono); font-size:15.5px; font-weight:600; color:var(--text); margin:30px 0 12px; display:flex; align-items:center; gap:9px;}
+  h3 .n{color:var(--text-faint); font-weight:400;}
+  p{color:var(--text-dim); margin-bottom:14px; max-width:78ch;}
+  p b, li b, td b{color:var(--text); font-weight:600;}
+  code{font-family:var(--mono); font-size:0.87em; background:var(--surface-2); padding:2px 6px; border-radius:4px; color:var(--amber); border:1px solid var(--border-soft);}
+  ul{margin:0 0 14px 0; padding-left:20px; color:var(--text-dim);}
+  ul li{margin-bottom:7px;}
+  ol.plain{margin:0 0 14px 0; padding-left:20px; color:var(--text-dim);}
+  ol.plain li{margin-bottom:8px;}
+
+  .note{border-left:2px solid var(--cyan); background:var(--surface); padding:14px 18px; border-radius:0 8px 8px 0; margin:18px 0; max-width:78ch;}
+  .note.warn{border-left-color:var(--amber);}
+  .note p{margin:0; color:var(--text-dim); font-size:14.5px;}
+  .note p b{color:var(--cyan);}
+  .note.warn p b{color:var(--amber);}
+
+  .card{position:relative; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:24px;}
+  .card::before, .card::after{content:''; position:absolute; width:12px; height:12px; border:1.5px solid var(--border); opacity:0.9;}
+  .card::before{top:-1px; left:-1px; border-right:none; border-bottom:none; border-radius:4px 0 0 0;}
+  .card::after{bottom:-1px; right:-1px; border-left:none; border-top:none; border-radius:0 0 4px 0;}
+
+  table{width:100%; border-collapse:collapse; margin:12px 0 24px; font-size:14.5px;}
+  th, td{text-align:left; padding:10px 14px; border-bottom:1px solid var(--border-soft); vertical-align:top;}
+  th{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-faint); font-weight:500;}
+  td{color:var(--text-dim);}
+  tr:last-child td{border-bottom:none;}
+
+  /* Feature grid */
+  .feat-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(230px,1fr)); gap:14px; margin:14px 0 26px;}
+  .feat{background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px 18px;}
+  .feat .f-title{font-family:var(--mono); font-size:13.5px; font-weight:600; color:var(--text); margin-bottom:6px; display:flex; align-items:center; gap:8px;}
+  .feat .f-title .idx{color:var(--text-faint); font-size:11px;}
+  .feat p{font-size:13.5px; color:var(--text-dim); margin:0;}
+  .feat.core-feat{border-left:3px solid var(--cyan);}
+  .feat.mart-feat{border-left:3px solid var(--mart);}
+  .feat.medical-feat{border-left:3px solid var(--medical);}
+  .feat.restaurant-feat{border-left:3px solid var(--restaurant);}
+
+  pre{background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:18px 20px; overflow-x:auto; margin:14px 0 24px; font-family:var(--mono); font-size:12.8px; line-height:1.7; color:var(--text-dim);}
+  pre .c{color:var(--text-faint); font-style:italic;}
+  pre .s{color:var(--amber);}
+  pre .k{color:var(--cyan);}
+
+  /* Role pills */
+  .role-row{display:flex; flex-wrap:wrap; gap:10px; margin:14px 0 26px;}
+  .role{font-family:var(--mono); font-size:12.5px; padding:8px 14px; border-radius:8px; background:var(--surface-2); border:1px solid var(--border); color:var(--text);}
+  .role .cap{color:var(--text-faint); font-family:var(--sans); font-size:11.5px; margin-left:6px;}
+
+  /* Flow diagram (restaurant) */
+  .flow{padding:26px; margin:20px 0;}
+  .flow-label{font-family:var(--mono); font-size:11px; color:var(--text-faint); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:16px;}
+  .flow-lane{display:flex; align-items:stretch; gap:0; margin-bottom:6px;}
+  .flow-role{width:110px; flex-shrink:0; font-family:var(--mono); font-size:12px; color:var(--restaurant); display:flex; align-items:center; padding-right:10px; font-weight:600;}
+  .flow-steps{display:flex; gap:10px; flex:1; flex-wrap:wrap;}
+  .flow-step{background:var(--surface-2); border:1px solid var(--border); border-radius:8px; padding:10px 14px; font-size:12.5px; color:var(--text-dim); min-width:120px;}
+  .flow-step b{color:var(--text); display:block; font-family:var(--mono); font-size:12px; margin-bottom:2px;}
+  .flow-connector{display:flex; align-items:center; padding-left:110px; color:var(--text-faint); font-size:13px; margin:2px 0;}
+
+  .unit-row{display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 22px;}
+  .unit{font-family:var(--mono); font-size:12px; padding:6px 12px; border-radius:6px; background:var(--surface-2); border:1px solid var(--border); color:var(--text-dim);}
+
+  footer{border-top:1px solid var(--border-soft); padding-top:24px; margin-top:10px; font-family:var(--mono); font-size:12px; color:var(--text-faint);}
+
+  @media (max-width:920px){ nav.toc{display:none;} main{padding:40px 22px 100px;} }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc">
+    <div class="toc-brand">Feature spec<b>Sector deep-dive</b></div>
+    <ol>
+      <li><a href="#overview"><span class="dot core"></span> Overview</a></li>
+      <li><a href="#compliance"><span class="dot core"></span> Invoicing &amp; IRD compliance</a></li>
+    </ol>
+    <div class="toc-group">Mart</div>
+    <ol>
+      <li><a href="#mart-product"><span class="dot mart"></span> Product &amp; inventory</a></li>
+      <li><a href="#mart-checkout"><span class="dot mart"></span> Checkout &amp; orders</a></li>
+      <li><a href="#mart-analytics"><span class="dot mart"></span> Analytics &amp; alerts</a></li>
+      <li><a href="#mart-roles"><span class="dot mart"></span> Roles</a></li>
+    </ol>
+    <div class="toc-group">Medical</div>
+    <ol>
+      <li><a href="#medical-product"><span class="dot medical"></span> Product &amp; batches</a></li>
+      <li><a href="#medical-extra"><span class="dot medical"></span> Sector-specific features</a></li>
+      <li><a href="#medical-roles"><span class="dot medical"></span> Roles</a></li>
+    </ol>
+    <div class="toc-group">Restaurant</div>
+    <ol>
+      <li><a href="#rest-flow"><span class="dot restaurant"></span> Order flow &amp; roles</a></li>
+      <li><a href="#rest-menu"><span class="dot restaurant"></span> Menu &amp; QR ordering</a></li>
+      <li><a href="#rest-kitchen"><span class="dot restaurant"></span> Kitchen &amp; service</a></li>
+      <li><a href="#rest-billing"><span class="dot restaurant"></span> Billing</a></li>
+      <li><a href="#rest-analytics"><span class="dot restaurant"></span> Analytics &amp; alerts</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="eyebrow">Feature specification</div>
+      <h1>Mart · Medical · Restaurant — sector features</h1>
+      <p class="hero-sub">Detailed feature breakdown per sector plugin, plus the shared invoicing engine every sector depends on for sequential, non-missing invoices pushed to IRD's Central Billing Monitoring System (CBMS).</p>
+    </div>
+
+    <section class="sector-band" id="overview">
+      <div class="band-head"><span class="band-tag core">Overview</span><h2>How this maps to the architecture</h2></div>
+      <p>Every sector below plugs into the same core from the earlier architecture doc — <code>Auth</code>, <code>Subscription/Entitlement</code>, <code>Billing engine</code>. What differs per sector is the <b>product schema</b>, the <b>order pipeline</b>, and which <b>roles</b> exist. Restaurant differs the most: instead of staff creating every order, the customer initiates it.</p>
+      <table>
+        <tr><th>Sector</th><th>Order origin</th><th>Distinguishing data</th><th>Extra roles beyond owner/manager</th></tr>
+        <tr><td><span style="color:var(--mart)">●</span> Mart</td><td>Staff at counter (barcode/manual)</td><td>Unit type, stock, expiry</td><td>Cashier</td></tr>
+        <tr><td><span style="color:var(--medical)">●</span> Medical</td><td>Staff at counter (no barcode)</td><td>Batch no., expiry, prescription, schedule</td><td>Pharmacist</td></tr>
+        <tr><td><span style="color:var(--restaurant)">●</span> Restaurant</td><td>Customer via table QR <i>or</i> waiter</td><td>Table no., KOT status, modifiers</td><td>Waiter, chef, customer (guest)</td></tr>
+      </table>
+    </section>
+
+    <section class="sector-band" id="compliance">
+      <div class="band-head"><span class="band-tag core">Shared / all sectors</span><h2>Invoicing engine &amp; IRD (CBMS) compliance</h2></div>
+      <p>This is not sector-specific — it lives in the core <b>Billing engine</b> and every sector's checkout flow calls into it. Nepal's IRD requires approved billing software to number invoices sequentially per fiscal year, never silently alter or delete an issued invoice, and report each sale to the Central Billing Monitoring System (CBMS) — so this is the part of the system that's least safe to get wrong.</p>
+      <div class="feat-grid">
+        <div class="feat core-feat"><div class="f-title"><span class="idx">01</span>Gapless sequential numbering</div><p>One counter per business per fiscal year (Bikram Sambat), incremented atomically at invoice creation — never at cart/order creation, so abandoned carts can't burn a number.</p></div>
+        <div class="feat core-feat"><div class="f-title"><span class="idx">02</span>No hard deletes</div><p>An invoice is never deleted or edited in place. Corrections go through a <b>credit note</b> referencing the original — the master register always shows every number issued.</p></div>
+        <div class="feat core-feat"><div class="f-title"><span class="idx">03</span>Single-print + copy marking</div><p>First print is the original; every reprint auto-stamps "Copy of original" with a reprint counter, logged.</p></div>
+        <div class="feat core-feat"><div class="f-title"><span class="idx">04</span>Offline-safe CBMS sync</div><p>Invoices are created and printed even if IRD's endpoint is unreachable. A background worker retries a <b>push queue</b> until each invoice is acknowledged — never blocks checkout.</p></div>
+        <div class="feat core-feat"><div class="f-title"><span class="idx">05</span>PAN &amp; VAT breakdown</div><p>Business PAN, buyer PAN (when applicable), taxable amount, and VAT (13%) computed and shown as separate fields on every invoice, not just a total.</p></div>
+        <div class="feat core-feat"><div class="f-title"><span class="idx">06</span>Full audit trail</div><p>Every state change on an invoice (created, printed, reprinted, credit-noted, synced, sync failed) is appended to an immutable audit log — required for both disputes and IRD inspection.</p></div>
+      </div>
+      <h3>Numbering safety, concretely <span class="n">— this is the part that must never produce a gap or a duplicate</span></h3>
+      <pre><span class="c">-- one row per business per fiscal year, updated inside the same DB transaction as invoice insert</span>
+invoice_counters
+  business_id (fk), fiscal_year, last_number, <span class="k">UNIQUE(business_id, fiscal_year)</span>
+
+<span class="c">-- pseudocode, runs inside a single serializable transaction:</span>
+next_number = <span class="s">UPDATE invoice_counters
+              SET last_number = last_number + 1
+              WHERE business_id = :b AND fiscal_year = :fy
+              RETURNING last_number</span>
+invoice.number = <span class="s">"{business.pan}-{fiscal_year}-{next_number}"</span></pre>
+      <div class="note warn"><p><b>Why this matters:</b> generating the number in application code (e.g. <code>COUNT(*) + 1</code>) races under concurrent checkouts and produces duplicates. The row-level lock from an atomic <code>UPDATE ... RETURNING</code> inside the invoice's own transaction is what guarantees no two orders ever get the same number and no number is skipped.</p></div>
+    </section>
+
+    <!-- ================= MART ================= -->
+
+    <section class="sector-band" id="mart-product">
+      <div class="band-head"><span class="band-tag mart">Mart</span><h2>Product &amp; inventory management</h2></div>
+      <p>Mart's core job is: know what's in stock, sell it, and tell the owner what's happening. Product is the central entity.</p>
+      <table>
+        <tr><th>Field</th><th>Notes</th></tr>
+        <tr><td><code>name</code></td><td>Product name</td></tr>
+        <tr><td><code>category</code></td><td>e.g. Grocery, Dairy, Beverages — used for analytics grouping</td></tr>
+        <tr><td><code>unit_type</code></td><td>How it's sold and stocked — see units below</td></tr>
+        <tr><td><code>stock_qty</code></td><td>Current on-hand quantity, in <code>unit_type</code></td></tr>
+        <tr><td><code>expiry_date</code></td><td>Nullable — not every mart item expires, but perishables need it</td></tr>
+        <tr><td><code>barcode</code></td><td>Optional, for scan-to-add at checkout</td></tr>
+        <tr><td><code>price</code>, <code>cost_price</code></td><td>Selling price and cost, for margin analytics</td></tr>
+        <tr><td><code>low_stock_threshold</code></td><td>Per-product reorder point</td></tr>
+      </table>
+      <div class="unit-row">
+        <span class="unit">kg</span><span class="unit">gm</span><span class="unit">ltr</span><span class="unit">ml</span><span class="unit">pcs</span><span class="unit">box</span><span class="unit">dozen</span>
+      </div>
+      <div class="feat-grid">
+        <div class="feat mart-feat"><div class="f-title">Stock adjustment</div><p>Manual stock-in (purchase received), stock-out (damage/wastage), and transfer between branches, each logged with a reason.</p></div>
+        <div class="feat mart-feat"><div class="f-title">Category management</div><p>Create/edit categories; every product belongs to exactly one for clean reporting.</p></div>
+        <div class="feat mart-feat"><div class="f-title">Expiry tracking</div><p>Any product with an expiry date surfaces in an "expiring soon" list before it becomes a loss.</p></div>
+        <div class="feat mart-feat"><div class="f-title">Barcode lookup</div><p>Scan at checkout resolves instantly to product + current price + stock check.</p></div>
+      </div>
+    </section>
+
+    <section class="sector-band" id="mart-checkout">
+      <div class="band-head"><span class="band-tag mart">Mart</span><h2>Checkout, order creation &amp; billing</h2></div>
+      <ol class="plain">
+        <li>Cashier scans barcode or searches product → added to cart with quantity (supports fractional quantity for weight/volume units, e.g. 0.5 kg).</li>
+        <li>Cart validates stock availability live — can't oversell.</li>
+        <li>Apply discount (item-level or bill-level, within manager-approved limits), select payment method (cash / card / wallet).</li>
+        <li>On confirm: <b>order</b> is created, <b>stock is decremented</b>, and an <b>invoice</b> is generated in the same transaction — either all three succeed or none do.</li>
+        <li>Invoice follows the shared numbering + CBMS push flow described above.</li>
+      </ol>
+      <div class="note"><p><b>Atomicity matters here:</b> stock deduction and invoice creation must be one transaction. A crash between "stock deducted" and "invoice created" is exactly how a mart ends up with inventory that doesn't match sales.</p></div>
+    </section>
+
+    <section class="sector-band" id="mart-analytics">
+      <div class="band-head"><span class="band-tag mart">Mart</span><h2>Analytics &amp; alerts</h2></div>
+      <div class="feat-grid">
+        <div class="feat mart-feat"><div class="f-title">Sales analytics</div><p>Daily/weekly/monthly revenue, best/worst-selling products, category-wise breakdown, cashier-wise sales.</p></div>
+        <div class="feat mart-feat"><div class="f-title">Stock valuation</div><p>Current inventory value at cost vs at selling price — live snapshot for the owner.</p></div>
+        <div class="feat mart-feat"><div class="f-title">Margin analysis</div><p>Profit per product/category using <code>price - cost_price</code>, surfaced alongside volume so low-margin best-sellers are visible.</p></div>
+        <div class="feat mart-feat"><div class="f-title">Trend view</div><p>Compare this period vs last period — flags products trending down before they become a stock problem.</p></div>
+      </div>
+      <h3>Alerts</h3>
+      <ul>
+        <li><b>Low stock</b> — product falls below its <code>low_stock_threshold</code>.</li>
+        <li><b>Expiring soon</b> — configurable window (e.g. 7/15/30 days out).</li>
+        <li><b>Expired stock</b> — daily sweep flags anything past <code>expiry_date</code> still in stock; sale of an expired item is blocked at checkout, not just warned.</li>
+        <li><b>CBMS sync failed</b> — an invoice sat in the retry queue past a threshold; ops needs to know before it becomes a compliance backlog.</li>
+      </ul>
+    </section>
+
+    <section class="sector-band" id="mart-roles">
+      <div class="band-head"><span class="band-tag mart">Mart</span><h2>Roles</h2></div>
+      <div class="role-row">
+        <span class="role">Owner<span class="cap">full access, analytics, subscription</span></span>
+        <span class="role">Manager<span class="cap">inventory, discounts, staff</span></span>
+        <span class="role">Cashier<span class="cap">checkout only</span></span>
+      </div>
+    </section>
+
+    <!-- ================= MEDICAL ================= -->
+
+    <section class="sector-band" id="medical-product">
+      <div class="band-head"><span class="band-tag medical">Medical</span><h2>Product &amp; batch management</h2></div>
+      <p>Same checkout/order/analytics skeleton as mart — but the product entity and stock model change enough that they can't share the same schema unmodified.</p>
+      <table>
+        <tr><th>Field</th><th>Notes</th></tr>
+        <tr><td><code>name</code>, <code>generic_name</code></td><td>Brand and generic/composition name — pharmacists search by either</td></tr>
+        <tr><td><code>category</code></td><td>e.g. Analgesic, Antibiotic, Syrup, Device</td></tr>
+        <tr><td><code>manufacturer</code></td><td>For recalls and regulatory reporting</td></tr>
+        <tr><td><code>schedule</code></td><td><code>otc</code> / <code>prescription</code> / <code>controlled</code> — drives what's required at checkout</td></tr>
+        <tr><td><code>unit_type</code></td><td>strip, bottle, vial, box, pcs — no barcode field; medical sale is stock lookup by name/batch, not scan</td></tr>
+        <tr><td colspan="2"><i>Stock is tracked per <b>batch</b>, not just per product:</i></td></tr>
+        <tr><td><code>batches[]</code></td><td><code>batch_no</code>, <code>expiry_date</code>, <code>qty</code>, <code>cost_price</code> — a product can have several active batches with different expiries</td></tr>
+      </table>
+      <div class="note warn"><p><b>Why no barcode:</b> unlike a mart, medical stock is managed at the batch level — the same product can have five batches with five different expiry dates on the shelf simultaneously. A single barcode per product would hide which batch is actually being sold, which is the opposite of what a pharmacy needs.</p></div>
+    </section>
+
+    <section class="sector-band" id="medical-extra">
+      <div class="band-head"><span class="band-tag medical">Medical</span><h2>Sector-specific features</h2></div>
+      <div class="feat-grid">
+        <div class="feat medical-feat"><div class="f-title">FEFO dispensing</div><p>Checkout auto-suggests the batch with the <b>nearest expiry first</b> (First-Expire-First-Out), overridable by the pharmacist.</p></div>
+        <div class="feat medical-feat"><div class="f-title">Prescription attach</div><p>For <code>schedule = prescription</code> items, order requires an attached prescription (photo/scan) + prescribing doctor's name before checkout completes.</p></div>
+        <div class="feat medical-feat"><div class="f-title">Controlled substance register</div><p>Sales of <code>schedule = controlled</code> items log buyer ID/details in a separate append-only register, as typically required for narcotics-class drugs.</p></div>
+        <div class="feat medical-feat"><div class="f-title">Expired-batch hard block</div><p>A batch past <code>expiry_date</code> is automatically excluded from sale — not just flagged, actually unsellable at checkout.</p></div>
+        <div class="feat medical-feat"><div class="f-title">Insurance claim linkage</div><p>Order can be tagged with an insurance provider + policy number; claim status (submitted/approved/rejected) tracked against the invoice.</p></div>
+        <div class="feat medical-feat"><div class="f-title">Return / damage / expiry write-off</div><p>Separate stock-adjustment reason codes so "returned by customer," "damaged," and "expired write-off" are distinguishable in reports — different regulatory and accounting treatment.</p></div>
+        <div class="feat medical-feat"><div class="f-title">Regulatory export</div><p>Batch-wise sales/stock report exportable in a format suited for drug authority inspection — extension of the same analytics engine mart uses, with batch and schedule columns added.</p></div>
+      </div>
+    </section>
+
+    <section class="sector-band" id="medical-roles">
+      <div class="band-head"><span class="band-tag medical">Medical</span><h2>Roles</h2></div>
+      <div class="role-row">
+        <span class="role">Owner<span class="cap">full access</span></span>
+        <span class="role">Manager<span class="cap">inventory, batches, staff</span></span>
+        <span class="role">Pharmacist<span class="cap">only role that can dispense prescription/controlled items</span></span>
+      </div>
+      <div class="note"><p><b>Why a distinct pharmacist role:</b> checkout for a <code>prescription</code> or <code>controlled</code> item should be blocked unless the acting user holds the pharmacist role — a plain cashier role (fine for mart) isn't sufficient here.</p></div>
+    </section>
+
+    <!-- ================= RESTAURANT ================= -->
+
+    <section class="sector-band" id="rest-flow">
+      <div class="band-head"><span class="band-tag restaurant">Restaurant</span><h2>Order flow &amp; roles — different architecture</h2></div>
+      <p>Mart and medical both follow <i>staff creates the order</i>. Restaurant flips that: the <b>customer</b> can originate the order themselves by scanning a table's QR code, and the order then flows through multiple staff roles before it becomes a bill. So restaurant needs a real order <b>state machine</b>, not just a create-and-checkout action.</p>
+
+      <div class="card flow">
+        <div class="flow-label">Order lifecycle by role</div>
+        <div class="flow-lane">
+          <div class="flow-role">Customer</div>
+          <div class="flow-steps">
+            <div class="flow-step"><b>Scan QR</b>table_id embedded</div>
+            <div class="flow-step"><b>View menu</b>no login needed</div>
+            <div class="flow-step"><b>Place order</b>status: placed</div>
+          </div>
+        </div>
+        <div class="flow-connector">↓</div>
+        <div class="flow-lane">
+          <div class="flow-role">Waiter</div>
+          <div class="flow-steps">
+            <div class="flow-step"><b>Confirm order</b>status: confirmed</div>
+            <div class="flow-step"><b>Take manual order</b>walk-in / phone</div>
+            <div class="flow-step"><b>Mark served</b>status: served</div>
+          </div>
+        </div>
+        <div class="flow-connector">↓</div>
+        <div class="flow-lane">
+          <div class="flow-role">Chef / kitchen</div>
+          <div class="flow-steps">
+            <div class="flow-step"><b>Receive KOT</b>status: in_kitchen</div>
+            <div class="flow-step"><b>Mark preparing</b></div>
+            <div class="flow-step"><b>Mark ready</b>status: ready</div>
+          </div>
+        </div>
+        <div class="flow-connector">↓</div>
+        <div class="flow-lane">
+          <div class="flow-role">Waiter / Cashier</div>
+          <div class="flow-steps">
+            <div class="flow-step"><b>Generate bill</b>all KOTs for table</div>
+            <div class="flow-step"><b>Invoice + IRD push</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="role-row">
+        <span class="role">Customer<span class="cap">guest — order via QR only, no login</span></span>
+        <span class="role">Waiter<span class="cap">confirm/serve orders, manual orders, table status</span></span>
+        <span class="role">Chef<span class="cap">kitchen display, KOT status only</span></span>
+        <span class="role">Manager<span class="cap">menu, pricing, discounts, staff</span></span>
+        <span class="role">Admin<span class="cap">full access, subscription</span></span>
+      </div>
+    </section>
+
+    <section class="sector-band" id="rest-menu">
+      <div class="band-head"><span class="band-tag restaurant">Restaurant</span><h2>Menu &amp; QR ordering</h2></div>
+      <table>
+        <tr><th>Entity</th><th>Key fields</th></tr>
+        <tr><td><code>tables</code></td><td><code>table_no</code>, <code>qr_token</code> (unique per table), <code>status</code> (empty/occupied/billed), <code>assigned_waiter_id</code></td></tr>
+        <tr><td><code>menu_items</code></td><td><code>name</code>, <code>category</code>, <code>price</code>, <code>modifiers[]</code> (size/spice/add-ons), <code>is_available</code>, <code>image</code></td></tr>
+        <tr><td><code>orders</code></td><td><code>table_id</code>, <code>source</code> (qr/waiter), <code>status</code>, <code>items[]</code>, <code>created_by</code> (customer session or staff id)</td></tr>
+      </table>
+      <div class="feat-grid">
+        <div class="feat restaurant-feat"><div class="f-title">Table-scoped session</div><p>Scanning a table's QR opens the menu with a short-lived session token bound to that <code>table_id</code> — no account needed, but every order from it is traceable to the table.</p></div>
+        <div class="feat restaurant-feat"><div class="f-title">Live menu availability</div><p>Kitchen or manager can 86 (mark unavailable) an item instantly — customer menu reflects it immediately.</p></div>
+        <div class="feat restaurant-feat"><div class="f-title">Modifiers</div><p>Size, spice level, add-ons/removals per item, priced individually where needed.</p></div>
+        <div class="feat restaurant-feat"><div class="f-title">Multiple orders per table</div><p>A table can place several orders across a sitting (starters, then mains, then dessert) — all tracked and billed together at the end.</p></div>
+      </div>
+    </section>
+
+    <section class="sector-band" id="rest-kitchen">
+      <div class="band-head"><span class="band-tag restaurant">Restaurant</span><h2>Kitchen &amp; service (KOT)</h2></div>
+      <ul>
+        <li>Confirmed order auto-generates a <b>KOT</b> (kitchen order ticket) routed to a kitchen display screen or printer, grouped by station if needed (grill, drinks, dessert).</li>
+        <li>Chef updates status per item or per ticket: <code>in_kitchen → preparing → ready</code>.</li>
+        <li>Waiter gets notified when a ticket is <code>ready</code>, delivers it, marks <code>served</code>.</li>
+        <li>Kitchen never sees pricing/billing — chef role is scoped to KOT status only, keeping the kitchen display simple and fast.</li>
+      </ul>
+    </section>
+
+    <section class="sector-band" id="rest-billing">
+      <div class="band-head"><span class="band-tag restaurant">Restaurant</span><h2>Billing</h2></div>
+      <ol class="plain">
+        <li>Waiter or cashier opens the table → sees all orders/KOTs placed against it during the sitting.</li>
+        <li>Choose <b>split by item</b> or <b>split by guest count</b> if the table asks to divide the bill.</li>
+        <li>Apply service charge (if applicable) + VAT.</li>
+        <li>Generate invoice → same shared sequential numbering + CBMS push engine as mart/medical.</li>
+        <li>Table status flips to <code>billed</code>, then <code>empty</code> once payment is confirmed, freeing it for the next QR session.</li>
+      </ol>
+    </section>
+
+    <section class="sector-band" id="rest-analytics">
+      <div class="band-head"><span class="band-tag restaurant">Restaurant</span><h2>Analytics &amp; alerts</h2></div>
+      <div class="feat-grid">
+        <div class="feat restaurant-feat"><div class="f-title">Table turnover</div><p>Average time from seated to billed, per table and per day-part — the core lever for restaurant revenue.</p></div>
+        <div class="feat restaurant-feat"><div class="f-title">Item performance</div><p>Best-selling items, modifier attach rate, items frequently 86'd (signals supply issues).</p></div>
+        <div class="feat restaurant-feat"><div class="f-title">Waiter/kitchen performance</div><p>Average confirm time, average prep time, orders served per waiter per shift.</p></div>
+        <div class="feat restaurant-feat"><div class="f-title">Peak-hour heatmap</div><p>Orders by hour/day for staffing decisions.</p></div>
+      </div>
+      <h3>Alerts</h3>
+      <ul>
+        <li><b>Order stuck</b> — no status change past a time threshold at any stage (placed/confirmed/preparing).</li>
+        <li><b>Table waiting for bill</b> — status <code>served</code> too long without a bill request.</li>
+        <li><b>CBMS sync failed</b> — same shared alert as mart/medical.</li>
+      </ul>
+    </section>
+
+    <footer>Sector feature specification · builds on the shared modular-monolith architecture and IRD/CBMS-compliant invoicing engine</footer>
+  </main>
+</div>
+</body>
+</html>

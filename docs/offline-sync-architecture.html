@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Offline-First &amp; Sync Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0E1116; --surface:#161A22; --surface-2:#1D222C;
+    --border:#2A2F3B; --border-soft:#232833;
+    --text:#E9E7DF; --text-dim:#9AA1AE; --text-faint:#5C6373;
+    --cyan:#6FE3E0; --amber:#F0B24B; --green:#8FD48A; --red:#F08A8A;
+    --mono:'JetBrains Mono', monospace; --sans:'Inter', sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:radial-gradient(circle at 1px 1px, rgba(255,255,255,0.035) 1px, transparent 0) 0 0/28px 28px, var(--bg);
+    color:var(--text); font-family:var(--sans); line-height:1.65; font-size:16px;
+  }
+  a{color:var(--cyan); text-decoration:none;} a:hover{text-decoration:underline;}
+  .shell{display:flex; max-width:1320px; margin:0 auto;}
+  nav.toc{width:260px; flex-shrink:0; position:sticky; top:0; height:100vh; overflow-y:auto; padding:40px 22px 40px 32px; border-right:1px solid var(--border-soft);}
+  nav.toc::-webkit-scrollbar{width:6px;} nav.toc::-webkit-scrollbar-thumb{background:var(--border); border-radius:3px;}
+  .toc-brand{font-family:var(--mono); font-size:11px; letter-spacing:0.14em; color:var(--text-faint); text-transform:uppercase; margin-bottom:24px;}
+  .toc-brand b{color:var(--amber); display:block; font-size:13px; letter-spacing:0.06em; margin-top:4px;}
+  nav.toc ol{list-style:none; counter-reset:sec;} nav.toc li{counter-increment:sec; margin-bottom:2px;}
+  nav.toc a{display:flex; gap:10px; align-items:baseline; font-size:13.5px; color:var(--text-dim); padding:7px 10px; border-radius:6px; border-left:2px solid transparent;}
+  nav.toc a::before{content:counter(sec, decimal-leading-zero); font-family:var(--mono); font-size:10.5px; color:var(--text-faint); flex-shrink:0;}
+  nav.toc a:hover{color:var(--text); text-decoration:none; background:var(--surface); border-left-color:var(--cyan);}
+
+  main{flex:1; min-width:0; padding:56px 56px 120px;}
+  .hero{margin-bottom:56px; padding-bottom:36px; border-bottom:1px solid var(--border-soft);}
+  .eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:var(--amber); margin-bottom:16px; display:flex; align-items:center; gap:10px;}
+  .eyebrow::before{content:''; width:22px; height:1px; background:var(--amber); display:inline-block;}
+  h1{font-family:var(--mono); font-weight:700; font-size:clamp(26px,3.6vw,38px); line-height:1.18; letter-spacing:-0.01em; margin-bottom:16px; max-width:22ch;}
+  .hero-sub{color:var(--text-dim); font-size:16.5px; max-width:72ch;}
+
+  .status-strip{margin-top:26px; display:flex; gap:12px; flex-wrap:wrap;}
+  .status-chip{font-family:var(--mono); font-size:12.5px; padding:9px 14px; border-radius:8px; display:flex; align-items:center; gap:8px; border:1px solid var(--border); background:var(--surface);}
+  .status-chip .led{width:7px; height:7px; border-radius:50%;}
+  .led.on{background:var(--green); box-shadow:0 0 6px var(--green);}
+  .led.off{background:var(--amber); box-shadow:0 0 6px var(--amber);}
+
+  section{margin-bottom:72px; scroll-margin-top:32px;}
+  .sec-head{display:flex; align-items:baseline; gap:14px; margin-bottom:20px;}
+  .sec-num{font-family:var(--mono); color:var(--text-faint); font-size:14px;}
+  h2{font-family:var(--mono); font-size:22px; font-weight:600; letter-spacing:-0.01em;}
+  h3{font-family:var(--mono); font-size:15.5px; font-weight:600; color:var(--cyan); margin:26px 0 12px;}
+  p{color:var(--text-dim); margin-bottom:14px; max-width:78ch;}
+  p b, li b, td b{color:var(--text); font-weight:600;}
+  code{font-family:var(--mono); font-size:0.87em; background:var(--surface-2); padding:2px 6px; border-radius:4px; color:var(--amber); border:1px solid var(--border-soft);}
+  ul{margin:0 0 14px 0; padding-left:20px; color:var(--text-dim);} ul li{margin-bottom:7px;}
+  ol.plain{margin:0 0 14px 0; padding-left:20px; color:var(--text-dim);} ol.plain li{margin-bottom:8px;}
+
+  .note{border-left:2px solid var(--cyan); background:var(--surface); padding:14px 18px; border-radius:0 8px 8px 0; margin:18px 0; max-width:78ch;}
+  .note.warn{border-left-color:var(--amber);}
+  .note p{margin:0; color:var(--text-dim); font-size:14.5px;}
+  .note p b{color:var(--cyan);}
+  .note.warn p b{color:var(--amber);}
+
+  .card{position:relative; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:24px;}
+  .card::before, .card::after{content:''; position:absolute; width:12px; height:12px; border:1.5px solid var(--border); opacity:0.9;}
+  .card::before{top:-1px; left:-1px; border-right:none; border-bottom:none; border-radius:4px 0 0 0;}
+  .card::after{bottom:-1px; right:-1px; border-left:none; border-top:none; border-radius:0 0 4px 0;}
+
+  table{width:100%; border-collapse:collapse; margin:12px 0 24px; font-size:14.5px;}
+  th, td{text-align:left; padding:10px 14px; border-bottom:1px solid var(--border-soft); vertical-align:top;}
+  th{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-faint); font-weight:500;}
+  td{color:var(--text-dim);} tr:last-child td{border-bottom:none;}
+  td.online{color:var(--green);} td.offline{color:var(--amber);}
+
+  pre{background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:18px 20px; overflow-x:auto; margin:14px 0 24px; font-family:var(--mono); font-size:12.8px; line-height:1.7; color:var(--text-dim);}
+  pre .c{color:var(--text-faint); font-style:italic;} pre .s{color:var(--amber);} pre .k{color:var(--cyan);}
+
+  .feat-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(230px,1fr)); gap:14px; margin:14px 0 26px;}
+  .feat{background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px 18px; border-left:3px solid var(--cyan);}
+  .feat .f-title{font-family:var(--mono); font-size:13.5px; font-weight:600; color:var(--text); margin-bottom:6px;}
+  .feat p{font-size:13.5px; color:var(--text-dim); margin:0;}
+
+  /* Device diagram */
+  .diagram{padding:28px; margin:20px 0;}
+  .diag-label{font-family:var(--mono); font-size:11px; color:var(--text-faint); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:18px;}
+  .diag-row{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:14px;}
+  .diag-box{flex:1; min-width:150px; background:var(--surface-2); border:1px solid var(--border); border-radius:8px; padding:14px 16px;}
+  .diag-box .t{font-family:var(--mono); font-size:13px; font-weight:600; color:var(--text); margin-bottom:4px;}
+  .diag-box .s{font-size:12px; color:var(--text-faint);}
+  .diag-connector{display:flex; justify-content:center; margin:6px 0; color:var(--text-faint); font-family:var(--mono); font-size:12px; text-align:center;}
+  .diag-box.dim{opacity:0.6; border-style:dashed;}
+  .diag-box.accent-cyan{border-left:3px solid var(--cyan);}
+  .diag-box.accent-amber{border-left:3px solid var(--amber);}
+  .diag-box.accent-green{border-left:3px solid var(--green);}
+
+  /* Timeline */
+  .timeline{position:relative; margin:20px 0 30px; padding-left:26px; border-left:1px solid var(--border);}
+  .tl-item{position:relative; padding-bottom:22px;}
+  .tl-item:last-child{padding-bottom:0;}
+  .tl-item::before{content:''; position:absolute; left:-31px; top:3px; width:9px; height:9px; border-radius:50%; background:var(--bg); border:2px solid var(--cyan);}
+  .tl-item .tt{font-family:var(--mono); font-size:12.5px; color:var(--cyan); margin-bottom:3px;}
+  .tl-item p{margin:0; font-size:14px;}
+
+  footer{border-top:1px solid var(--border-soft); padding-top:24px; margin-top:10px; font-family:var(--mono); font-size:12px; color:var(--text-faint);}
+
+  @media (max-width:920px){ nav.toc{display:none;} main{padding:40px 22px 100px;} }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc">
+    <div class="toc-brand">Feature spec<b>Offline &amp; sync</b></div>
+    <ol>
+      <li><a href="#overview">Offline-first principles</a></li>
+      <li><a href="#local-layer">Local data layer (SQLite)</a></li>
+      <li><a href="#auth">Auth continuity</a></li>
+      <li><a href="#products">Product sync — push/pull</a></li>
+      <li><a href="#orders">Orders &amp; invoices — real-time + retry</a></li>
+      <li><a href="#numbering">Offline invoice numbering safety</a></li>
+      <li><a href="#queue">Sync/queue engine internals</a></li>
+      <li><a href="#ui">Sync status UI</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="eyebrow">Feature specification</div>
+      <h1>Offline-first architecture — mobile &amp; desktop</h1>
+      <p class="hero-sub">Mobile and desktop apps keep working when the internet drops mid-session. Products sync in the background; orders and invoices go straight to the server in real time, and only fall back to a local queue when the network genuinely isn't there.</p>
+      <div class="status-strip">
+        <span class="status-chip"><span class="led on"></span>Online — direct to server, real-time IRD push</span>
+        <span class="status-chip"><span class="led off"></span>Offline — queued locally, retried every 15 min</span>
+      </div>
+    </div>
+
+    <section id="overview">
+      <div class="sec-head"><span class="sec-num">§01</span><h2>Offline-first principles</h2></div>
+      <ul>
+        <li><b>Losing internet mid-session must not interrupt work already in progress.</b> If the app opened successfully with a valid session, a dropped connection afterward doesn't log the user out or block the screen they're on.</li>
+        <li><b>Products are cached locally</b> so browsing the catalog, checking stock, and adding to cart work with zero network calls.</li>
+        <li><b>Orders and invoices try the server first</b> (they need a real-time IRD/CBMS push) — they only fall back to a local queue when the request genuinely fails to reach the server.</li>
+        <li><b>Sync is never silent.</b> The user can always see whether they're online, and whether anything is waiting to sync.</li>
+      </ul>
+    </section>
+
+    <section id="local-layer">
+      <div class="sec-head"><span class="sec-num">§02</span><h2>Local data layer — SQLite on mobile &amp; desktop</h2></div>
+      <p>Both the mobile app and the desktop app carry a local <b>SQLite</b> database that mirrors just enough of the server's data to keep the app usable offline — it's a working cache and outbox, not a full replica.</p>
+      <pre><span class="c">-- local SQLite schema (mobile &amp; desktop)</span>
+
+products               <span class="c">-- read cache, pulled from server</span>
+  id, business_id, name, category, unit_type, price,
+  stock_qty, expiry_date, barcode, updated_at, synced_at
+
+stock_movements_outbox <span class="c">-- local changes waiting to push (offline sales, adjustments)</span>
+  id (uuid, client-generated), product_id, delta_qty, reason,
+  created_at, status  <span class="c">-- 'pending' | 'synced' | 'failed'</span>
+
+orders_outbox          <span class="c">-- orders that failed to reach the server</span>
+  id (uuid, client-generated), payload (json), created_at,
+  retry_count, last_attempt_at, status
+
+invoices_outbox        <span class="c">-- invoices generated offline, awaiting server confirmation + IRD push</span>
+  id (uuid, client-generated), order_ref, local_invoice_no,
+  payload (json), created_at, retry_count, status
+
+sync_log                <span class="c">-- audit trail of every sync attempt, for support/debugging</span>
+  id, entity_type, entity_id, direction, result, timestamp</pre>
+      <div class="note"><p><b>Client-generated UUIDs on every outbox row</b> — this is what makes retries safe. If a push times out but actually succeeded server-side, the retry carries the same UUID and the server just returns the existing record (idempotent), instead of creating a duplicate order.</p></div>
+    </section>
+
+    <section id="auth">
+      <div class="sec-head"><span class="sec-num">§03</span><h2>Auth continuity — app open vs. connection loss mid-session</h2></div>
+      <p>Auth check happens <b>once, at app open</b> — not on every screen or action. After that, a dropped connection doesn't re-trigger a login requirement.</p>
+      <div class="timeline">
+        <div class="tl-item"><div class="tt">App opens</div><p>Reads the cached JWT (access + refresh token) from secure local storage. If it's not expired, the app opens straight into the dashboard — no network call required to get in.</p></div>
+        <div class="tl-item"><div class="tt">Silent refresh, in the background</div><p>If online, the app quietly refreshes the token in the background so it stays valid. If this fails because there's no network, the app doesn't block — it just keeps using the still-valid cached token.</p></div>
+        <div class="tl-item"><div class="tt">Internet drops mid-session</div><p>Nothing changes for the user. The cached token is still valid, product catalog is local, and the current screen keeps working. Only actions that require the server (like an order push) are affected — and those fall into the queue described below.</p></div>
+        <div class="tl-item"><div class="tt">Token actually expires while offline</div><p>The app doesn't hard-lock the user out mid-shift. It allows continued use of already-cached data (browsing products, viewing queued orders) but blocks <i>new</i> server-bound actions until reconnect and re-auth — since a business-scoped write shouldn't happen on a token the server can no longer vouch for.</p></div>
+      </div>
+    </section>
+
+    <section id="products">
+      <div class="sec-head"><span class="sec-num">§04</span><h2>Product sync — push/pull</h2></div>
+      <p>Product data is <b>read-heavy and low-conflict</b> compared to orders, so it syncs on a simple pull-cache + delta-push model.</p>
+
+      <div class="card diagram">
+        <div class="diag-label">Product sync cycle</div>
+        <div class="diag-row">
+          <div class="diag-box accent-cyan"><div class="t">Auto pull — every 15 min</div><div class="s">Fetch products changed since last <code>synced_at</code></div></div>
+          <div class="diag-box accent-cyan"><div class="t">Manual "Sync now" button</div><div class="s">Same pull, triggered on demand</div></div>
+        </div>
+        <div class="diag-connector">↓ merges into local SQLite ↓</div>
+        <div class="diag-row">
+          <div class="diag-box dim"><div class="t">Local product cache</div><div class="s">Used for browsing, checkout, stock checks — works fully offline</div></div>
+        </div>
+        <div class="diag-connector">↑ stock_movements_outbox ↑</div>
+        <div class="diag-row">
+          <div class="diag-box accent-amber"><div class="t">Auto push — every 15 min</div><div class="s">Send queued local stock deltas (offline sales, adjustments)</div></div>
+          <div class="diag-box accent-amber"><div class="t">Manual push button</div><div class="s">Force-send pending changes now</div></div>
+        </div>
+      </div>
+
+      <h3>Pull — server → device</h3>
+      <ul>
+        <li>Runs automatically every 15 minutes, plus a manual <b>"Sync now"</b> button in the UI for immediate refresh.</li>
+        <li>Delta sync: request is <code>GET /products?business_id=..&updated_since=&lt;last_synced_at&gt;</code> — only changed rows transfer, not the whole catalog every time.</li>
+        <li>New products, price changes, and stock corrections made by other devices/staff land here.</li>
+      </ul>
+      <h3>Push — device → server</h3>
+      <ul>
+        <li>Stock changes made <i>while offline</i> (a sale reduces stock locally) are recorded as <b>movements (deltas)</b>, not overwritten absolute values — so two devices adjusting the same product offline don't clobber each other on sync; the server applies both deltas.</li>
+        <li>Pushed automatically every 15 minutes, and via the same manual button (push and pull run together on demand).</li>
+        <li>Server recomputes authoritative stock from all incoming movements and the next pull returns the corrected number to every device.</li>
+      </ul>
+      <div class="note warn"><p><b>Why deltas, not snapshots:</b> if Device A sells 2 units offline and Device B sells 3 units offline of the same product, pushing "stock = X" from each would overwrite one sale. Pushing "-2" and "-3" as movements lets the server apply both correctly regardless of order or timing.</p></div>
+    </section>
+
+    <section id="orders">
+      <div class="sec-head"><span class="sec-num">§05</span><h2>Orders &amp; invoices — real-time first, offline fallback</h2></div>
+      <p>Unlike products, orders and invoices are <b>not</b> queued by default — they attempt the server directly, synchronously, because an invoice needs the real-time IRD/CBMS push. The local queue only activates when that direct attempt actually fails.</p>
+
+      <table>
+        <tr><th>Step</th><th>Online</th><th>Offline</th></tr>
+        <tr><td>Order created</td><td class="online">Sent directly to server, confirmed instantly</td><td class="offline">Saved to <code>orders_outbox</code> locally, marked "pending sync"</td></tr>
+        <tr><td>Invoice generated</td><td class="online">Server assigns official sequential number, pushes to CBMS in real time</td><td class="offline">Saved to <code>invoices_outbox</code> with a local reference; official numbering finalized once synced (see §06)</td></tr>
+        <tr><td>Retry</td><td class="online">N/A — already synced</td><td class="offline">Automatic retry every 15 minutes, plus immediately on network reconnect</td></tr>
+        <tr><td>Staff visibility</td><td class="online">Shows as normal completed sale</td><td class="offline">Shows a clear "pending sync" badge until confirmed</td></tr>
+      </table>
+
+      <h3>Retry behavior</h3>
+      <ol class="plain">
+        <li>Order/invoice creation is attempted against the server first, synchronously, with a short timeout.</li>
+        <li>On failure (timeout, no network, server unreachable) → saved to the local outbox instantly, so the sale itself is never blocked or lost.</li>
+        <li>A background worker retries everything in the outbox <b>every 15 minutes</b>, and also fires immediately when the device detects it's back online (network-state listener) — the 15-minute timer is the guaranteed backstop, reconnect detection is the fast path.</li>
+        <li>Each retry is idempotent via the outbox row's client UUID, so a retry that partially succeeded earlier can't create a duplicate.</li>
+        <li>Once synced, the outbox row is marked <code>synced</code> and the local record is reconciled with the server's authoritative response (official invoice number, IRD acknowledgment).</li>
+      </ol>
+    </section>
+
+    <section id="numbering">
+      <div class="sec-head"><span class="sec-num">§06</span><h2>Offline invoice numbering safety</h2></div>
+      <p>The sequential, gapless invoice numbering rule from the compliance spec still applies even when a device is offline — this is the trickiest part of the whole sync design, worth calling out on its own.</p>
+      <div class="note warn">
+        <p><b>The problem:</b> the official sequence number must be assigned by the server (single source of truth, one counter per business per fiscal year). A device can't safely invent its own official number while offline — two offline devices could pick the same number, or numbers could go out of order once both sync.</p>
+      </div>
+      <h3>Recommended pattern</h3>
+      <ol class="plain">
+        <li>While online, each device periodically <b>leases a small block</b> of official invoice numbers from the server in advance (e.g. the next 30–50 numbers), stored locally.</li>
+        <li>If the device goes offline, it issues real, valid, sequential invoice numbers from its leased block — checkout is never blocked, and the numbers are still officially reserved, not locally invented.</li>
+        <li>If the leased block runs out while still offline, further sales get a <b>local draft receipt</b> (clearly marked "provisional, not yet an official invoice") queued in <code>invoices_outbox</code>; the official number is assigned the moment the device reconnects and syncs.</li>
+        <li>On reconnect, unused numbers in a lease are reconciled — either carried forward or explicitly voided with a reason, so the register never shows an unexplained gap.</li>
+      </ol>
+      <div class="note"><p>This is an addition to what was asked for, worth calling out explicitly: without number leasing, "save locally and retry" is safe for order data but risky for the <i>official</i> invoice number specifically. Leasing keeps every offline invoice fully compliant the moment it's printed, not just once it happens to sync.</p></div>
+    </section>
+
+    <section id="queue">
+      <div class="sec-head"><span class="sec-num">§07</span><h2>Sync/queue engine — internals</h2></div>
+      <div class="feat-grid">
+        <div class="feat"><div class="f-title">Background worker</div><p>A lightweight scheduler inside the app (mobile: WorkManager/BackgroundTasks; desktop: a local timer/daemon) fires every 15 minutes regardless of app state.</p></div>
+        <div class="feat"><div class="f-title">Network-state listener</div><p>Detects reconnect events and triggers an immediate sync pass rather than waiting for the next 15-minute tick — connectivity restored is a stronger signal than the clock.</p></div>
+        <div class="feat"><div class="f-title">Idempotency keys</div><p>Every outbox row's client-generated UUID is sent with the sync request; the server upserts rather than inserts blindly, so retries are always safe.</p></div>
+        <div class="feat"><div class="f-title">Exponential-ish safety</div><p>15-minute interval is the steady cadence; a failed sync doesn't hammer the server — it just waits for the next tick or the next reconnect event.</p></div>
+        <div class="feat"><div class="f-title">Conflict resolution</div><p>Products: server is always authoritative for absolute values; devices only ever send deltas. Orders/invoices: server-assigned IDs and numbers always win; local IDs are references, never final.</p></div>
+        <div class="feat"><div class="f-title">Full sync log</div><p>Every attempt (success or failure) is appended to <code>sync_log</code> — support staff can see exactly what synced, when, and what's still pending, per device.</p></div>
+      </div>
+    </section>
+
+    <section id="ui">
+      <div class="sec-head"><span class="sec-num">§08</span><h2>Sync status — what the user sees</h2></div>
+      <ul>
+        <li><b>Connection indicator</b> — persistent small badge (online/offline) always visible, not buried in a settings screen.</li>
+        <li><b>Pending count</b> — "3 orders, 1 invoice waiting to sync" visible at a glance when offline.</li>
+        <li><b>Manual "Sync now" button</b> — for both product pull/push and forcing an immediate outbox retry, so staff aren't stuck waiting for the 15-minute timer if they know connectivity is back.</li>
+        <li><b>Last synced timestamp</b> — "Products updated 4 min ago" builds trust that the cache isn't stale.</li>
+        <li><b>Per-record status</b> — any order/invoice created offline is visibly tagged "pending sync" until confirmed, never shown as identical to a normal completed sale.</li>
+      </ul>
+    </section>
+
+    <footer>Offline-first &amp; sync architecture · extends the shared invoicing engine and mart/medical/restaurant feature spec</footer>
+  </main>
+</div>
+</body>
+</html>

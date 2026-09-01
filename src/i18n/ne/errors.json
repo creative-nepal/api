@@ -1,0 +1,43 @@
+{
+  "business": {
+    "notFound": "व्यवसाय {businessId} फेला परेन",
+    "inactive": "व्यवसाय {businessId} {status} छ, परिवर्तन गर्न मिल्दैन",
+    "idRequired": "X-Business-Id हेडर वा :businessId राउट प्यारामिटर आवश्यक छ",
+    "idMismatch": "X-Business-Id हेडर र :businessId राउट प्यारामिटर मिलेन",
+    "tablesRestaurantOnly": "टेबल रेस्टुरेन्टको सुविधा हो; यो व्यवसाय {actual} हो",
+    "menuRestaurantOnly": "मेनु रेस्टुरेन्टको सुविधा हो; यो व्यवसाय {actual} हो"
+  },
+  "permission": {
+    "denied": "तपाईंको भूमिकाले यो व्यवसायमा यो कार्य गर्न अनुमति दिँदैन",
+    "dispenseOnly": "{schedules} औषधि फार्मासिस्टले मात्र वितरण गर्न सक्छन्"
+  },
+  "stock": {
+    "insufficient": "उत्पादन {productId} उपलब्ध छैन वा {quantity} परिमाणका लागि पर्याप्त मौज्दात छैन",
+    "insufficientUnexpired": "उत्पादन {productId} को म्याद नसकिएको मौज्दात अपुग: {shortfall} कम",
+    "batchRequired": "batchId आवश्यक छ — औषधिको मौज्दात ब्याच अनुसार राखिन्छ"
+  },
+  "invoice": {
+    "notFound": "बीजक {invoiceId} फेला परेन",
+    "buyerPanRequired": "रु. १०,००० भन्दा माथिको कर बीजकमा खरिदकर्ताको नाम र स्थायी लेखा नम्बर अनिवार्य छ",
+    "creditNoteOnCreditNote": "क्रेडिट नोट विरुद्ध अर्को क्रेडिट नोट जारी गर्न मिल्दैन",
+    "quotaExceeded": "यस अवधिको बीजक सीमा ({limit}) पुग्यो; थप जारी गर्न योजना बढाउनुहोस्"
+  },
+  "prescription": {
+    "required": "प्रेस्क्रिप्शन वा नियन्त्रित औषधिका लागि चिकित्सकको नाम, बिरामीको नाम र प्रेस्क्रिप्शन संलग्न हुनुपर्छ",
+    "buyerIdRequired": "नियन्त्रित औषधि बिक्रीका लागि खरिदकर्ताको परिचय अनिवार्य छ"
+  },
+  "purchase": {
+    "duplicateBill": "यस आपूर्तिकर्ताको बिल {billNumber} पहिले नै दर्ता भइसकेको छ",
+    "overReceive": "{productId} को {quantity} प्राप्त गर्न मिल्दैन: {outstanding} मात्र बाँकी छ",
+    "overPayment": "भुक्तानी बाँकी रकम {outstanding} भन्दा बढी छ ({tds} TDS कट्टी गरिन्छ, आपूर्तिकर्तालाई तिरिँदैन)"
+  },
+  "content": {
+    "pageNotFound": "सामग्री पृष्ठ {slug} फेला परेन",
+    "translationMissing": "पृष्ठ {slug} मा {locale} भाषाको सामग्री छैन",
+    "slugTaken": "{slug} स्लग भएको सामग्री पृष्ठ पहिले नै छ",
+    "invalidPayload": "{field} मा अमान्य सामग्री: {detail}",
+    "nothingToPublish": "{locale} सामग्रीमा कम्तीमा एउटा ब्लक नभएसम्म पृष्ठ {slug} प्रकाशित गर्न मिल्दैन",
+    "homeSlugImmutable": "गृह पृष्ठको स्लग परिवर्तन गर्न मिल्दैन",
+    "homeAlwaysPublished": "गृह पृष्ठ अप्रकाशित वा मेटाउन मिल्दैन"
+  }
+}

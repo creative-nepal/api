@@ -1,0 +1,71 @@
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+} from '@nestjs/common';
+import type { Sector } from '../../../database/schema';
+import { ProductsRepository } from '../../products/products.repository';
+import type { CheckoutItemDto } from '../dto/order-request.dto';
+import type {
+  CheckoutContext,
+  CheckoutLine,
+  SectorPlugin,
+} from './sector-plugin.interface';
+
+const QUANTITY_SCALE = 3;
+
+@Injectable()
+export class MartSectorPlugin implements SectorPlugin {
+  readonly sector: Sector = 'mart';
+  readonly billsOnCreate = true;
+
+  constructor(private readonly productsRepository: ProductsRepository) {}
+
+  beforeCreate(): void {}
+
+  async onLineItemAdd(
+    context: CheckoutContext,
+    item: CheckoutItemDto,
+  ): Promise<CheckoutLine[]> {
+    if (item.batchId) {
+      throw new BadRequestException(
+        'batchId is not applicable to the mart sector',
+      );
+    }
+
+    if (!item.productId) {
+      throw new BadRequestException('productId is required');
+    }
+
+    const quantityText = item.quantity.toFixed(QUANTITY_SCALE);
+
+    const product = await this.productsRepository.decrementStock(
+      context.executor,
+      context.business.id,
+      item.productId,
+      quantityText,
+    );
+
+    if (!product) {
+      throw new ConflictException({
+        message: 'i18n:errors.stock.insufficient',
+        productId: item.productId,
+        quantity: quantityText,
+      });
+    }
+
+    return [
+      {
+        product,
+        quantity: item.quantity,
+        unitPriceCents: product.priceCents,
+        lineTotalCents: Math.round(product.priceCents * item.quantity),
+        batchId: null,
+      },
+    ];
+  }
+
+  async beforeCheckout(): Promise<void> {}
+
+  async afterCheckout(): Promise<void> {}
+}

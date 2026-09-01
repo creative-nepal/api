@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Multi-Sector Billing SaaS — System Design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0E1116;
+    --surface:#161A22;
+    --surface-2:#1D222C;
+    --border:#2A2F3B;
+    --border-soft:#232833;
+    --text:#E9E7DF;
+    --text-dim:#9AA1AE;
+    --text-faint:#5C6373;
+    --cyan:#6FE3E0;
+    --amber:#F0B24B;
+    --mart:#8FD48A;
+    --medical:#F08A8A;
+    --restaurant:#B79AF0;
+    --mono:'JetBrains Mono', monospace;
+    --sans:'Inter', sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:
+      radial-gradient(circle at 1px 1px, rgba(255,255,255,0.035) 1px, transparent 0) 0 0/28px 28px,
+      var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.65;
+    font-size:16px;
+  }
+  a{color:var(--cyan); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  ::selection{background:rgba(111,227,224,0.25);}
+
+  /* Layout */
+  .shell{display:flex; max-width:1320px; margin:0 auto;}
+  nav.toc{
+    width:260px; flex-shrink:0;
+    position:sticky; top:0; height:100vh;
+    overflow-y:auto;
+    padding:40px 22px 40px 32px;
+    border-right:1px solid var(--border-soft);
+  }
+  nav.toc::-webkit-scrollbar{width:6px;}
+  nav.toc::-webkit-scrollbar-thumb{background:var(--border); border-radius:3px;}
+  .toc-brand{
+    font-family:var(--mono); font-size:11px; letter-spacing:0.14em;
+    color:var(--text-faint); text-transform:uppercase; margin-bottom:28px;
+  }
+  .toc-brand b{color:var(--amber); display:block; font-size:13px; letter-spacing:0.06em; margin-top:4px;}
+  nav.toc ol{list-style:none; counter-reset:sec;}
+  nav.toc li{counter-increment:sec; margin-bottom:2px;}
+  nav.toc a{
+    display:flex; gap:10px; align-items:baseline;
+    font-size:13.5px; color:var(--text-dim);
+    padding:7px 10px; border-radius:6px;
+    border-left:2px solid transparent;
+  }
+  nav.toc a::before{
+    content:counter(sec, decimal-leading-zero);
+    font-family:var(--mono); font-size:10.5px; color:var(--text-faint);
+    flex-shrink:0;
+  }
+  nav.toc a:hover{color:var(--text); text-decoration:none; background:var(--surface); border-left-color:var(--cyan);}
+
+  main{flex:1; min-width:0; padding:56px 56px 120px;}
+
+  /* Hero */
+  .hero{margin-bottom:64px; padding-bottom:40px; border-bottom:1px solid var(--border-soft);}
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; letter-spacing:0.16em; text-transform:uppercase;
+    color:var(--amber); margin-bottom:16px; display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{content:''; width:22px; height:1px; background:var(--amber); display:inline-block;}
+  h1{
+    font-family:var(--mono); font-weight:700; font-size:clamp(28px,4vw,42px);
+    line-height:1.15; letter-spacing:-0.01em; margin-bottom:18px; max-width:16ch;
+  }
+  .hero-sub{color:var(--text-dim); font-size:17px; max-width:64ch;}
+  .model-strip{
+    margin-top:28px; display:flex; flex-wrap:wrap; gap:0;
+    font-family:var(--mono); font-size:13px; border:1px solid var(--border);
+    border-radius:10px; overflow:hidden;
+  }
+  .model-strip span{
+    padding:12px 18px; border-right:1px solid var(--border); color:var(--text-dim);
+    display:flex; align-items:center; gap:8px;
+  }
+  .model-strip span:last-child{border-right:none;}
+  .model-strip b{color:var(--text); font-weight:600;}
+  .model-strip .arrow{color:var(--text-faint);}
+
+  /* Sections */
+  section{margin-bottom:72px; scroll-margin-top:32px;}
+  .sec-head{display:flex; align-items:baseline; gap:14px; margin-bottom:22px;}
+  .sec-num{font-family:var(--mono); color:var(--text-faint); font-size:14px;}
+  h2{font-family:var(--mono); font-size:22px; font-weight:600; letter-spacing:-0.01em;}
+  h3{font-family:var(--mono); font-size:16px; font-weight:600; color:var(--cyan); margin:28px 0 12px;}
+  p{color:var(--text-dim); margin-bottom:14px; max-width:76ch;}
+  p b, li b{color:var(--text); font-weight:600;}
+  code{font-family:var(--mono); font-size:0.88em; background:var(--surface-2); padding:2px 6px; border-radius:4px; color:var(--amber); border:1px solid var(--border-soft);}
+  ul, ol.plain{margin:0 0 14px 0; padding-left:22px; color:var(--text-dim);}
+  ul li, ol.plain li{margin-bottom:8px;}
+  .note{
+    border-left:2px solid var(--cyan); background:var(--surface);
+    padding:14px 18px; border-radius:0 8px 8px 0; margin:18px 0; max-width:76ch;
+  }
+  .note p{margin:0; color:var(--text-dim); font-size:14.5px;}
+  .note p b{color:var(--cyan);}
+
+  /* Blueprint card (signature element) */
+  .card{
+    position:relative; background:var(--surface); border:1px solid var(--border);
+    border-radius:12px; padding:24px;
+  }
+  .card::before, .card::after{
+    content:''; position:absolute; width:12px; height:12px;
+    border:1.5px solid var(--border); opacity:0.9;
+  }
+  .card::before{top:-1px; left:-1px; border-right:none; border-bottom:none; border-radius:4px 0 0 0;}
+  .card::after{bottom:-1px; right:-1px; border-left:none; border-top:none; border-radius:0 0 4px 0;}
+
+  /* Diagram */
+  .diagram{padding:28px; margin:20px 0;}
+  .diag-label{font-family:var(--mono); font-size:11px; color:var(--text-faint); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:18px;}
+  .diag-row{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:14px;}
+  .diag-box{
+    flex:1; min-width:150px; background:var(--surface-2); border:1px solid var(--border);
+    border-radius:8px; padding:14px 16px;
+  }
+  .diag-box .t{font-family:var(--mono); font-size:13px; font-weight:600; color:var(--text); margin-bottom:4px;}
+  .diag-box .s{font-size:12px; color:var(--text-faint);}
+  .diag-connector{display:flex; justify-content:center; margin:6px 0; color:var(--text-faint); font-family:var(--mono); font-size:12px;}
+  .diag-box.dim{opacity:0.55; border-style:dashed;}
+  .swatch-mart{border-left:3px solid var(--mart) !important;}
+  .swatch-medical{border-left:3px solid var(--medical) !important;}
+  .swatch-restaurant{border-left:3px solid var(--restaurant) !important;}
+  .swatch-core{border-left:3px solid var(--cyan) !important;}
+
+  /* Table */
+  table{width:100%; border-collapse:collapse; margin:14px 0 24px; font-size:14.5px;}
+  th, td{text-align:left; padding:11px 14px; border-bottom:1px solid var(--border-soft); vertical-align:top;}
+  th{font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-faint); font-weight:500;}
+  td{color:var(--text-dim);}
+  td b, td code{color:var(--text);}
+  tr:last-child td{border-bottom:none;}
+
+  /* Code block */
+  pre{
+    background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:20px 22px; overflow-x:auto; margin:16px 0 24px;
+    font-family:var(--mono); font-size:13px; line-height:1.7; color:var(--text-dim);
+  }
+  pre .k{color:var(--cyan);}
+  pre .c{color:var(--text-faint); font-style:italic;}
+  pre .s{color:var(--amber);}
+
+  /* pill grid */
+  .pill-grid{display:flex; flex-wrap:wrap; gap:10px; margin:16px 0 24px;}
+  .pill{
+    font-family:var(--mono); font-size:12.5px; padding:9px 14px; border-radius:8px;
+    background:var(--surface-2); border:1px solid var(--border); color:var(--text-dim);
+  }
+
+  footer{
+    border-top:1px solid var(--border-soft); padding-top:28px; margin-top:20px;
+    font-family:var(--mono); font-size:12px; color:var(--text-faint);
+  }
+
+  @media (max-width:920px){
+    nav.toc{display:none;}
+    main{padding:40px 22px 100px;}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="toc">
+    <div class="toc-brand">System design spec<b>Multi-Sector Billing</b></div>
+    <ol>
+      <li><a href="#goals">Goals</a></li>
+      <li><a href="#architecture">High-level architecture</a></li>
+      <li><a href="#concepts">Core concepts</a></li>
+      <li><a href="#modules">Module breakdown</a></li>
+      <li><a href="#data-model">Data model</a></li>
+      <li><a href="#tenancy">Multi-tenancy strategy</a></li>
+      <li><a href="#billing">Subscription &amp; billing</a></li>
+      <li><a href="#api">API design</a></li>
+      <li><a href="#security">Security &amp; access</a></li>
+      <li><a href="#stack">Tech stack</a></li>
+      <li><a href="#deployment">Deployment</a></li>
+      <li><a href="#migration">Migration path</a></li>
+      <li><a href="#roadmap">Build order</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="eyebrow">Full system design</div>
+      <h1>Multi-sector billing SaaS — architecture</h1>
+      <p class="hero-sub">One account, many businesses, independent subscriptions per business, one shared wallet — the same relationship a Google Account has to Workspace, One, and Cloud billing.</p>
+      <div class="model-strip">
+        <span><b>Account</b></span>
+        <span class="arrow">owns →</span>
+        <span><b>Business</b> (mart / medical / restaurant)</span>
+        <span class="arrow">has →</span>
+        <span><b>Subscription</b> (own plan)</span>
+        <span class="arrow">funded by →</span>
+        <span><b>Wallet</b> (shared)</span>
+      </div>
+    </div>
+
+    <section id="goals">
+      <div class="sec-head"><span class="sec-num">§01</span><h2>Goals</h2></div>
+      <ul>
+        <li>One login works across every business the person owns, regardless of sector.</li>
+        <li>Each business subscribes to its own plan and features, independent of the others.</li>
+        <li>Adding a new sector means writing a new plugin, not forking the app.</li>
+        <li>Data for each business is fully isolated, even under the same account.</li>
+        <li>Billing consolidates into one invoice per account, itemized per business.</li>
+      </ul>
+      <div class="note"><p><b>Non-goals (v1):</b> multi-region data residency, white-labeling per business, offline-first POS sync. Called out explicitly so scope doesn't creep into the first build.</p></div>
+    </section>
+
+    <section id="architecture">
+      <div class="sec-head"><span class="sec-num">§02</span><h2>High-level architecture</h2></div>
+      <p>Deployment style: a <b>modular monolith</b> — internal modules strictly separated and talking through defined interfaces, not direct cross-module DB access. Simple to run now; any module can be extracted into its own service later without a rewrite.</p>
+
+      <div class="card diagram">
+        <div class="diag-label">Request path</div>
+        <div class="diag-row">
+          <div class="diag-box swatch-core"><div class="t">API Gateway / BFF</div><div class="s">Terminates JWT · resolves active business_id · rate limits</div></div>
+        </div>
+        <div class="diag-connector">↓</div>
+        <div class="diag-label">Application — modular monolith</div>
+        <div class="diag-row">
+          <div class="diag-box swatch-core"><div class="t">Identity &amp; Account</div><div class="s">Login, session, profile</div></div>
+          <div class="diag-box swatch-core"><div class="t">Business &amp; Membership</div><div class="s">Tenants, staff roles</div></div>
+          <div class="diag-box swatch-core"><div class="t">Subscription &amp; Entitlement</div><div class="s">Plans, feature flags</div></div>
+          <div class="diag-box swatch-core"><div class="t">Billing engine</div><div class="s">Invoicing, tax, payments</div></div>
+        </div>
+        <div class="diag-row">
+          <div class="diag-box dim"><div class="t">Shared domain layer</div><div class="s">Product · Customer · Order · Invoice · Payment (generic contracts)</div></div>
+        </div>
+        <div class="diag-connector">↓ plugin interface ↓</div>
+        <div class="diag-row">
+          <div class="diag-box swatch-mart"><div class="t">Mart plugin</div><div class="s">Barcode, weight pricing</div></div>
+          <div class="diag-box swatch-medical"><div class="t">Medical plugin</div><div class="s">Batch/expiry, Rx rules</div></div>
+          <div class="diag-box swatch-restaurant"><div class="t">Restaurant plugin</div><div class="s">Tables, KOT, menu</div></div>
+        </div>
+        <div class="diag-connector">↓</div>
+        <div class="diag-row">
+          <div class="diag-box"><div class="t">PostgreSQL</div><div class="s">Shared schema · business_id on every row</div></div>
+          <div class="diag-box"><div class="t">Redis</div><div class="s">Cache · sessions · rate limits</div></div>
+          <div class="diag-box"><div class="t">Queue + object storage</div><div class="s">Async billing jobs · PDFs/receipts</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="concepts">
+      <div class="sec-head"><span class="sec-num">§03</span><h2>Core concepts &amp; relationships</h2></div>
+      <table>
+        <tr><th>Concept</th><th>What it is</th><th>Scope</th></tr>
+        <tr><td><b>Account</b></td><td>The human/owner identity. One login.</td><td>Global</td></tr>
+        <tr><td><b>Business</b></td><td>A mart, clinic, restaurant, etc. owned by an account. This is your <b>tenant</b>.</td><td>Belongs to one account</td></tr>
+        <tr><td><b>Membership</b></td><td>Lets an account invite staff to a business with a role (owner/manager/cashier).</td><td>Links account ↔ business</td></tr>
+        <tr><td><b>Subscription</b></td><td>A plan + billing cycle attached to one business.</td><td>Belongs to one business</td></tr>
+        <tr><td><b>Plan</b></td><td>A catalog entry per sector (e.g. Mart-Pro, Medical-Basic) defining price + feature flags.</td><td>Global catalog</td></tr>
+        <tr><td><b>Wallet</b></td><td>Payment method shared across all businesses under the account.</td><td>Belongs to one account</td></tr>
+        <tr><td><b>Platform invoice</b></td><td>What the business owes you — consolidated per account, itemized per business/subscription.</td><td>Belongs to one account</td></tr>
+        <tr><td><b>Business invoice</b></td><td>The mart's or clinic's own sales invoice to <i>its</i> customers — sector-specific.</td><td>Belongs to one business</td></tr>
+      </table>
+      <div class="note"><p>Keep <b>platform billing</b> (what the business owes you) and <b>business billing</b> (what the business's own customers owe it) as clearly separate concepts in code and schema — same billing engine internals, different entities.</p></div>
+    </section>
+
+    <section id="modules">
+      <div class="sec-head"><span class="sec-num">§04</span><h2>Module breakdown</h2></div>
+      <h3>Core modules — shared, sector-agnostic</h3>
+      <ul>
+        <li><b>Identity &amp; Account</b> — signup/login, OAuth, session issuance, profile.</li>
+        <li><b>Business &amp; Membership</b> — CRUD for businesses, invite/manage staff, role assignment.</li>
+        <li><b>Subscription &amp; Entitlement</b> — plan catalog, subscribe/upgrade/downgrade/cancel, <code>hasFeature(business_id, key)</code> — the single choke point every other module calls to check access.</li>
+        <li><b>Billing engine</b> — invoice generation, tax calculation, PDF/receipt rendering, gateway integration, dunning, platform-level consolidated invoicing.</li>
+        <li><b>Notification module</b> — email/SMS/push. Sector plugins publish events; this module doesn't know about sectors.</li>
+      </ul>
+
+      <h3>Sector plugin contract</h3>
+      <p>Every sector plugin implements the same interface so the core never contains sector-specific branching:</p>
+      <pre><span class="k">interface</span> SectorPlugin {
+  sectorKey: <span class="s">string</span>;                    <span class="c">// "mart" | "medical" | "restaurant"</span>
+  productSchemaExtension: JSONSchema;    <span class="c">// batch_no, expiry_date, etc.</span>
+  orderPipeline: OrderPipelineHooks;     <span class="c">// beforeCreate, onLineItemAdd, beforeCheckout</span>
+  invoiceLineBuilder: (order) =&gt; InvoiceLine[];
+  defaultFeatureFlags: Record&lt;<span class="s">string</span>, <span class="s">boolean</span>&gt;;
+  routes: Router;                        <span class="c">// mounted under /api/{sector}/*</span>
+}</pre>
+
+      <div class="pill-grid">
+        <span class="pill" style="border-left:3px solid var(--mart)">Mart — barcode, weight pricing, stock transfer</span>
+        <span class="pill" style="border-left:3px solid var(--medical)">Medical — batch/expiry, Rx validation, regulatory export</span>
+        <span class="pill" style="border-left:3px solid var(--restaurant)">Restaurant — tables, KOT printing, split-bill</span>
+      </div>
+      <p>Adding a sector = a new plugin against this interface + a new plan catalog entry. Core, auth, subscription, and billing engine never change.</p>
+    </section>
+
+    <section id="data-model">
+      <div class="sec-head"><span class="sec-num">§05</span><h2>Data model</h2></div>
+      <pre>accounts
+  id (uuid, pk)
+  email (unique)
+  password_hash
+  name
+  default_payment_method_id (fk → payment_methods.id, nullable)
+  created_at
+
+businesses
+  id (uuid, pk)
+  account_id (fk → accounts.id)
+  name
+  sector          <span class="c">-- 'mart' | 'medical' | 'restaurant' | ...</span>
+  timezone
+  created_at
+
+memberships
+  id (uuid, pk)
+  account_id (fk)
+  business_id (fk)
+  role            <span class="c">-- 'owner' | 'manager' | 'cashier' | 'pharmacist' ...</span>
+
+plans
+  id (uuid, pk)
+  sector
+  name            <span class="c">-- 'Basic' | 'Pro' | 'Enterprise'</span>
+  price_cents
+  billing_interval
+  feature_flags   (jsonb)   <span class="c">-- {"batch_tracking": true, "max_staff": 5, ...}</span>
+
+subscriptions
+  id (uuid, pk)
+  business_id (fk, unique per active sub)
+  plan_id (fk)
+  status          <span class="c">-- 'trialing' | 'active' | 'past_due' | 'canceled'</span>
+  current_period_start
+  current_period_end
+  cancel_at_period_end (bool)
+
+payment_methods
+  id (uuid, pk)
+  account_id (fk)
+  gateway_ref     <span class="c">-- token from Stripe/Razorpay, never raw card data</span>
+  type, last4, is_default
+
+platform_invoices
+  id (uuid, pk)
+  account_id (fk)
+  period_start, period_end
+  total_cents
+  status
+
+platform_invoice_lines
+  id (uuid, pk)
+  platform_invoice_id (fk)
+  business_id (fk)
+  subscription_id (fk)
+  amount_cents
+
+<span class="c">-- shared domain tables, every row scoped by business_id --</span>
+products          (id, business_id, name, price, sector_extension jsonb, ...)
+customers         (id, business_id, name, phone, ...)
+orders            (id, business_id, customer_id, status, ...)
+order_items       (id, order_id, product_id, qty, price, ...)
+business_invoices (id, business_id, order_id, total, tax, pdf_url, ...)
+payments          (id, business_id, business_invoice_id, amount, gateway_ref, ...)</pre>
+      <div class="note"><p><b>Indexing rule:</b> every tenant-scoped table gets a composite index starting with <code>business_id</code>. Enforce the filter at the ORM/repository layer (a base repository class that injects it automatically) — not by convention — so a missing filter can't leak data across businesses.</p></div>
+    </section>
+
+    <section id="tenancy">
+      <div class="sec-head"><span class="sec-num">§06</span><h2>Multi-tenancy strategy</h2></div>
+      <ul>
+        <li><b>Shared schema, <code>business_id</code> column</b> on every tenant table — cheapest to run and migrate; good default until compliance-driven customers require otherwise.</li>
+        <li><b>Row-Level Security (Postgres RLS)</b> as a second line of defense: set <code>app.current_business_id</code> per request, add RLS policies so even a buggy query can't cross tenants.</li>
+        <li><b>Escalation path</b> (only if needed): schema-per-tenant for large/enterprise businesses, or separate databases for regulated sectors — decide per-business, not platform-wide.</li>
+      </ul>
+    </section>
+
+    <section id="billing">
+      <div class="sec-head"><span class="sec-num">§07</span><h2>Subscription &amp; billing engine</h2></div>
+      <h3>Feature gating flow</h3>
+      <ol class="plain">
+        <li>Request arrives with <code>Authorization: Bearer &lt;jwt&gt;</code> and <code>X-Business-Id: &lt;business_id&gt;</code>.</li>
+        <li>Middleware verifies the account has a membership on that business.</li>
+        <li>Any gated action calls <code>entitlements.hasFeature(business_id, "kot.printing")</code>, resolved via <code>business → subscription → plan → feature_flags</code>, cached in Redis, invalidated on plan change.</li>
+      </ol>
+      <h3>Billing cycle — async, queue/cron worker</h3>
+      <ol class="plain">
+        <li>Nightly job finds subscriptions with <code>current_period_end &lt;= today</code>.</li>
+        <li>Charges the account's default payment method via the gateway.</li>
+        <li>On success: extend period, mark <code>active</code>, append a line item to that month's <code>platform_invoice</code>.</li>
+        <li>On failure: mark <code>past_due</code>, trigger dunning, then downgrade/suspend <i>that business only</i> — other businesses keep working.</li>
+        <li>Monthly, a consolidation job rolls up all paid line items per account into one <code>platform_invoice</code> + PDF.</li>
+      </ol>
+      <p><b>Business-level billing</b> (the mart's own customer invoices) is generated synchronously at checkout using sector-specific <code>invoiceLineBuilder</code> and tax rules — kept in the shared core so pharmacy and restaurant tax rules don't fork the invoicing code itself.</p>
+    </section>
+
+    <section id="api">
+      <div class="sec-head"><span class="sec-num">§08</span><h2>API design</h2></div>
+      <p>REST, versioned. Sector-scoped routes require the <code>X-Business-Id</code> header and are mounted only if that business's plugin is active.</p>
+      <pre>POST   /api/v1/auth/signup
+POST   /api/v1/auth/login
+GET    /api/v1/accounts/me
+GET    /api/v1/accounts/me/businesses
+POST   /api/v1/businesses
+POST   /api/v1/businesses/:id/invite
+
+GET    /api/v1/plans?sector=medical
+POST   /api/v1/businesses/:id/subscription
+DELETE /api/v1/businesses/:id/subscription
+
+GET    /api/v1/accounts/me/wallet
+POST   /api/v1/accounts/me/wallet/payment-methods
+GET    /api/v1/accounts/me/invoices
+
+<span class="c">-- sector-scoped, requires X-Business-Id header --</span>
+GET    /api/v1/products
+POST   /api/v1/orders
+POST   /api/v1/orders/:id/checkout
+GET    /api/v1/mart/inventory/low-stock          <span class="c">-- mart-only, 404 for other sectors</span>
+GET    /api/v1/medical/batches/expiring          <span class="c">-- medical-only</span>
+POST   /api/v1/restaurant/tables/:id/kot          <span class="c">-- restaurant-only</span></pre>
+      <p>Calling a mart route from a restaurant business returns <b>404</b>, not 403 — plugin boundaries stay invisible to businesses that don't have them.</p>
+    </section>
+
+    <section id="security">
+      <div class="sec-head"><span class="sec-num">§09</span><h2>Security &amp; access control</h2></div>
+      <ul>
+        <li><b>AuthN:</b> short-lived JWT access token + refresh token; OAuth optional at the account level.</li>
+        <li><b>AuthZ:</b> role-based per business via <code>memberships.role</code> — evaluated per-request against the <code>X-Business-Id</code> in scope, never globally.</li>
+        <li><b>Payment data:</b> never store card numbers — only gateway tokens.</li>
+        <li><b>Audit log:</b> append-only table for subscription, plan, and staff role changes — needed for billing disputes and medical-sector compliance.</li>
+      </ul>
+    </section>
+
+    <section id="stack">
+      <div class="sec-head"><span class="sec-num">§10</span><h2>Suggested tech stack</h2></div>
+      <table>
+        <tr><th>Layer</th><th>Choice</th><th>Why</th></tr>
+        <tr><td>API</td><td><b>NestJS</b> or <b>Django</b></td><td>Strong module boundaries out of the box — modular monolith feels natural</td></tr>
+        <tr><td>Database</td><td><b>PostgreSQL</b></td><td>JSONB for feature flags/sector extensions, RLS for tenant safety</td></tr>
+        <tr><td>Cache/queue</td><td><b>Redis</b> + BullMQ / Celery</td><td>Entitlement caching, async billing jobs</td></tr>
+        <tr><td>Payments</td><td><b>Stripe</b> / <b>Razorpay</b></td><td>PCI compliance, subscriptions, invoicing primitives handled for you</td></tr>
+        <tr><td>Object storage</td><td>S3-compatible</td><td>PDFs, receipts</td></tr>
+        <tr><td>Frontend</td><td><b>React / Next.js</b></td><td>Business-switcher UI, per-sector dashboards</td></tr>
+      </table>
+    </section>
+
+    <section id="deployment">
+      <div class="sec-head"><span class="sec-num">§11</span><h2>Deployment</h2></div>
+      <ul>
+        <li>Single containerized app (API, worker, scheduler as separate processes) behind a load balancer — still one deployable unit.</li>
+        <li>Scale the API and worker tiers independently based on load.</li>
+        <li>Add Postgres read replicas once reporting/analytics queries start competing with transactional traffic.</li>
+      </ul>
+    </section>
+
+    <section id="migration">
+      <div class="sec-head"><span class="sec-num">§12</span><h2>Migration path to microservices</h2></div>
+      <p>Extract a module only when you hit a concrete wall — never preemptively:</p>
+      <ol class="plain">
+        <li><b>Billing engine</b> — usually first. Different scaling profile (bursty, nightly jobs), already a clean boundary if module discipline held from day one.</li>
+        <li><b>Notification module</b> — easy second extraction, already purely event-driven.</li>
+        <li><b>A specific sector plugin</b> — only if that sector alone needs independent scaling (e.g. a very high-volume mart POS network).</li>
+      </ol>
+      <p>Because the modular monolith forbids cross-module DB access and communicates through defined interfaces, each extraction is a deployment change, not a rewrite.</p>
+    </section>
+
+    <section id="roadmap">
+      <div class="sec-head"><span class="sec-num">§13</span><h2>Build order</h2></div>
+      <ol class="plain">
+        <li>Identity &amp; Account + Business &amp; Membership — the "Google One" shell, no sector logic yet.</li>
+        <li>Subscription &amp; Entitlement + Plan catalog — with one dummy sector to prove flag-gating works.</li>
+        <li>Billing engine — platform-level subscription billing first, simpler than business-level invoicing.</li>
+        <li>First sector plugin end-to-end — pick your most-ready market, e.g. mart.</li>
+        <li>Second sector plugin (medical or restaurant) — this proves the plugin boundary actually holds.</li>
+        <li>Consolidated invoicing, staff roles, notifications.</li>
+      </ol>
+    </section>
+
+    <footer>Multi-sector billing SaaS — system design spec · single-file reference document</footer>
+  </main>
+</div>
+</body>
+</html>
