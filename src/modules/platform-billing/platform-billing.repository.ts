@@ -229,11 +229,27 @@ export class PlatformBillingRepository {
     );
   }
 
-  async findInvoicesForUser(userId: string): Promise<PlatformInvoice[]> {
-    return this.db
-      .select()
-      .from(schema.platformInvoices)
-      .where(eq(schema.platformInvoices.userId, userId))
-      .orderBy(desc(schema.platformInvoices.createdAt));
+  async findInvoicesForUser(
+    userId: string,
+    limit: number,
+    offset: number,
+  ): Promise<{ rows: PlatformInvoice[]; total: number }> {
+    const where = eq(schema.platformInvoices.userId, userId);
+
+    const [rows, [total]] = await Promise.all([
+      this.db
+        .select()
+        .from(schema.platformInvoices)
+        .where(where)
+        .orderBy(desc(schema.platformInvoices.createdAt))
+        .limit(limit)
+        .offset(offset),
+      this.db
+        .select({ value: count() })
+        .from(schema.platformInvoices)
+        .where(where),
+    ]);
+
+    return { rows, total: total?.value ?? 0 };
   }
 }

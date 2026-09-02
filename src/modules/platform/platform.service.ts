@@ -6,6 +6,7 @@ import {
   SUBSCRIPTION_STATUSES,
 } from '../../database/schema';
 import type { PaginatedResult } from '../../common/dto/pagination-query.dto';
+import { enabledSectorMeta } from '../../sectors';
 import {
   type CountByKey,
   type PlatformAuditLogRow,
@@ -31,6 +32,13 @@ export interface PlatformOverview {
   recentBusinesses: Business[];
 }
 
+export interface SectorDescriptor {
+  key: string;
+  nameKey: string;
+  roleNames: string[];
+  planFeatureKeys: string[];
+}
+
 function tally(
   rows: CountByKey[],
   keys: readonly string[],
@@ -53,6 +61,15 @@ function total(counts: Record<string, number>): number {
 @Injectable()
 export class PlatformService {
   constructor(private readonly platformRepository: PlatformRepository) {}
+
+  listSectors(): SectorDescriptor[] {
+    return enabledSectorMeta().map((sector) => ({
+      key: sector.key,
+      nameKey: sector.nameKey,
+      roleNames: sector.roleNames,
+      planFeatureKeys: sector.planFeatureKeys,
+    }));
+  }
 
   async getOverview(): Promise<PlatformOverview> {
     const [

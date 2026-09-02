@@ -25,6 +25,7 @@ import { computeVatCents } from './vat';
 
 export interface IssueInvoiceParams {
   business: Business;
+  branchId: string;
   orderId: string | null;
   subtotalCents: number;
   serviceChargeCents?: number;
@@ -57,6 +58,7 @@ export class InvoicesService {
     const invoiceNumber = await this.invoicesRepository.nextInvoiceNumber(
       executor,
       business.id,
+      params.branchId,
       fiscalYear,
     );
 
@@ -70,6 +72,7 @@ export class InvoicesService {
     const invoice = await this.invoicesRepository.insertInvoice(executor, {
       id: randomUUID(),
       businessId: business.id,
+      branchId: params.branchId,
       orderId: params.orderId,
       invoiceNumber,
       fiscalYear,
@@ -92,7 +95,7 @@ export class InvoicesService {
       invoiceId: invoice.id,
       action: 'issued',
       actorUserId: params.actorUserId ?? null,
-      metadata: { invoiceNumber, fiscalYear },
+      metadata: { invoiceNumber, fiscalYear, branchId: params.branchId },
     });
 
     if (business.cbmsRequired) {
@@ -199,6 +202,7 @@ export class InvoicesService {
       const invoiceNumber = await this.invoicesRepository.nextInvoiceNumber(
         tx,
         business.id,
+        original.branchId,
         fiscalYear,
       );
 
@@ -207,6 +211,7 @@ export class InvoicesService {
       const creditNote = await this.invoicesRepository.insertInvoice(tx, {
         id: randomUUID(),
         businessId: business.id,
+        branchId: original.branchId,
         orderId: original.orderId,
         invoiceNumber,
         fiscalYear,

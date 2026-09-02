@@ -4,7 +4,7 @@ import {
   type OnModuleDestroy,
   type OnModuleInit,
 } from '@nestjs/common';
-import { and, count, eq, gte } from 'drizzle-orm';
+import { and, count, eq, gte, inArray } from 'drizzle-orm';
 import { PinoLogger } from 'nestjs-pino';
 import {
   type Database,
@@ -30,6 +30,8 @@ interface CacheEntry {
 }
 
 const INVALIDATION_CHANNEL = 'entitlements_invalidated';
+
+const ENTITLED_STATUSES = ['active', 'trialing'] as const;
 
 @Injectable()
 export class EntitlementsService implements OnModuleInit, OnModuleDestroy {
@@ -134,7 +136,7 @@ export class EntitlementsService implements OnModuleInit, OnModuleDestroy {
       .where(
         and(
           eq(schema.subscriptions.businessId, businessId),
-          eq(schema.subscriptions.status, 'active'),
+          inArray(schema.subscriptions.status, ENTITLED_STATUSES),
         ),
       )
       .limit(1);

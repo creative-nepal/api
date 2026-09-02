@@ -45,10 +45,12 @@ export class RegistersService {
   async buildRows(
     businessId: string,
     fiscalYear: string,
+    branchId?: string,
   ): Promise<RegisterRow[]> {
     const invoices = await this.invoicesRepository.findAllForFiscalYear(
       businessId,
       fiscalYear,
+      branchId,
     );
 
     return invoices.map((invoice) => this.toRow(invoice));
@@ -58,6 +60,7 @@ export class RegistersService {
     business: Business,
     fiscalYear: string,
     format: RegisterFormat,
+    branchId?: string,
   ): Promise<ReportExport> {
     return buildReport(format, `sales-register-${business.id}-${fiscalYear}`, {
       sheetName: `Bikri Khata ${fiscalYear}`,
@@ -67,7 +70,7 @@ export class RegistersService {
         `Fiscal Year: ${fiscalYear}`,
       ],
       columns: COLUMNS,
-      rows: await this.buildRows(business.id, fiscalYear),
+      rows: await this.buildRows(business.id, fiscalYear, branchId),
       totalColumns: ['totalSales', 'exemptSales', 'taxableSales', 'vatAmount'],
     });
   }

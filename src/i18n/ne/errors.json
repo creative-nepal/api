@@ -5,7 +5,8 @@
     "idRequired": "X-Business-Id हेडर वा :businessId राउट प्यारामिटर आवश्यक छ",
     "idMismatch": "X-Business-Id हेडर र :businessId राउट प्यारामिटर मिलेन",
     "tablesRestaurantOnly": "टेबल रेस्टुरेन्टको सुविधा हो; यो व्यवसाय {actual} हो",
-    "menuRestaurantOnly": "मेनु रेस्टुरेन्टको सुविधा हो; यो व्यवसाय {actual} हो"
+    "menuRestaurantOnly": "मेनु रेस्टुरेन्टको सुविधा हो; यो व्यवसाय {actual} हो",
+    "wrongSector": "यो सुविधा {sector} व्यवसायका लागि उपलब्ध छैन"
   },
   "permission": {
     "denied": "तपाईंको भूमिकाले यो व्यवसायमा यो कार्य गर्न अनुमति दिँदैन",
@@ -29,7 +30,11 @@
   "purchase": {
     "duplicateBill": "यस आपूर्तिकर्ताको बिल {billNumber} पहिले नै दर्ता भइसकेको छ",
     "overReceive": "{productId} को {quantity} प्राप्त गर्न मिल्दैन: {outstanding} मात्र बाँकी छ",
-    "overPayment": "भुक्तानी बाँकी रकम {outstanding} भन्दा बढी छ ({tds} TDS कट्टी गरिन्छ, आपूर्तिकर्तालाई तिरिँदैन)"
+    "overPayment": "भुक्तानी बाँकी रकम {outstanding} भन्दा बढी छ ({tds} TDS कट्टी गरिन्छ, आपूर्तिकर्तालाई तिरिँदैन)",
+    "billNotFound": "खरिद बिल {billId} फेला परेन",
+    "debitNoteNotFound": "डेबिट नोट {noteId} फेला परेन",
+    "debitNoteExceedsBill": "यस बिलका डेबिट नोटहरू कुल रकमभन्दा बढी हुन सक्दैनन्: {remaining} बाँकी छ, {requested} मागिएको छ",
+    "debitNoteRestockNeedsProduct": "डेबिट नोटबाट स्टक घटाउन प्रत्येक लाइनमा उत्पादन उल्लेख हुनुपर्छ"
   },
   "content": {
     "pageNotFound": "सामग्री पृष्ठ {slug} फेला परेन",
@@ -39,5 +44,40 @@
     "nothingToPublish": "{locale} सामग्रीमा कम्तीमा एउटा ब्लक नभएसम्म पृष्ठ {slug} प्रकाशित गर्न मिल्दैन",
     "homeSlugImmutable": "गृह पृष्ठको स्लग परिवर्तन गर्न मिल्दैन",
     "homeAlwaysPublished": "गृह पृष्ठ अप्रकाशित वा मेटाउन मिल्दैन"
+  },
+  "services": {
+    "itemNotFound": "सेवा {serviceItemId} फेला परेन",
+    "itemInactive": "सेवा {serviceItemId} हाल उपलब्ध छैन",
+    "membershipNotFound": "सदस्यता {membershipId} फेला परेन",
+    "membershipServiceMismatch": "त्यो सदस्यता अर्को सेवाका लागि हो",
+    "membershipExhausted": "सदस्यता {membershipId} मा कुनै सत्र बाँकी छैन",
+    "membershipExpiryBeforeStart": "सदस्यता सुरु हुनुअघि समाप्त हुन सक्दैन",
+    "appointmentNotFound": "अपोइन्टमेन्ट {appointmentId} फेला परेन",
+    "appointmentFinal": "यो अपोइन्टमेन्ट पहिले नै {status} छ र परिवर्तन गर्न मिल्दैन",
+    "appointmentReopen": "अपोइन्टमेन्ट पुनः बुक अवस्थामा फर्काउन मिल्दैन",
+    "appointmentQuotaExceeded": "हालको योजनाले महिनामा बढीमा {limit} अपोइन्टमेन्ट अनुमति दिन्छ"
+  },
+  "branch": {
+    "notFound": "शाखा {branchId} फेला परेन",
+    "inactive": "शाखा {branchId} बन्द छ र नयाँ कारोबार लिन सक्दैन",
+    "noDefault": "व्यवसाय {businessId} को कुनै पूर्वनिर्धारित शाखा छैन",
+    "cannotDeactivateDefault": "पूर्वनिर्धारित शाखा बन्द गर्न मिल्दैन; पहिले अर्को शाखालाई पूर्वनिर्धारित बनाउनुहोस्"
+  },
+  "role": {
+    "unknownResource": "अज्ञात अनुमति स्रोत: {resource}",
+    "unknownAction": "{resource} का लागि अज्ञात कार्य {action}",
+    "emptyActions": "{resource} का लागि कम्तीमा एउटा कार्य आवश्यक छ",
+    "emptyPermission": "भूमिकालाई कम्तीमा एउटा अनुमति चाहिन्छ",
+    "alreadyExists": "यस व्यवसायमा भूमिका {role} पहिले नै छ",
+    "notFound": "भूमिका {role} फेला परेन",
+    "reserved": "भूमिका {role} सुरक्षित छ र परिभाषित गर्न मिल्दैन"
+  },
+  "theme": {
+    "invalidValue": "{key} को थीम मान खाली हुन सक्दैन",
+    "invalidColour": "{key} को थीम मान मान्य रङ होइन",
+    "invalidLength": "{key} को थीम मान 0.5rem जस्तो लम्बाइ हुनुपर्छ",
+    "invalidMode": "थीम मोड light, dark वा system हुनुपर्छ",
+    "invalidLogo": "लोगो https URL वा साइट पथ हुनुपर्छ",
+    "unknownKey": "अज्ञात थीम कुञ्जी: {key}"
   }
 }

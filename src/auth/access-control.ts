@@ -8,19 +8,50 @@ import {
   defaultStatements,
   memberAc as orgMemberAc,
 } from 'better-auth/plugins/organization/access';
+import {
+  createMartRoles,
+  martManagerGrants,
+  martOwnerGrants,
+  martStatements,
+} from '../sectors/mart/access';
+import {
+  createMedicalRoles,
+  medicalManagerGrants,
+  medicalOwnerGrants,
+  medicalStatements,
+} from '../sectors/medical/access';
+import {
+  createServicesRoles,
+  servicesManagerGrants,
+  servicesOwnerGrants,
+  servicesStatements,
+} from '../sectors/services/access';
+import {
+  createRestaurantRoles,
+  restaurantManagerGrants,
+  restaurantOwnerGrants,
+  restaurantStatements,
+} from '../sectors/restaurant/access';
 
-export const statement = {
-  ...defaultStatements,
+const kernelStatements = {
   business: ['manage'],
   product: ['create', 'update', 'delete'],
   order: ['create', 'refund', 'confirm', 'serve'],
   invoice: ['issue', 'print', 'credit-note'],
-  dispense: ['prescription', 'controlled'],
-  table: ['manage'],
-  kot: ['view', 'update'],
+} as const;
+
+export const statement = {
+  ...defaultStatements,
+  ...kernelStatements,
+  ...martStatements,
+  ...medicalStatements,
+  ...restaurantStatements,
+  ...servicesStatements,
 } as const;
 
 export const ac = createAccessControl(statement);
+
+export type AppAccessControl = typeof ac;
 
 export const ownerRole = ac.newRole({
   organization: ['update', 'delete'],
@@ -32,17 +63,20 @@ export const ownerRole = ac.newRole({
   product: ['create', 'update', 'delete'],
   order: ['create', 'refund', 'confirm', 'serve'],
   invoice: ['issue', 'print', 'credit-note'],
-  dispense: ['prescription', 'controlled'],
-  table: ['manage'],
-  kot: ['view', 'update'],
+  ...martOwnerGrants,
+  ...medicalOwnerGrants,
+  ...restaurantOwnerGrants,
+  ...servicesOwnerGrants,
 });
 
 export const managerRole = ac.newRole({
   product: ['create', 'update', 'delete'],
   order: ['create', 'refund', 'confirm', 'serve'],
   invoice: ['issue', 'print', 'credit-note'],
-  table: ['manage'],
-  kot: ['view', 'update'],
+  ...martManagerGrants,
+  ...medicalManagerGrants,
+  ...restaurantManagerGrants,
+  ...servicesManagerGrants,
 });
 
 export const cashierRole = ac.newRole({
@@ -50,19 +84,16 @@ export const cashierRole = ac.newRole({
   invoice: ['issue', 'print'],
 });
 
-export const pharmacistRole = ac.newRole({
-  order: ['create'],
-  invoice: ['issue', 'print'],
-  dispense: ['prescription', 'controlled'],
-});
+const sectorRoles = {
+  ...createMartRoles(),
+  ...createMedicalRoles(ac),
+  ...createRestaurantRoles(ac),
+  ...createServicesRoles(ac),
+};
 
-export const waiterRole = ac.newRole({
-  order: ['create', 'confirm', 'serve'],
-  table: ['manage'],
-  kot: ['view'],
-});
-
-export const chefRole = ac.newRole({ kot: ['view', 'update'] });
+export const pharmacistRole = sectorRoles.pharmacist;
+export const waiterRole = sectorRoles.waiter;
+export const chefRole = sectorRoles.chef;
 
 export const roles = {
   admin: orgAdminAc,
@@ -70,9 +101,7 @@ export const roles = {
   owner: ownerRole,
   manager: managerRole,
   cashier: cashierRole,
-  pharmacist: pharmacistRole,
-  waiter: waiterRole,
-  chef: chefRole,
+  ...sectorRoles,
 };
 
 export type OrgRoleName = keyof typeof roles;

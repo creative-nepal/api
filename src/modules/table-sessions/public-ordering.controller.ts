@@ -13,6 +13,7 @@ import type { Business, RestaurantTable } from '../../database/schema';
 import { MenuItemResponseDto } from '../menu/dto/menu.dto';
 import { MenuService } from '../menu/menu.service';
 import { OrderResponseDto } from '../orders/dto/order-response.dto';
+import { BranchesService } from '../branches/branches.service';
 import { OrdersService } from '../orders/orders.service';
 import {
   CreateTableSessionDto,
@@ -32,6 +33,7 @@ export class PublicOrderingController {
     private readonly tableSessionsService: TableSessionsService,
     private readonly menuService: MenuService,
     private readonly ordersService: OrdersService,
+    private readonly branchesService: BranchesService,
   ) {}
 
   @Post('table-sessions')
@@ -80,8 +82,14 @@ export class PublicOrderingController {
       table.id,
     );
 
+    const branch = await this.branchesService.getById(
+      business.id,
+      table.branchId,
+    );
+
     const { order, items } = await this.ordersService.checkout({
       business,
+      branch,
       dto: { items: dto.items, tableId: table.id, source: 'qr' },
       actorUserId: null,
       headers: {},

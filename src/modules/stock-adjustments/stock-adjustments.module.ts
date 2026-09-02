@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
-import { BatchesModule } from '../batches/batches.module';
-import { ProductsModule } from '../products/products.module';
+import { BatchesCoreModule } from '../batches/batches-core.module';
+import { BranchesCoreModule } from '../branches/branches-core.module';
+import { ProductsCoreModule } from '../products/products-core.module';
 import {
   ProductStockController,
   StockAdjustmentsController,
@@ -9,7 +10,7 @@ import { StockAdjustmentsRepository } from './stock-adjustments.repository';
 import { StockAdjustmentsService } from './stock-adjustments.service';
 
 @Module({
-  imports: [ProductsModule, BatchesModule],
+  imports: [ProductsCoreModule, BatchesCoreModule, BranchesCoreModule],
   controllers: [StockAdjustmentsController, ProductStockController],
   providers: [StockAdjustmentsService, StockAdjustmentsRepository],
   exports: [StockAdjustmentsService],

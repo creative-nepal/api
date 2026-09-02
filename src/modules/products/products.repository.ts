@@ -127,9 +127,29 @@ export class ProductsRepository {
   async decrementStock(
     executor: DatabaseExecutor,
     businessId: string,
+    branchId: string,
     productId: string,
     quantity: string,
   ): Promise<Product | undefined> {
+    const [taken] = await executor
+      .update(schema.productBranchStock)
+      .set({
+        stockQty: sql`${schema.productBranchStock.stockQty} - ${quantity}::numeric`,
+      })
+      .where(
+        and(
+          eq(schema.productBranchStock.businessId, businessId),
+          eq(schema.productBranchStock.branchId, branchId),
+          eq(schema.productBranchStock.productId, productId),
+          gte(schema.productBranchStock.stockQty, quantity),
+        ),
+      )
+      .returning();
+
+    if (!taken) {
+      return undefined;
+    }
+
     const [row] = await executor
       .update(schema.products)
       .set({
@@ -140,11 +160,32 @@ export class ProductsRepository {
           eq(schema.products.businessId, businessId),
           eq(schema.products.id, productId),
           eq(schema.products.isActive, true),
-          gte(schema.products.stockQty, quantity),
         ),
       )
       .returning();
+
     return row;
+  }
+
+  async incrementBranchStock(
+    executor: DatabaseExecutor,
+    businessId: string,
+    branchId: string,
+    productId: string,
+    quantity: string,
+  ): Promise<void> {
+    await executor
+      .insert(schema.productBranchStock)
+      .values({ businessId, branchId, productId, stockQty: quantity })
+      .onConflictDoUpdate({
+        target: [
+          schema.productBranchStock.branchId,
+          schema.productBranchStock.productId,
+        ],
+        set: {
+          stockQty: sql`${schema.productBranchStock.stockQty} + ${quantity}::numeric`,
+        },
+      });
   }
 
   async adjustStockQty(

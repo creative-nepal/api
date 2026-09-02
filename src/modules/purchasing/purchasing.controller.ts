@@ -14,13 +14,17 @@ import { IsDateString, IsIn, IsOptional } from 'class-validator';
 import type { Response } from 'express';
 import { CurrentUser, type CurrentUserType } from '../../auth';
 import {
+  BranchScopeGuard,
   BusinessAccessGuard,
+  CurrentBranch,
   CurrentBusiness,
   RequirePermission,
   RequirePermissionGuard,
 } from '../../common';
 import type {
+  Branch,
   Business,
+  DebitNote,
   PurchaseBill,
   PurchaseOrder,
   PurchaseOrderItem,
@@ -28,13 +32,19 @@ import type {
 } from '../../database/schema';
 import type { PaginatedResult } from '../../common/dto/pagination-query.dto';
 import {
+  CreateDebitNoteDto,
   CreatePurchaseBillDto,
   CreatePurchaseOrderDto,
   CreateSupplierDto,
+  ListDebitNotesQueryDto,
   ListPurchaseQueryDto,
   RecordPaymentDto,
   ReceivePurchaseOrderDto,
 } from './dto/purchasing.dto';
+import {
+  type DebitNoteWithItems,
+  DebitNotesService,
+} from './debit-notes.service';
 import { PurchaseRegisterService } from './purchase-register.service';
 import { PurchasingService } from './purchasing.service';
 import { TdsReportService } from './tds-report.service';
@@ -46,16 +56,18 @@ class RegisterQueryDto {
 }
 
 @Controller({ path: 'businesses/:businessId', version: '1' })
-@UseGuards(BusinessAccessGuard, RequirePermissionGuard)
+@UseGuards(BusinessAccessGuard, RequirePermissionGuard, BranchScopeGuard)
 @UseInterceptors(ClassSerializerInterceptor)
 export class PurchasingController {
   constructor(
     private readonly purchasingService: PurchasingService,
+    private readonly debitNotesService: DebitNotesService,
     private readonly registerService: PurchaseRegisterService,
     private readonly tdsReportService: TdsReportService,
   ) {}
 
   @Get('suppliers')
+  @RequirePermission({ product: ['update'] })
   async listSuppliers(
     @CurrentBusiness() business: Business,
     @Query() query: ListPurchaseQueryDto,
@@ -73,6 +85,7 @@ export class PurchasingController {
   }
 
   @Get('purchase-orders')
+  @RequirePermission({ product: ['update'] })
   async listPurchaseOrders(
     @CurrentBusiness() business: Business,
     @Query() query: ListPurchaseQueryDto,
@@ -81,6 +94,7 @@ export class PurchasingController {
   }
 
   @Get('purchase-orders/:poId')
+  @RequirePermission({ product: ['update'] })
   async getPurchaseOrder(
     @CurrentBusiness() business: Business,
     @Param('poId') poId: string,
@@ -115,14 +129,22 @@ export class PurchasingController {
   @RequirePermission({ product: ['update'] })
   async receive(
     @CurrentBusiness() business: Business,
+    @CurrentBranch() branch: Branch,
     @Param('poId') poId: string,
     @Body() dto: ReceivePurchaseOrderDto,
     @CurrentUser() currentUser: CurrentUserType,
   ): Promise<{ order: PurchaseOrder; items: PurchaseOrderItem[] }> {
-    return this.purchasingService.receive(business, poId, dto, currentUser.id);
+    return this.purchasingService.receive(
+      business,
+      branch.id,
+      poId,
+      dto,
+      currentUser.id,
+    );
   }
 
   @Get('purchase-bills')
+  @RequirePermission({ product: ['update'] })
   async listBills(
     @CurrentBusiness() business: Business,
     @Query() query: ListPurchaseQueryDto,
@@ -153,7 +175,37 @@ export class PurchasingController {
     );
   }
 
+  @Post('purchase-bills/:billId/debit-notes')
+  @RequirePermission({ invoice: ['credit-note'] })
+  async issueDebitNote(
+    @CurrentBusiness() business: Business,
+    @Param('billId') billId: string,
+    @Body() dto: CreateDebitNoteDto,
+    @CurrentUser() user: CurrentUserType,
+  ): Promise<DebitNoteWithItems> {
+    return this.debitNotesService.issue(business, billId, dto, user.id);
+  }
+
+  @Get('debit-notes')
+  @RequirePermission({ invoice: ['print'] })
+  async listDebitNotes(
+    @CurrentBusiness() business: Business,
+    @Query() query: ListDebitNotesQueryDto,
+  ): Promise<PaginatedResult<DebitNote>> {
+    return this.debitNotesService.list(business.id, query);
+  }
+
+  @Get('debit-notes/:noteId')
+  @RequirePermission({ invoice: ['print'] })
+  async getDebitNote(
+    @CurrentBusiness() business: Business,
+    @Param('noteId') noteId: string,
+  ): Promise<DebitNoteWithItems> {
+    return this.debitNotesService.get(business.id, noteId);
+  }
+
   @Get('purchases/tds-return')
+  @RequirePermission({ product: ['update'] })
   async tdsReturn(
     @CurrentBusiness() business: Business,
     @Query() query: RegisterQueryDto,
@@ -178,6 +230,7 @@ export class PurchasingController {
   }
 
   @Get('purchases/register')
+  @RequirePermission({ product: ['update'] })
   async register(
     @CurrentBusiness() business: Business,
     @Query() query: RegisterQueryDto,

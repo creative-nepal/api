@@ -12,7 +12,10 @@ import {
 } from '@nestjs/common';
 import { UserHasPermission } from '@thallesp/nestjs-better-auth';
 import { BusinessAccessGuard } from '../../common';
-import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
+import {
+  type PaginatedResult,
+  PaginationQueryDto,
+} from '../../common/dto/pagination-query.dto';
 import {
   AssignSubscriptionDto,
   CancelSubscriptionDto,
@@ -54,15 +57,21 @@ export class SubscriptionsController {
   async listHistory(
     @Param('businessId') businessId: string,
     @Query() query: PaginationQueryDto,
-  ): Promise<SubscriptionResponseDto[]> {
-    const rows = await this.subscriptionsService.listHistory(
+  ): Promise<PaginatedResult<SubscriptionResponseDto>> {
+    const { rows, total } = await this.subscriptionsService.listHistory(
       businessId,
       query.limit,
       query.offset,
     );
-    return rows.map(
-      (row) => new SubscriptionResponseDto(row.subscription, row.plan),
-    );
+
+    return {
+      data: rows.map(
+        (row) => new SubscriptionResponseDto(row.subscription, row.plan),
+      ),
+      total,
+      limit: query.limit,
+      offset: query.offset,
+    };
   }
 
   @Patch('cancel')

@@ -3,7 +3,8 @@
   "sector": {
     "mart": "पसल",
     "medical": "औषधि पसल",
-    "restaurant": "रेस्टुरेन्ट"
+    "restaurant": "रेस्टुरेन्ट",
+    "services": "सेवा"
   },
   "role": {
     "owner": "मालिक",
@@ -11,7 +12,9 @@
     "cashier": "क्यासियर",
     "pharmacist": "फार्मासिस्ट",
     "waiter": "वेटर",
-    "chef": "भान्से"
+    "chef": "भान्से",
+    "receptionist": "रिसेप्सनिस्ट",
+    "practitioner": "सेवा प्रदायक"
   },
   "status": {
     "active": "सक्रिय",
@@ -49,5 +52,24 @@
     "vat": "मूल्य अभिवृद्धि कर",
     "total": "कुल जम्मा",
     "copy": "प्रतिलिपि"
+  },
+  "debitNoteReason": {
+    "return": "फिर्ता",
+    "short_supply": "कम आपूर्ति",
+    "rate_difference": "दर फरक",
+    "other": "अन्य",
+    "debit_note": "डेबिट नोट"
+  },
+  "appointmentStatus": {
+    "booked": "बुक गरिएको",
+    "completed": "सम्पन्न",
+    "no_show": "अनुपस्थित",
+    "canceled": "रद्द"
+  },
+  "membershipStatus": {
+    "active": "सक्रिय",
+    "exhausted": "सकिएको",
+    "expired": "म्याद सकिएको",
+    "canceled": "रद्द"
   }
 }

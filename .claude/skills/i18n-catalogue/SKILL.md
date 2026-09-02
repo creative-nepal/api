@@ -47,3 +47,12 @@ bun run check-types && bun run lint
 
 The catalogues are JSON assets: `nest-cli.json`'s `assets` entry is what copies them into
 `dist`. If translations are missing in a built container, check that entry before anything else.
+
+## Sector and branch strings
+
+- A sector's display name is `common.sector.<key>`, and `src/sectors/<key>/meta.ts` points at it
+  via `nameKey`. Never hardcode a sector label in a frontend — both web and admin used to keep
+  their own English `SECTOR_LABELS` map, which bypassed the catalogue and went stale the moment a
+  sector was added. They now read this key.
+- Role names are `common.role.<name>`; statuses `common.status.<value>`. A new sector role or
+  status needs its key here in the same change, or the UI renders the raw enum.

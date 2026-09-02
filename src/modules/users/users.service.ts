@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import type { User } from '../../database/schema';
-import { UsersRepository } from './users.repository';
+import { type FindUsersOptions, UsersRepository } from './users.repository';
 
 @Injectable()
 export class UsersService {
@@ -16,8 +16,10 @@ export class UsersService {
     return found;
   }
 
-  async list(limit: number, offset: number): Promise<User[]> {
-    return this.usersRepository.findMany(limit, offset);
+  async list(
+    options: FindUsersOptions,
+  ): Promise<{ rows: User[]; total: number }> {
+    return this.usersRepository.findMany(options);
   }
 
   async updateName(id: string, name: string): Promise<User> {

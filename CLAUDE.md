@@ -86,6 +86,45 @@ Nest 12's `exports` map — that is why `LoggerModule.forRootAsync` in
 - `src/modules/<domain>/` — one folder per bounded domain, each following the repository pattern
   (`*.controller.ts` → `*.service.ts` → `*.repository.ts`, never skip a layer). `modules/users/`
   is the reference implementation.
+- `src/sectors/` — the sector plugin seam that makes this repo a clonable multi-vertical template.
+  Sectors shipped: `mart`, `medical`, `restaurant`, `services` (appointments/memberships —
+  non-inventory, and the worked example of adding one; see `docs/TEMPLATE.md` §3).
+  Sector keys are declared **once** in `src/database/schema/sector-keys.ts` (kept dependency-free
+  so drizzle-kit can load the schema without pulling in Nest). Each sector then has:
+  `<key>/meta.ts` (inert data: display key, roles, nav items, plan feature keys — importable
+  without Nest, which is what makes it unit-testable and what `GET /v1/platform/sectors` serves),
+  `<key>/access.ts` (the statements and roles it contributes to `auth/access-control.ts`), and
+  `<key>/sector.ts` (the Nest modules it mounts). `SECTORS_ENABLED` (comma list, blank = all)
+  selects which sectors a deployment mounts; an unknown key fails the boot rather than silently
+  mounting everything. Access-control statements always compile in **every** sector regardless of
+  `SECTORS_ENABLED`, because Better Auth's `roles` option replaces its defaults and the vocabulary
+  must stay stable — enablement gates modules and routes, never the permission vocabulary.
+- Modules that other modules depend on are split `<name>-core.module.ts` (providers only, exported)
+  from `<name>.module.ts` (adds the controllers). Importing the core module gets you the service
+  without dragging that domain's HTTP routes into a sector that shouldn't expose them — this is
+  why a mart deployment has no `/batches` routes even though purchasing needs `BatchesRepository`.
+- Business-scoped controllers stack three guards in order: `BusinessAccessGuard` (resolves and
+  attaches the business + membership), `RequireSectorGuard` (`@RequireSector('restaurant')` —
+  rejects a business of the wrong sector), then `RequirePermissionGuard` (`@RequirePermission(...)`).
+  **Every** business-scoped route needs `@RequirePermission`, reads included — an ungated `@Get`
+  is readable by any member of the business, including a waiter or chef.
+- Multi-branch: a **branch is a Better Auth `team`** plus a `branches` satellite. Better Auth's
+  `teamMember` has **no `role` column**, so a branch is *scoping*, not a role — a member's role is
+  per-organization and applies at every branch they touch. Every business has exactly one default
+  branch, created with it (`auth/organization-hooks.ts`); requests select one with an
+  `X-Branch-Id` header resolved by `BranchScopeGuard` into `@CurrentBranch()`, falling back to
+  that default. **An invoice series is (business, branch, fiscal year)** — `invoice_counters` is
+  keyed on all three and `business_invoices` is unique on all four including the number, so two
+  branches can each hold invoice #1. A credit note is always drawn from the series of the invoice
+  it corrects, never from the caller's current branch. The default branch carries a NULL `code`
+  so a single-branch business's printed numbers are unprefixed and unchanged. Stock lives in
+  `product_branch_stock` per branch, with `products.stockQty` as the cached business-wide total;
+  the branch row carries the sufficiency check, so the cache can never authorize a sale.
+- `src/modules/workspace/` — resolves what the signed-in member may see, server-side:
+  `GET /v1/businesses/:id/workspace` returns the business, the membership role, that role's
+  effective permissions, and the sector-scoped, permission-filtered navigation. The frontends
+  render from this; they never derive a menu or a permission locally. The pure resolution logic
+  lives in `workspace-access.ts` (no Nest import) so it is unit-tested directly.
 - `src/modules/content/` — the CMS. Two controllers over one service: `content.controller.ts` is
   anonymous, cacheable and published-only; `content-admin.controller.ts` is gated on the platform
   `content` permission and can see drafts.

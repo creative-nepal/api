@@ -42,6 +42,7 @@ export class MartSectorPlugin implements SectorPlugin {
     const product = await this.productsRepository.decrementStock(
       context.executor,
       context.business.id,
+      context.branch.id,
       item.productId,
       quantityText,
     );

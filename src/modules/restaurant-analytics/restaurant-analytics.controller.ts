@@ -8,7 +8,14 @@ import {
 } from '@nestjs/common';
 import { Type } from 'class-transformer';
 import { IsInt, IsOptional, Max, Min } from 'class-validator';
-import { BusinessAccessGuard, CurrentBusiness } from '../../common';
+import {
+  BusinessAccessGuard,
+  CurrentBusiness,
+  RequirePermission,
+  RequirePermissionGuard,
+  RequireSector,
+  RequireSectorGuard,
+} from '../../common';
 import type { Business } from '../../database/schema';
 import {
   type RestaurantAnalytics,
@@ -28,12 +35,14 @@ class AnalyticsQueryDto {
   path: 'businesses/:businessId/restaurant/analytics',
   version: '1',
 })
-@UseGuards(BusinessAccessGuard)
+@UseGuards(BusinessAccessGuard, RequireSectorGuard, RequirePermissionGuard)
+@RequireSector('restaurant')
 @UseInterceptors(ClassSerializerInterceptor)
 export class RestaurantAnalyticsController {
   constructor(private readonly analyticsService: RestaurantAnalyticsService) {}
 
   @Get()
+  @RequirePermission({ product: ['update'] })
   async get(
     @CurrentBusiness() business: Business,
     @Query() query: AnalyticsQueryDto,

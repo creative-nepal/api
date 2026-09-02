@@ -15,6 +15,8 @@ import {
   CurrentBusiness,
   RequirePermission,
   RequirePermissionGuard,
+  RequireSector,
+  RequireSectorGuard,
 } from '../../common';
 import type { PaginatedResult } from '../../common/dto/pagination-query.dto';
 import type { Business } from '../../database/schema';
@@ -28,7 +30,8 @@ import {
 import { MenuService } from './menu.service';
 
 @Controller({ path: 'businesses/:businessId/menu', version: '1' })
-@UseGuards(BusinessAccessGuard, RequirePermissionGuard)
+@UseGuards(BusinessAccessGuard, RequirePermissionGuard, RequireSectorGuard)
+@RequireSector('restaurant')
 @UseInterceptors(ClassSerializerInterceptor)
 export class MenuController {
   constructor(private readonly menuService: MenuService) {}

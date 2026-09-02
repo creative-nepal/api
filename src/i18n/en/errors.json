@@ -5,7 +5,8 @@
     "idRequired": "An X-Business-Id header or :businessId route parameter is required",
     "idMismatch": "X-Business-Id header does not match the :businessId route parameter",
     "tablesRestaurantOnly": "Tables are a restaurant feature; this business is {actual}",
-    "menuRestaurantOnly": "A menu is a restaurant feature; this business is {actual}"
+    "menuRestaurantOnly": "A menu is a restaurant feature; this business is {actual}",
+    "wrongSector": "This feature is not available for a {sector} business"
   },
   "permission": {
     "denied": "Your role does not permit this action for this business",
@@ -29,7 +30,11 @@
   "purchase": {
     "duplicateBill": "Bill {billNumber} from this supplier is already recorded",
     "overReceive": "Cannot receive {quantity} of {productId}: only {outstanding} outstanding",
-    "overPayment": "Payment exceeds the outstanding balance of {outstanding} (TDS of {tds} is withheld, not paid to the supplier)"
+    "overPayment": "Payment exceeds the outstanding balance of {outstanding} (TDS of {tds} is withheld, not paid to the supplier)",
+    "billNotFound": "Purchase bill {billId} not found",
+    "debitNoteNotFound": "Debit note {noteId} not found",
+    "debitNoteExceedsBill": "Debit notes against this bill cannot exceed its total: {remaining} remains, {requested} requested",
+    "debitNoteRestockNeedsProduct": "Every line must reference a product to restock a debit note"
   },
   "content": {
     "pageNotFound": "Content page {slug} was not found",
@@ -39,5 +44,40 @@
     "nothingToPublish": "Page {slug} cannot be published until its {locale} content has at least one block",
     "homeSlugImmutable": "The home page slug cannot be changed",
     "homeAlwaysPublished": "The home page cannot be unpublished or deleted"
+  },
+  "services": {
+    "itemNotFound": "Service {serviceItemId} not found",
+    "itemInactive": "Service {serviceItemId} is not currently offered",
+    "membershipNotFound": "Membership {membershipId} not found",
+    "membershipServiceMismatch": "That membership is for a different service",
+    "membershipExhausted": "Membership {membershipId} has no sessions left",
+    "membershipExpiryBeforeStart": "A membership cannot expire before it starts",
+    "appointmentNotFound": "Appointment {appointmentId} not found",
+    "appointmentFinal": "This appointment is already {status} and cannot be changed",
+    "appointmentReopen": "An appointment cannot be moved back to booked",
+    "appointmentQuotaExceeded": "The current plan allows at most {limit} appointments per month"
+  },
+  "branch": {
+    "notFound": "Branch {branchId} not found",
+    "inactive": "Branch {branchId} is closed and cannot take new activity",
+    "noDefault": "Business {businessId} has no default branch",
+    "cannotDeactivateDefault": "The default branch cannot be closed; make another branch the default first"
+  },
+  "role": {
+    "unknownResource": "Unknown permission resource: {resource}",
+    "unknownAction": "Unknown action {action} for {resource}",
+    "emptyActions": "At least one action is required for {resource}",
+    "emptyPermission": "A role needs at least one permission",
+    "alreadyExists": "Role {role} already exists for this business",
+    "notFound": "Role {role} not found",
+    "reserved": "Role {role} is reserved and cannot be defined"
+  },
+  "theme": {
+    "invalidValue": "Theme value for {key} must be a non-empty string",
+    "invalidColour": "Theme value for {key} is not a valid colour",
+    "invalidLength": "Theme value for {key} must be a length such as 0.5rem",
+    "invalidMode": "Theme mode must be light, dark or system",
+    "invalidLogo": "Logo must be an https URL or a site path",
+    "unknownKey": "Unknown theme key: {key}"
   }
 }

@@ -57,6 +57,7 @@ export class TableBillingService {
 
         const invoice = await this.invoicesService.issue(tx, {
           business,
+          branchId: table.branchId,
           orderId: null,
           subtotalCents,
           serviceChargeCents,

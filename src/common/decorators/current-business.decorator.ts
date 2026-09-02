@@ -1,5 +1,5 @@
 import { createParamDecorator, type ExecutionContext } from '@nestjs/common';
-import type { Business, Member } from '../../database/schema';
+import type { Branch, Business, Member } from '../../database/schema';
 
 export interface BusinessScopedRequest {
   method: string;
@@ -8,6 +8,7 @@ export interface BusinessScopedRequest {
   session?: { user?: { id: string; role?: string | null } } | null;
   business?: Business;
   membership?: Member;
+  branch?: Branch;
 }
 
 export const CurrentBusiness = createParamDecorator(
@@ -21,5 +22,12 @@ export const CurrentMembership = createParamDecorator(
   (_data: unknown, ctx: ExecutionContext): Member => {
     const request = ctx.switchToHttp().getRequest<BusinessScopedRequest>();
     return request.membership as Member;
+  },
+);
+
+export const CurrentBranch = createParamDecorator(
+  (_data: unknown, ctx: ExecutionContext): Branch => {
+    const request = ctx.switchToHttp().getRequest<BusinessScopedRequest>();
+    return request.branch as Branch;
   },
 );

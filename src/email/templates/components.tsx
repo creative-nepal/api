@@ -9,6 +9,7 @@ import {
   Text,
 } from '@react-email/components';
 import type { ReactNode } from 'react';
+import { brandName } from '../brand';
 
 const colors = {
   background: '#f4f4f5',
@@ -58,7 +59,7 @@ export function EmailLayout({
               margin: '0 0 24px',
             }}
           >
-            Creative Nepal
+            {brandName()}
           </Text>
           {children}
           <Hr style={{ borderColor: colors.border, margin: '32px 0 16px' }} />

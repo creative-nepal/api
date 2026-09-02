@@ -12,7 +12,10 @@ import {
 import { UserHasPermission } from '@thallesp/nestjs-better-auth';
 import { CurrentUser, type CurrentUserType } from '../../auth';
 import type { PaymentMethod, PlatformInvoice } from '../../database/schema';
-import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
+import {
+  type PaginatedResult,
+  PaginationQueryDto,
+} from '../../common/dto/pagination-query.dto';
 import { AddPaymentMethodDto } from './dto/platform-billing.dto';
 import { PaymentMethodsService } from './payment-methods.service';
 import { PlatformBillingRepository } from './platform-billing.repository';
@@ -76,8 +79,15 @@ export class PlatformBillingController {
   @Get('invoices')
   async listInvoices(
     @CurrentUser() currentUser: CurrentUserType,
-  ): Promise<PlatformInvoice[]> {
-    return this.repository.findInvoicesForUser(currentUser.id);
+    @Query() query: PaginationQueryDto,
+  ): Promise<PaginatedResult<PlatformInvoice>> {
+    const { rows, total } = await this.repository.findInvoicesForUser(
+      currentUser.id,
+      query.limit,
+      query.offset,
+    );
+
+    return { data: rows, total, limit: query.limit, offset: query.offset };
   }
 
   @Get('platform/invoices')

@@ -11,7 +11,13 @@ import {
   uniqueIndex,
 } from 'drizzle-orm/pg-core';
 import { user } from './auth';
-import { businesses, businessInvoices, orders, products } from './billing';
+import {
+  branches,
+  businesses,
+  businessInvoices,
+  orders,
+  products,
+} from './billing';
 
 export const DRUG_SCHEDULES = ['otc', 'prescription', 'controlled'] as const;
 export type DrugSchedule = (typeof DRUG_SCHEDULES)[number];
@@ -31,6 +37,7 @@ export const STOCK_ADJUSTMENT_REASONS = [
   'damaged',
   'expired_write_off',
   'customer_return',
+  'debit_note',
 ] as const;
 export type StockAdjustmentReason = (typeof STOCK_ADJUSTMENT_REASONS)[number];
 
@@ -204,6 +211,9 @@ export const stockAdjustments = pgTable(
     productId: text('product_id')
       .notNull()
       .references(() => products.id, { onDelete: 'cascade' }),
+    branchId: text('branch_id').references(() => branches.id, {
+      onDelete: 'set null',
+    }),
     batchId: text('batch_id').references(() => productBatches.id, {
       onDelete: 'set null',
     }),

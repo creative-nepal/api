@@ -13,6 +13,10 @@ import { INVOICE_STATUSES, type InvoiceStatus } from '../../../database/schema';
 export class ListInvoicesQueryDto extends PaginationQueryDto {
   @IsOptional()
   @IsString()
+  branchId?: string;
+
+  @IsOptional()
+  @IsString()
   fiscalYear?: string;
 
   @IsOptional()
@@ -36,6 +40,10 @@ export class IssueCreditNoteDto {
 export class ExportRegisterQueryDto {
   @IsString()
   fiscalYear!: string;
+
+  @IsOptional()
+  @IsString()
+  branchId?: string;
 
   @IsOptional()
   @IsIn(['xlsx', 'csv'])

@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { render } from '@react-email/render';
 import type { ReactElement } from 'react';
 import { Resend } from 'resend';
+import { brandName, defaultEmailFrom } from './brand';
 import { OrganizationInvitationEmail } from './templates/organization-invitation-email';
 import type { OrganizationInvitationEmailProps } from './templates/organization-invitation-email';
 import { OtpVerificationEmail } from './templates/otp-verification-email';
@@ -9,18 +10,18 @@ import type { OtpVerificationEmailProps } from './templates/otp-verification-ema
 import { ResetPasswordEmail } from './templates/reset-password-email';
 import type { ResetPasswordEmailProps } from './templates/reset-password-email';
 
-const DEFAULT_EMAIL_FROM = 'Creative Nepal <onboarding@resend.dev>';
-
 @Injectable()
 export class EmailService {
   private readonly logger = new Logger(EmailService.name);
   private readonly resend: Resend | null;
   private readonly from: string;
+  private readonly brand: string;
 
   constructor() {
     const apiKey = process.env.RESEND_API_KEY;
     this.resend = apiKey ? new Resend(apiKey) : null;
-    this.from = process.env.EMAIL_FROM ?? DEFAULT_EMAIL_FROM;
+    this.from = process.env.EMAIL_FROM ?? defaultEmailFrom();
+    this.brand = brandName();
   }
 
   async sendResetPasswordEmail(
@@ -29,7 +30,7 @@ export class EmailService {
   ): Promise<void> {
     await this.send({
       to,
-      subject: 'Reset your Creative Nepal password',
+      subject: `Reset your ${this.brand} password`,
       react: ResetPasswordEmail(props),
     });
   }
@@ -39,10 +40,10 @@ export class EmailService {
     props: OtpVerificationEmailProps,
   ): Promise<void> {
     const subjectByType: Record<OtpVerificationEmailProps['type'], string> = {
-      'sign-in': 'Your Creative Nepal sign-in code',
-      'email-verification': 'Verify your Creative Nepal email address',
-      'forget-password': 'Your Creative Nepal password reset code',
-      'change-email': 'Confirm your new Creative Nepal email address',
+      'sign-in': `Your ${this.brand} sign-in code`,
+      'email-verification': `Verify your ${this.brand} email address`,
+      'forget-password': `Your ${this.brand} password reset code`,
+      'change-email': `Confirm your new ${this.brand} email address`,
     };
 
     await this.send({

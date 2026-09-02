@@ -1,17 +1,24 @@
 import { Module } from '@nestjs/common';
-import { BatchesModule } from '../batches/batches.module';
+import { BranchesCoreModule } from '../branches/branches-core.module';
+import { BatchesCoreModule } from '../batches/batches-core.module';
 import { InvoicesModule } from '../invoices/invoices.module';
-import { ProductsModule } from '../products/products.module';
+import { ProductsCoreModule } from '../products/products-core.module';
 import { OrdersController } from './orders.controller';
 import { OrdersRepository } from './orders.repository';
 import { OrdersService } from './orders.service';
 import { MartSectorPlugin } from './sector-plugins/mart.plugin';
 import { MedicalSectorPlugin } from './sector-plugins/medical.plugin';
 import { RestaurantSectorPlugin } from './sector-plugins/restaurant.plugin';
+import { ServicesSectorPlugin } from './sector-plugins/services.plugin';
 import { SectorPluginRegistry } from './sector-plugins/registry';
 
 @Module({
-  imports: [InvoicesModule, ProductsModule, BatchesModule],
+  imports: [
+    InvoicesModule,
+    ProductsCoreModule,
+    BatchesCoreModule,
+    BranchesCoreModule,
+  ],
   controllers: [OrdersController],
   providers: [
     OrdersService,
@@ -19,6 +26,7 @@ import { SectorPluginRegistry } from './sector-plugins/registry';
     MartSectorPlugin,
     MedicalSectorPlugin,
     RestaurantSectorPlugin,
+    ServicesSectorPlugin,
     SectorPluginRegistry,
   ],
   exports: [OrdersService],

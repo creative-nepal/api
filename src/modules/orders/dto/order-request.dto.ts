@@ -34,6 +34,11 @@ export class CheckoutItemDto {
   @IsNotEmpty()
   menuItemId?: string;
 
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  serviceItemId?: string;
+
   @Type(() => Number)
   @IsNumber({ maxDecimalPlaces: 3 })
   @Min(0.001)

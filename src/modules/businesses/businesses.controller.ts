@@ -19,7 +19,8 @@ import {
 } from '../../common';
 import type { PaginatedResult } from '../../common/dto/pagination-query.dto';
 import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
-import type { Business } from '../../database/schema';
+import type { Branch, Business } from '../../database/schema';
+import { BranchesService } from '../branches/branches.service';
 import { BusinessesService } from './businesses.service';
 import { BusinessResponseDto } from './dto/business-response.dto';
 import { ListBusinessesQueryDto } from './dto/list-businesses-query.dto';
@@ -32,7 +33,10 @@ import {
 @Controller({ path: 'businesses', version: '1' })
 @UseInterceptors(ClassSerializerInterceptor)
 export class BusinessesController {
-  constructor(private readonly businessesService: BusinessesService) {}
+  constructor(
+    private readonly businessesService: BusinessesService,
+    private readonly branchesService: BranchesService,
+  ) {}
 
   @Get()
   @UserHasPermission({ permissions: { business: ['list-all'] } })
@@ -63,6 +67,19 @@ export class BusinessesController {
   ): Promise<BusinessResponseDto> {
     const found = await this.businessesService.getById(businessId);
     return new BusinessResponseDto(found);
+  }
+
+  @Get(':businessId/branches')
+  @UserHasPermission({ permissions: { business: ['view-any'] } })
+  async listBranches(
+    @Param('businessId') businessId: string,
+    @Query() query: PaginationQueryDto,
+  ): Promise<PaginatedResult<Branch>> {
+    return this.branchesService.list(businessId, {
+      limit: query.limit,
+      offset: query.offset,
+      sortDirection: 'desc',
+    });
   }
 
   @Patch(':businessId')

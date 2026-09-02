@@ -54,6 +54,11 @@ export const auth = betterAuth({
     passkey(),
     lastLoginMethod(),
     organization({
+      teams: { enabled: true },
+      dynamicAccessControl: {
+        enabled: true,
+        maximumRolesPerOrganization: 20,
+      },
       allowUserToCreateOrganization: true,
       creatorRole: 'owner',
       ac,
@@ -78,8 +83,11 @@ export const auth = betterAuth({
     max: 30,
   },
   trustedOrigins: [
-    'http://localhost:3000',
-    'http://localhost:3001',
+    ...(
+      process.env.CORS_ORIGINS ?? 'http://localhost:3000,http://localhost:3001'
+    )
+      .split(',')
+      .map((origin) => origin.trim()),
     'mobile://',
     process.env.BETTER_AUTH_URL,
     ...(process.env.NODE_ENV === 'development'

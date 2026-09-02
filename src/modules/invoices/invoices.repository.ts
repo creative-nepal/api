@@ -25,6 +25,7 @@ import type {
 
 export interface ListInvoicesFilters {
   businessId: string;
+  branchId?: string;
   limit: number;
   offset: number;
   fiscalYear?: string;
@@ -40,14 +41,16 @@ export class InvoicesRepository {
   async nextInvoiceNumber(
     executor: DatabaseExecutor,
     businessId: string,
+    branchId: string,
     fiscalYear: string,
   ): Promise<number> {
     const [row] = await executor
       .insert(schema.invoiceCounters)
-      .values({ businessId, fiscalYear, lastNumber: 1 })
+      .values({ businessId, branchId, fiscalYear, lastNumber: 1 })
       .onConflictDoUpdate({
         target: [
           schema.invoiceCounters.businessId,
+          schema.invoiceCounters.branchId,
           schema.invoiceCounters.fiscalYear,
         ],
         set: {
@@ -132,6 +135,7 @@ export class InvoicesRepository {
   async findAllForFiscalYear(
     businessId: string,
     fiscalYear: string,
+    branchId?: string,
   ): Promise<BusinessInvoice[]> {
     return this.db
       .select()
@@ -140,6 +144,7 @@ export class InvoicesRepository {
         and(
           eq(schema.businessInvoices.businessId, businessId),
           eq(schema.businessInvoices.fiscalYear, fiscalYear),
+          ...(branchId ? [eq(schema.businessInvoices.branchId, branchId)] : []),
         ),
       )
       .orderBy(asc(schema.businessInvoices.invoiceNumber));
@@ -184,6 +189,10 @@ export class InvoicesRepository {
     const conditions: SQL[] = [
       eq(schema.businessInvoices.businessId, filters.businessId),
     ];
+
+    if (filters.branchId) {
+      conditions.push(eq(schema.businessInvoices.branchId, filters.branchId));
+    }
 
     if (filters.fiscalYear) {
       conditions.push(

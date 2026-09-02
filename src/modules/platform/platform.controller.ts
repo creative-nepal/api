@@ -4,11 +4,16 @@ import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 import type { PaginatedResult } from '../../common/dto/pagination-query.dto';
 import type { PlatformAuditLogRow } from './platform.repository';
 import { PlatformService } from './platform.service';
-import type { PlatformOverview } from './platform.service';
+import type { PlatformOverview, SectorDescriptor } from './platform.service';
 
 @Controller({ path: 'platform', version: '1' })
 export class PlatformController {
   constructor(private readonly platformService: PlatformService) {}
+
+  @Get('sectors')
+  listSectors(): SectorDescriptor[] {
+    return this.platformService.listSectors();
+  }
 
   @Get('overview')
   @UserHasPermission({ permissions: { business: ['list-all'] } })

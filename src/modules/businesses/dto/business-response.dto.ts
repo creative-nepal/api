@@ -11,6 +11,8 @@ export class BusinessResponseDto {
   @Expose() vatRegistered: boolean;
   @Expose() cbmsRequired: boolean;
   @Expose() fiscalYearStartMonth: number;
+  @Expose() displayName: string | null;
+  @Expose() theme: Record<string, unknown>;
   @Expose() status: string;
   @Expose() createdAt: Date;
   @Expose() updatedAt: Date;
@@ -23,6 +25,8 @@ export class BusinessResponseDto {
     this.panNumber = business.panNumber;
     this.vatRegistered = business.vatRegistered;
     this.cbmsRequired = business.cbmsRequired;
+    this.displayName = business.displayName;
+    this.theme = business.theme ?? {};
     this.fiscalYearStartMonth = business.fiscalYearStartMonth;
     this.status = business.status;
     this.createdAt = business.createdAt;

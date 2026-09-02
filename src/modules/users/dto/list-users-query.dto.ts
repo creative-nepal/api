@@ -1,17 +1,9 @@
-import { Type } from 'class-transformer';
-import { IsInt, IsOptional, Max, Min } from 'class-validator';
+import { IsOptional, IsString, MaxLength } from 'class-validator';
+import { ListQueryDto } from '../../../common/dto/list-query.dto';
 
-export class ListUsersQueryDto {
+export class ListUsersQueryDto extends ListQueryDto {
   @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  @Min(1)
-  @Max(100)
-  limit: number = 20;
-
-  @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  @Min(0)
-  offset: number = 0;
+  @IsString()
+  @MaxLength(255)
+  search?: string;
 }

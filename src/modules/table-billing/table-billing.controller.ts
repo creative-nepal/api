@@ -13,6 +13,8 @@ import {
   CurrentBusiness,
   RequirePermission,
   RequirePermissionGuard,
+  RequireSector,
+  RequireSectorGuard,
 } from '../../common';
 import type { Business } from '../../database/schema';
 import { InvoiceResponseDto } from '../invoices/dto/invoice-response.dto';
@@ -20,7 +22,8 @@ import { BillTableDto } from './dto/bill-table.dto';
 import { TableBillingService } from './table-billing.service';
 
 @Controller({ path: 'businesses/:businessId/tables/:tableId', version: '1' })
-@UseGuards(BusinessAccessGuard, RequirePermissionGuard)
+@UseGuards(BusinessAccessGuard, RequirePermissionGuard, RequireSectorGuard)
+@RequireSector('restaurant')
 @UseInterceptors(ClassSerializerInterceptor)
 export class TableBillingController {
   constructor(private readonly tableBillingService: TableBillingService) {}

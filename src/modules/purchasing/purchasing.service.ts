@@ -263,6 +263,7 @@ export class PurchasingService {
 
   async receive(
     business: Business,
+    branchId: string,
     purchaseOrderId: string,
     dto: ReceivePurchaseOrderDto,
     actorUserId: string,
@@ -363,6 +364,24 @@ export class PurchasingService {
         }
 
         await tx
+          .insert(schema.productBranchStock)
+          .values({
+            businessId: business.id,
+            branchId,
+            productId: product.id,
+            stockQty: receivedText,
+          })
+          .onConflictDoUpdate({
+            target: [
+              schema.productBranchStock.branchId,
+              schema.productBranchStock.productId,
+            ],
+            set: {
+              stockQty: sql`${schema.productBranchStock.stockQty} + ${receivedText}::numeric`,
+            },
+          });
+
+        await tx
           .update(schema.purchaseOrderItems)
           .set({
             receivedQty: sql`${schema.purchaseOrderItems.receivedQty} + ${receivedText}::numeric`,
@@ -372,6 +391,7 @@ export class PurchasingService {
         await tx.insert(schema.stockAdjustments).values({
           id: randomUUID(),
           businessId: business.id,
+          branchId,
           productId: product.id,
           batchId,
           delta: receivedText,

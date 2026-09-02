@@ -11,12 +11,14 @@ import {
 } from '@nestjs/common';
 import { CurrentUser, type CurrentUserType } from '../../auth';
 import {
+  BranchScopeGuard,
   BusinessAccessGuard,
+  CurrentBranch,
   CurrentBusiness,
   RequirePermission,
   RequirePermissionGuard,
 } from '../../common';
-import type { Business, InvoiceLease } from '../../database/schema';
+import type { Branch, Business, InvoiceLease } from '../../database/schema';
 import { ProductResponseDto } from '../products/dto/product-response.dto';
 import {
   CreateLeaseDto,
@@ -27,7 +29,7 @@ import { InvoiceLeasesService } from './invoice-leases.service';
 import { SyncService } from './sync.service';
 
 @Controller({ path: 'businesses/:businessId', version: '1' })
-@UseGuards(BusinessAccessGuard, RequirePermissionGuard)
+@UseGuards(BusinessAccessGuard, RequirePermissionGuard, BranchScopeGuard)
 @UseInterceptors(ClassSerializerInterceptor)
 export class SyncController {
   constructor(
@@ -39,12 +41,19 @@ export class SyncController {
   @RequirePermission({ invoice: ['issue'] })
   async createLease(
     @CurrentBusiness() business: Business,
+    @CurrentBranch() branch: Branch,
     @Body() dto: CreateLeaseDto,
   ): Promise<InvoiceLease> {
-    return this.leasesService.createLease(business, dto.deviceId, dto.size);
+    return this.leasesService.createLease(
+      business,
+      branch,
+      dto.deviceId,
+      dto.size,
+    );
   }
 
   @Get('invoice-leases')
+  @RequirePermission({ invoice: ['issue'] })
   async listLeases(
     @CurrentBusiness() business: Business,
   ): Promise<InvoiceLease[]> {

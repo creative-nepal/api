@@ -39,6 +39,7 @@ export class StockAdjustmentsService {
 
   async create(
     business: Business,
+    branchId: string,
     dto: CreateStockAdjustmentDto,
     actorUserId: string,
   ): Promise<StockAdjustment> {
@@ -97,9 +98,18 @@ export class StockAdjustmentsService {
         );
       }
 
+      await this.productsRepository.incrementBranchStock(
+        tx,
+        business.id,
+        branchId,
+        product.id,
+        deltaText,
+      );
+
       return this.stockAdjustmentsRepository.insert(tx, {
         id: randomUUID(),
         businessId: business.id,
+        branchId,
         productId: product.id,
         batchId: dto.batchId ?? null,
         delta: deltaText,

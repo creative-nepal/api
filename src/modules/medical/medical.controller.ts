@@ -9,7 +9,14 @@ import {
 } from '@nestjs/common';
 import { IsIn, IsOptional, IsString } from 'class-validator';
 import type { Response } from 'express';
-import { BusinessAccessGuard, CurrentBusiness } from '../../common';
+import {
+  BusinessAccessGuard,
+  CurrentBusiness,
+  RequirePermission,
+  RequirePermissionGuard,
+  RequireSector,
+  RequireSectorGuard,
+} from '../../common';
 import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 import type { PaginatedResult } from '../../common/dto/pagination-query.dto';
 import type {
@@ -31,7 +38,8 @@ class BatchReportQueryDto {
 }
 
 @Controller({ path: 'businesses/:businessId/medical', version: '1' })
-@UseGuards(BusinessAccessGuard)
+@UseGuards(BusinessAccessGuard, RequireSectorGuard, RequirePermissionGuard)
+@RequireSector('medical')
 @UseInterceptors(ClassSerializerInterceptor)
 export class MedicalController {
   constructor(
@@ -40,6 +48,7 @@ export class MedicalController {
   ) {}
 
   @Get('controlled-register')
+  @RequirePermission({ dispense: ['controlled'] })
   async listControlledRegister(
     @CurrentBusiness() business: Business,
     @Query() query: PaginationQueryDto,
@@ -52,6 +61,7 @@ export class MedicalController {
   }
 
   @Get('insurance-claims')
+  @RequirePermission({ invoice: ['print'] })
   async listInsuranceClaims(
     @CurrentBusiness() business: Business,
     @Query() query: PaginationQueryDto,
@@ -64,6 +74,7 @@ export class MedicalController {
   }
 
   @Get('reports/batch-wise')
+  @RequirePermission({ product: ['update'] })
   async batchReport(
     @CurrentBusiness() business: Business,
     @Query() query: BatchReportQueryDto,

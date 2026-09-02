@@ -38,14 +38,42 @@ A service importing `drizzle-orm` or `schema` is a bug — move that query into 
    The frontends' `DataTable` is server-driven and depends on that shape.
 4. Controller: `@Controller({ path: '<plural>', version: '1' })` +
    `@UseInterceptors(ClassSerializerInterceptor)`. Every route is authenticated by the global
-   `AuthGuard`; gate writes with `@UserHasPermission({ permissions: { <resource>: ['create'] } })`,
-   and open a route only with `@AllowAnonymous()` / `@OptionalAuth()`.
-5. Register the module in `src/app.module.ts` `imports` — a module that is not listed there
-   serves nothing, and nothing warns you.
+   `AuthGuard`; open one only with `@AllowAnonymous()` / `@OptionalAuth()`.
+
+   A **business-scoped** controller (`path: 'businesses/:businessId/...'`) stacks its guards in
+   this order, and the order is load-bearing — each one needs what the previous attached:
+
+   ```ts
+   @UseGuards(BusinessAccessGuard, RequireSectorGuard, RequirePermissionGuard, BranchScopeGuard)
+   @RequireSector('restaurant')   // omit for a kernel domain every sector has
+   ```
+
+   Then `@RequirePermission({ <resource>: ['<action>'] })` on **every route, reads included** —
+   see the rule below. Reach for `@CurrentBusiness()`, `@CurrentMembership()` and
+   `@CurrentBranch()` rather than re-querying. Platform-operator routes are a different axis:
+   `@UserHasPermission({ permissions: { business: ['view-any'] } })`, no business guard.
+5. Register the module: **kernel** (sector-agnostic) modules go in `src/app.module.ts` `imports`;
+   a module belonging to one sector goes in that sector's `src/sectors/<key>/sector.ts` instead,
+   so `SECTORS_ENABLED` can gate it. A module in neither serves nothing, and nothing warns you.
 6. Errors: throw i18n keys, not English strings —
    `throw new NotFoundException({ message: 'i18n:errors.plan.notFound', id })`. Add the key with
    the `i18n-catalogue` skill. `HttpExceptionFilter` translates and interpolates `{id}`.
 7. Verify: `bun run check-types && bun run lint && bun run test`.
+
+## Rules
+
+- **Every business-scoped route needs `@RequirePermission`, reads included.** An ungated `@Get`
+  is readable by any member of the business — a waiter or a chef. This was a real gap: supplier
+  PANs, the purchase register, the TDS return, the invoice audit log and the controlled-substances
+  register were all readable by anyone on the payroll. Reads a cashier or waiter genuinely needs to
+  work (products, menu, tables, orders, batches) stay open deliberately; everything else is gated.
+- **A module other modules depend on is split in two**: `<name>-core.module.ts` (providers only,
+  exported) and `<name>.module.ts` (imports core, adds controllers). Import the *core* module when
+  you need the service — importing the HTTP module drags its routes into whatever mounts you, which
+  is how batch endpoints once appeared in a mart-only deployment.
+- Anything writing an invoice, order or stock needs a branch: take it from `@CurrentBranch()`, or
+  from the record being acted on (a credit note follows the branch of the invoice it corrects, a
+  table order follows the table's branch). Never fall back to "the first branch".
 
 ## Gotchas
 

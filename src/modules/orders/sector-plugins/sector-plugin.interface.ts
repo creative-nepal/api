@@ -1,5 +1,6 @@
 import type { DatabaseExecutor } from '../../../database';
 import type {
+  Branch,
   Business,
   BusinessInvoice,
   Customer,
@@ -9,12 +10,14 @@ import type {
   Product,
   Sector,
   SelectedModifier,
+  ServiceItem,
 } from '../../../database/schema';
 import type { CheckoutItemDto, CreateOrderDto } from '../dto/order-request.dto';
 
 export interface CheckoutLine {
   product: Product | null;
   menuItem?: MenuItem | null;
+  serviceItem?: ServiceItem | null;
   modifiers?: SelectedModifier[];
   quantity: number;
   unitPriceCents: number;
@@ -25,6 +28,7 @@ export interface CheckoutLine {
 export interface CheckoutContext {
   executor: DatabaseExecutor;
   business: Business;
+  branch: Branch;
   dto: CreateOrderDto;
   actorUserId: string | null;
   headers: Record<string, string | string[] | undefined>;

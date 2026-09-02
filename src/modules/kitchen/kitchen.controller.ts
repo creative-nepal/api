@@ -15,6 +15,8 @@ import {
   CurrentBusiness,
   RequirePermission,
   RequirePermissionGuard,
+  RequireSector,
+  RequireSectorGuard,
 } from '../../common';
 import type { Business } from '../../database/schema';
 import {
@@ -25,7 +27,8 @@ import {
 import { KitchenService } from './kitchen.service';
 
 @Controller({ path: 'businesses/:businessId/kitchen', version: '1' })
-@UseGuards(BusinessAccessGuard, RequirePermissionGuard)
+@UseGuards(BusinessAccessGuard, RequirePermissionGuard, RequireSectorGuard)
+@RequireSector('restaurant')
 @UseInterceptors(ClassSerializerInterceptor)
 export class KitchenController {
   constructor(private readonly kitchenService: KitchenService) {}
@@ -59,7 +62,8 @@ export class KitchenController {
 }
 
 @Controller({ path: 'businesses/:businessId/orders', version: '1' })
-@UseGuards(BusinessAccessGuard, RequirePermissionGuard)
+@UseGuards(BusinessAccessGuard, RequirePermissionGuard, RequireSectorGuard)
+@RequireSector('restaurant')
 @UseInterceptors(ClassSerializerInterceptor)
 export class OrderLifecycleController {
   constructor(private readonly kitchenService: KitchenService) {}

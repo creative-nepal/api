@@ -102,12 +102,28 @@ const ctaBlockSchema = z.object({
   buttonHref: href,
 });
 
+const pricingBlockSchema = z.object({
+  id: blockId,
+  type: z.literal('pricing'),
+  heading: shortText.optional(),
+  subheading: longText.optional(),
+  sector: z
+    .string()
+    .trim()
+    .max(32)
+    .regex(/^[a-z][a-z0-9-]*$/)
+    .optional(),
+  ctaLabel: shortText.optional(),
+  ctaHref: href.optional(),
+});
+
 export const contentBlockSchema = z.discriminatedUnion('type', [
   heroBlockSchema,
   featuresBlockSchema,
   richTextBlockSchema,
   faqBlockSchema,
   ctaBlockSchema,
+  pricingBlockSchema,
 ]);
 
 export const contentBlocksSchema = z.array(contentBlockSchema).max(50);

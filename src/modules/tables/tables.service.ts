@@ -41,6 +41,7 @@ export class TablesService {
 
   async create(
     business: Business,
+    branchId: string,
     dto: CreateTableDto,
   ): Promise<RestaurantTable> {
     this.assertRestaurant(business);
@@ -57,6 +58,7 @@ export class TablesService {
     return this.tablesRepository.insert({
       id: randomUUID(),
       businessId: business.id,
+      branchId,
       tableNo: dto.tableNo,
       seats: dto.seats ?? 4,
       status: 'empty',

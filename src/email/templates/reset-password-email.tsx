@@ -1,3 +1,4 @@
+import { brandName } from '../brand';
 import {
   EmailButton,
   EmailFootnote,
@@ -13,7 +14,7 @@ export interface ResetPasswordEmailProps {
 
 export function ResetPasswordEmail({ name, url }: ResetPasswordEmailProps) {
   return (
-    <EmailLayout preview="Reset your Creative Nepal password">
+    <EmailLayout preview={`Reset your ${brandName()} password`}>
       <EmailHeading>Reset your password</EmailHeading>
       <EmailParagraph>
         Hi {name}, we received a request to reset the password for your account.

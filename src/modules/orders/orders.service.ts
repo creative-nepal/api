@@ -11,6 +11,7 @@ import {
   InjectDatabase,
 } from '../../database';
 import type {
+  Branch,
   Business,
   BusinessInvoice,
   Customer,
@@ -32,8 +33,12 @@ const BUYER_PAN_REQUIRED_ABOVE_CENTS = 1_000_000;
 
 const QUANTITY_SCALE = 3;
 
-function lineKey(item: { productId?: string; menuItemId?: string }): string {
-  return item.productId ?? item.menuItemId ?? '';
+function lineKey(item: {
+  productId?: string;
+  menuItemId?: string;
+  serviceItemId?: string;
+}): string {
+  return item.productId ?? item.menuItemId ?? item.serviceItemId ?? '';
 }
 
 interface CheckoutTotals {
@@ -57,6 +62,7 @@ export interface OrderDetail {
 
 export interface CheckoutRequest {
   business: Business;
+  branch: Branch;
   dto: CreateOrderDto;
   actorUserId: string | null;
   headers: Record<string, string | string[] | undefined>;
@@ -96,7 +102,7 @@ export class OrdersService {
   }
 
   async checkout(request: CheckoutRequest): Promise<CheckoutResult> {
-    const { business, dto, actorUserId, headers } = request;
+    const { business, branch, dto, actorUserId, headers } = request;
 
     const plugin = this.sectorPlugins.resolve(business);
     plugin.beforeCreate(business);
@@ -133,6 +139,7 @@ export class OrdersService {
       const context: CheckoutContext = {
         executor: tx,
         business,
+        branch,
         dto,
         actorUserId,
         headers,
@@ -159,6 +166,7 @@ export class OrdersService {
       const order = await this.ordersRepository.insertOrder(tx, {
         id: randomUUID(),
         businessId: business.id,
+        branchId: branch.id,
         customerId: customer?.id ?? null,
         tableId: dto.tableId ?? null,
         source: dto.source ?? 'staff',
@@ -180,7 +188,12 @@ export class OrdersService {
           businessId: business.id,
           productId: line.product?.id ?? null,
           menuItemId: line.menuItem?.id ?? null,
-          productName: line.product?.name ?? line.menuItem?.name ?? 'Unknown',
+          serviceItemId: line.serviceItem?.id ?? null,
+          productName:
+            line.product?.name ??
+            line.menuItem?.name ??
+            line.serviceItem?.name ??
+            'Unknown',
           modifiers: line.modifiers ?? [],
           batchId: line.batchId,
           quantity: line.quantity.toFixed(QUANTITY_SCALE),
@@ -192,7 +205,13 @@ export class OrdersService {
       const invoice = plugin.billsOnCreate
         ? await this.invoicesService.issue(
             tx,
-            this.invoiceLineBuilder(business, order, customer, actorUserId),
+            this.invoiceLineBuilder(
+              business,
+              branch,
+              order,
+              customer,
+              actorUserId,
+            ),
           )
         : null;
 
@@ -244,12 +263,14 @@ export class OrdersService {
 
   private invoiceLineBuilder(
     business: Business,
+    branch: Branch,
     order: Order,
     customer: Customer | null,
     actorUserId: string | null,
   ) {
     return {
       business,
+      branchId: branch.id,
       orderId: order.id,
       subtotalCents: order.subtotalCents,
       customerId: customer?.id ?? null,

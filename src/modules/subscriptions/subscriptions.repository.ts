@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { and, desc, eq, ne } from 'drizzle-orm';
+import { and, count, desc, eq, ne } from 'drizzle-orm';
 import { type Database, InjectDatabase, schema } from '../../database';
 import type {
   NewSubscription,
@@ -37,15 +37,28 @@ export class SubscriptionsRepository {
     businessId: string,
     limit: number,
     offset: number,
-  ): Promise<SubscriptionWithPlan[]> {
-    return this.db
-      .select({ subscription: schema.subscriptions, plan: schema.plans })
-      .from(schema.subscriptions)
-      .innerJoin(schema.plans, eq(schema.plans.id, schema.subscriptions.planId))
-      .where(eq(schema.subscriptions.businessId, businessId))
-      .orderBy(desc(schema.subscriptions.createdAt))
-      .limit(limit)
-      .offset(offset);
+  ): Promise<{ rows: SubscriptionWithPlan[]; total: number }> {
+    const where = eq(schema.subscriptions.businessId, businessId);
+
+    const [rows, [total]] = await Promise.all([
+      this.db
+        .select({ subscription: schema.subscriptions, plan: schema.plans })
+        .from(schema.subscriptions)
+        .innerJoin(
+          schema.plans,
+          eq(schema.plans.id, schema.subscriptions.planId),
+        )
+        .where(where)
+        .orderBy(desc(schema.subscriptions.createdAt))
+        .limit(limit)
+        .offset(offset),
+      this.db
+        .select({ value: count() })
+        .from(schema.subscriptions)
+        .where(where),
+    ]);
+
+    return { rows, total: total?.value ?? 0 };
   }
 
   async insert(values: NewSubscription): Promise<Subscription> {

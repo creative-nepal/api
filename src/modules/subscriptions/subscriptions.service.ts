@@ -40,7 +40,7 @@ export class SubscriptionsService {
     businessId: string,
     limit: number,
     offset: number,
-  ): Promise<SubscriptionWithPlan[]> {
+  ): Promise<{ rows: SubscriptionWithPlan[]; total: number }> {
     return this.subscriptionsRepository.findManyByBusinessId(
       businessId,
       limit,

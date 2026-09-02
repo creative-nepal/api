@@ -13,6 +13,8 @@ describeIfDb('invoice numbering under concurrency', () => {
 
   const organizationId = randomUUID();
   const businessId = randomUUID();
+  const branchId = randomUUID();
+  const otherBranchId = randomUUID();
   const fiscalYear = '2082-83';
 
   beforeAll(async () => {
@@ -33,6 +35,25 @@ describeIfDb('invoice numbering under concurrency', () => {
       fiscalYearStartMonth: 4,
       status: 'active',
     });
+
+    await db.insert(schema.branches).values([
+      {
+        id: branchId,
+        businessId,
+        name: 'Main',
+        code: null,
+        isDefault: true,
+        isActive: true,
+      },
+      {
+        id: otherBranchId,
+        businessId,
+        name: 'Second',
+        code: 'B2',
+        isDefault: false,
+        isActive: true,
+      },
+    ]);
   });
 
   afterAll(async () => {
@@ -45,13 +66,17 @@ describeIfDb('invoice numbering under concurrency', () => {
   type Executor =
     typeof db | Parameters<Parameters<(typeof db)['transaction']>[0]>[0];
 
-  async function nextInvoiceNumber(executor: Executor): Promise<number> {
+  async function nextInvoiceNumber(
+    executor: Executor,
+    forBranchId: string = branchId,
+  ): Promise<number> {
     const [row] = await executor
       .insert(schema.invoiceCounters)
-      .values({ businessId, fiscalYear, lastNumber: 1 })
+      .values({ businessId, branchId: forBranchId, fiscalYear, lastNumber: 1 })
       .onConflictDoUpdate({
         target: [
           schema.invoiceCounters.businessId,
+          schema.invoiceCounters.branchId,
           schema.invoiceCounters.fiscalYear,
         ],
         set: { lastNumber: sql`${schema.invoiceCounters.lastNumber} + 1` },
@@ -78,11 +103,12 @@ describeIfDb('invoice numbering under concurrency', () => {
     );
   }, 30_000);
 
-  it('rejects a duplicate (business, fiscalYear, invoiceNumber)', async () => {
-    const insert = (invoiceNumber: number) =>
+  it('rejects a duplicate (business, branch, fiscalYear, invoiceNumber)', async () => {
+    const insert = (invoiceNumber: number, forBranchId: string = branchId) =>
       db.insert(schema.businessInvoices).values({
         id: randomUUID(),
         businessId,
+        branchId: forBranchId,
         orderId: null,
         invoiceNumber,
         fiscalYear,
@@ -95,4 +121,44 @@ describeIfDb('invoice numbering under concurrency', () => {
     await insert(9001);
     await expect(insert(9001)).rejects.toThrow();
   });
+
+  it('lets a second branch hold the same number in its own series', async () => {
+    const insert = (invoiceNumber: number, forBranchId: string) =>
+      db.insert(schema.businessInvoices).values({
+        id: randomUUID(),
+        businessId,
+        branchId: forBranchId,
+        orderId: null,
+        invoiceNumber,
+        fiscalYear,
+        subtotalCents: 1000,
+        vatCents: 130,
+        totalCents: 1130,
+        status: 'issued',
+      });
+
+    await insert(9100, branchId);
+    await expect(insert(9100, otherBranchId)).resolves.toBeDefined();
+  });
+
+  it('numbers each branch independently and gaplessly', async () => {
+    const parallelism = 20;
+
+    const [main, second] = await Promise.all([
+      Promise.all(
+        Array.from({ length: parallelism }, () =>
+          db.transaction((tx) => nextInvoiceNumber(tx, branchId)),
+        ),
+      ),
+      Promise.all(
+        Array.from({ length: parallelism }, () =>
+          db.transaction((tx) => nextInvoiceNumber(tx, otherBranchId)),
+        ),
+      ),
+    ]);
+
+    for (const numbers of [main, second]) {
+      expect(new Set(numbers).size).toBe(parallelism);
+    }
+  }, 30_000);
 });

@@ -5,6 +5,7 @@ import {
   BusinessesRepository,
   type ListBusinessesFilters,
 } from './businesses.repository';
+import { sanitizeTheme } from './theme';
 
 @Injectable()
 export class BusinessesService {
@@ -57,10 +58,16 @@ export class BusinessesService {
         | 'vatRegistered'
         | 'cbmsRequired'
         | 'fiscalYearStartMonth'
+        | 'displayName'
       >
-    >,
+    > & { theme?: Record<string, unknown> },
   ): Promise<Business> {
-    const updated = await this.businessesRepository.update(id, patch);
+    const { theme, ...rest } = patch;
+
+    const updated = await this.businessesRepository.update(id, {
+      ...rest,
+      ...(theme === undefined ? {} : { theme: sanitizeTheme(theme) }),
+    });
 
     if (!updated) {
       throw new NotFoundException({

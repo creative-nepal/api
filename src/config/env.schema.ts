@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { isSectorKey, SECTOR_KEYS } from '../database/schema/sector-keys';
 
 export const envSchema = z.object({
   NODE_ENV: z
@@ -35,6 +36,25 @@ export const envSchema = z.object({
   LOG_LEVEL: z
     .enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'])
     .optional(),
+
+  SECTORS_ENABLED: z
+    .string()
+    .optional()
+    .refine(
+      (value) =>
+        !value?.trim() ||
+        value
+          .split(',')
+          .map((key) => key.trim())
+          .filter(Boolean)
+          .every(isSectorKey),
+      {
+        message: `SECTORS_ENABLED must be a comma-separated subset of: ${SECTOR_KEYS.join(', ')}`,
+      },
+    ),
+
+  BRAND_NAME: z.string().default('Creative Nepal'),
+  BRAND_SUPPORT_EMAIL: z.string().optional(),
 });
 
 function assertProductionReady(env: Env): void {

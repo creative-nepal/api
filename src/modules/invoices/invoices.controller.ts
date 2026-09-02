@@ -40,6 +40,7 @@ export class InvoicesController {
   ) {}
 
   @Get()
+  @RequirePermission({ invoice: ['print'] })
   async list(
     @CurrentBusiness() business: Business,
     @Query() query: ListInvoicesQueryDto,
@@ -56,6 +57,7 @@ export class InvoicesController {
   }
 
   @Get('registers')
+  @RequirePermission({ invoice: ['print'] })
   async exportRegister(
     @CurrentBusiness() business: Business,
     @Query() query: ExportRegisterQueryDto,
@@ -65,6 +67,7 @@ export class InvoicesController {
       business,
       query.fiscalYear,
       query.format ?? 'xlsx',
+      query.branchId,
     );
 
     response
@@ -78,6 +81,7 @@ export class InvoicesController {
   }
 
   @Get(':invoiceId')
+  @RequirePermission({ invoice: ['print'] })
   async getById(
     @CurrentBusiness() business: Business,
     @Param('invoiceId') invoiceId: string,
@@ -88,6 +92,7 @@ export class InvoicesController {
   }
 
   @Get(':invoiceId/audit-log')
+  @RequirePermission({ invoice: ['print'] })
   async getAuditLog(
     @CurrentBusiness() business: Business,
     @Param('invoiceId') invoiceId: string,

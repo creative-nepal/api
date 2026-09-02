@@ -1,3 +1,4 @@
+import { brandName } from '../brand';
 import {
   EmailButton,
   EmailFootnote,
@@ -20,12 +21,12 @@ export function OrganizationInvitationEmail({
   url,
 }: OrganizationInvitationEmailProps) {
   return (
-    <EmailLayout preview={`Join ${organizationName} on Creative Nepal`}>
+    <EmailLayout preview={`Join ${organizationName} on ${brandName()}`}>
       <EmailHeading>You have been invited to {organizationName}</EmailHeading>
       <EmailParagraph>
         {inviterName} invited you to join <strong>{organizationName}</strong> on
-        Creative Nepal as a <strong>{role}</strong>. Accept the invitation to
-        get access.
+        {brandName()} as a <strong>{role}</strong>. Accept the invitation to get
+        access.
       </EmailParagraph>
       <EmailButton href={url}>Accept invitation</EmailButton>
       <EmailFootnote>

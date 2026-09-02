@@ -11,13 +11,17 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import {
+  BranchScopeGuard,
   BusinessAccessGuard,
+  CurrentBranch,
   CurrentBusiness,
   RequirePermission,
   RequirePermissionGuard,
+  RequireSector,
+  RequireSectorGuard,
 } from '../../common';
 import type { PaginatedResult } from '../../common/dto/pagination-query.dto';
-import type { Business } from '../../database/schema';
+import type { Branch, Business } from '../../database/schema';
 import {
   CreateTableDto,
   ListTablesQueryDto,
@@ -27,7 +31,13 @@ import {
 import { TablesService } from './tables.service';
 
 @Controller({ path: 'businesses/:businessId/tables', version: '1' })
-@UseGuards(BusinessAccessGuard, RequirePermissionGuard)
+@UseGuards(
+  BusinessAccessGuard,
+  RequirePermissionGuard,
+  RequireSectorGuard,
+  BranchScopeGuard,
+)
+@RequireSector('restaurant')
 @UseInterceptors(ClassSerializerInterceptor)
 export class TablesController {
   constructor(private readonly tablesService: TablesService) {}
@@ -62,9 +72,12 @@ export class TablesController {
   @RequirePermission({ table: ['manage'] })
   async create(
     @CurrentBusiness() business: Business,
+    @CurrentBranch() branch: Branch,
     @Body() dto: CreateTableDto,
   ): Promise<TableResponseDto> {
-    return new TableResponseDto(await this.tablesService.create(business, dto));
+    return new TableResponseDto(
+      await this.tablesService.create(business, branch.id, dto),
+    );
   }
 
   @Patch(':tableId')

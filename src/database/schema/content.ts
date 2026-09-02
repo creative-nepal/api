@@ -25,6 +25,7 @@ export const CONTENT_BLOCK_TYPES = [
   'richText',
   'faq',
   'cta',
+  'pricing',
 ] as const;
 export type ContentBlockType = (typeof CONTENT_BLOCK_TYPES)[number];
 
@@ -71,8 +72,23 @@ export interface CtaBlock {
   buttonHref: string;
 }
 
+export interface PricingBlock {
+  id: string;
+  type: 'pricing';
+  heading?: string;
+  subheading?: string;
+  sector?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+}
+
 export type ContentBlock =
-  HeroBlock | FeaturesBlock | RichTextBlock | FaqBlock | CtaBlock;
+  | HeroBlock
+  | FeaturesBlock
+  | RichTextBlock
+  | FaqBlock
+  | CtaBlock
+  | PricingBlock;
 
 export interface ContentSeo {
   title?: string;

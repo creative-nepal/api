@@ -62,7 +62,15 @@
     "updated": "Updated",
     "limits": "Limits",
     "page": "Page",
-    "compliance": "Compliance"
+    "compliance": "Compliance",
+    "quantity": "Quantity",
+    "amount": "Amount",
+    "date": "Date",
+    "product": "Product",
+    "branch": "Branch",
+    "code": "Code",
+    "allBranches": "All branches",
+    "address": "Address"
   },
   "error": {
     "serverTitle": "Something went wrong",
@@ -87,7 +95,8 @@
     "dataFailedBody": "The request failed. Retry it, or move to another screen and come back.",
     "authUnavailableTitle": "Sign-in is unavailable",
     "authUnavailableBody": "We could not reach the authentication service. Try again in a moment.",
-    "reference": "Reference"
+    "reference": "Reference",
+    "generic": "Something went wrong"
   },
   "auth": {
     "signInTitle": "Sign in",
@@ -100,7 +109,15 @@
     "resetPasswordSubtitle": "Choose a new password.",
     "resetLinkInvalid": "This reset link is missing or invalid.",
     "registerTitle": "Create an account",
-    "registerSubtitle": "Sign up to get started."
+    "registerSubtitle": "Sign up to get started.",
+    "signInFailed": "Unable to sign in",
+    "googleSignInFailed": "Unable to sign in with Google",
+    "resetLinkFailed": "Unable to send reset link",
+    "sendResetLink": "Send reset link",
+    "sending": "Sending…",
+    "registerFailed": "Unable to create account",
+    "resetTokenMissing": "Reset link is missing or invalid.",
+    "resetFailed": "Unable to reset password"
   },
   "admin": {
     "nav": {
@@ -154,7 +171,11 @@
       "cancelSubscription": "Cancel subscription",
       "periodEnds": "Current period ends",
       "noSubscription": "No active subscription. This business has no plan entitlements.",
-      "subscriptionEnding": "Subscription will end at the current period end"
+      "subscriptionEnding": "Subscription will end at the current period end",
+      "branchesTab": "Branches",
+      "branchesTitle": "Branches",
+      "branchesDescription": "Each branch keeps its own gapless invoice series and its own stock.",
+      "defaultBranch": "Default"
     },
     "plans": {
       "title": "Plans",
@@ -307,14 +328,16 @@
         "features": "Features",
         "richText": "Rich text",
         "faq": "FAQ",
-        "cta": "Call to action"
+        "cta": "Call to action",
+        "pricing": "Pricing"
       },
       "blockHint": {
         "hero": "Headline with up to two buttons",
         "features": "Grid of titled cards",
         "richText": "Long-form markdown",
         "faq": "Question and answer list",
-        "cta": "Closing prompt with a button"
+        "cta": "Closing prompt with a button",
+        "pricing": "Live plan cards, priced from the plans catalogue."
       },
       "pageStatus": {
         "draft": "Draft",
@@ -340,7 +363,8 @@
       "saveNavigation": "Save {locale} navigation",
       "navigationSaved": "{locale} navigation saved",
       "navigationFailed": "Failed to save navigation",
-      "translations": "Translations"
+      "translations": "Translations",
+      "pricingSectorHint": "Which sector’s plans to list."
     }
   },
   "web": {
@@ -366,13 +390,16 @@
       "prescriptionRequired": "Prescription required",
       "serviceCharge": "Service charge",
       "newSale": "New sale",
-      "vat": "VAT {rate}%"
+      "vat": "VAT {rate}%",
+      "noBusiness": "No business selected"
     },
     "products": {
       "title": "Products",
       "searchPlaceholder": "Search by name or SKU...",
       "emptyTitle": "No products",
-      "emptyBody": "Products added here become sellable at the point of sale."
+      "emptyBody": "Products added here become sellable at the point of sale.",
+      "descriptionBatch": "Stock is tracked per batch; the figure here is the live, unexpired total.",
+      "descriptionPlain": "Everything this business sells."
     },
     "invoices": {
       "title": "Invoices",
@@ -380,7 +407,10 @@
       "fiscalYearPlaceholder": "Fiscal year, e.g. 2083-84 (required for the register export)",
       "creditNoteTitle": "Issue a credit note",
       "issueCreditNote": "Issue credit note",
-      "credit": "Credit"
+      "credit": "Credit",
+      "creditNoteFailed": "Could not issue credit note",
+      "emptyTitle": "No invoices",
+      "emptyBody": "Invoices appear here as sales are completed."
     },
     "batches": {
       "title": "Batches",
@@ -418,7 +448,28 @@
       "purchaseRegister": "Purchase register",
       "tdsReturn": "TDS return",
       "supplierName": "Supplier name",
-      "supplierPan": "PAN (needed for the TDS return)"
+      "supplierPan": "PAN (needed for the TDS return)",
+      "debitNotesTab": "Debit notes",
+      "debitNotesEmptyTitle": "No debit notes",
+      "debitNotesEmptyBody": "A debit note records goods returned to a supplier, or a rate correction against their bill.",
+      "issueDebitNote": "Issue debit note",
+      "debitNoteIssued": "Debit note issued",
+      "debitNote": "Debit note",
+      "debitNoteHint": "Issued against this bill. The amount is capped at the bill total, and issuing one never recomputes the weighted-average cost.",
+      "restock": "Reduce stock",
+      "restockHint": "Removes the returned quantity from stock and writes a ledger entry. Every line needs a product.",
+      "againstBill": "Against bill",
+      "lineDescription": "Description",
+      "unitPrice": "Unit price",
+      "vat": "VAT",
+      "addLine": "Add line",
+      "removeLine": "Remove line",
+      "pay": "Pay",
+      "receivedFull": "Order fully received",
+      "receivedPartial": "Partial receipt recorded",
+      "receiveFailed": "Could not record receipt",
+      "recording": "Recording…",
+      "recordReceipt": "Record receipt"
     },
     "restaurant": {
       "kitchenTitle": "Kitchen",
@@ -444,7 +495,8 @@
       "tableBilled": "Billed",
       "startPreparing": "Start preparing",
       "markReady": "Mark ready",
-      "markServed": "Mark served"
+      "markServed": "Mark served",
+      "billFailed": "Could not bill this table"
     },
     "settings": {
       "title": "Settings",
@@ -470,7 +522,16 @@
       "emptyBody": "You are the only member.",
       "sendInvitation": "Send invitation",
       "member": "Member",
-      "invitationSent": "Invitation sent"
+      "invitationSent": "Invitation sent",
+      "roleHelp": {
+        "manager": "Products, orders, invoices — not business settings",
+        "cashier": "Take orders and issue invoices only",
+        "pharmacist": "The only role that may dispense prescription or controlled items",
+        "waiter": "Confirm and serve orders, manage tables",
+        "chef": "Kitchen tickets only — never sees pricing or billing",
+        "receptionist": "Book appointments, sell services, manage memberships",
+        "practitioner": "Complete their own appointments; no billing"
+      }
     },
     "nav": {
       "pos": "Point of sale",
@@ -482,7 +543,54 @@
       "purchasing": "Purchasing",
       "invoices": "Invoices",
       "staff": "Staff",
-      "settings": "Settings"
+      "settings": "Settings",
+      "appointments": "Appointments",
+      "services": "Services",
+      "branches": "Branches"
+    },
+    "services": {
+      "title": "Services",
+      "description": "What this business offers, and the session packages customers hold.",
+      "catalogTab": "Catalogue",
+      "membershipsTab": "Memberships",
+      "searchPlaceholder": "Search services",
+      "emptyTitle": "No services yet",
+      "emptyBody": "Add what this business offers, with a price and how long it takes.",
+      "membershipsEmptyTitle": "No memberships",
+      "membershipsEmptyBody": "A membership pre-pays a number of sessions; each completed appointment spends one.",
+      "duration": "Duration",
+      "minutes": "{count} min",
+      "sessions": "Sessions",
+      "startsAt": "Starts",
+      "expiresAt": "Expires"
+    },
+    "appointments": {
+      "title": "Appointments",
+      "description": "Today and ahead. Completing one spends a membership session if the booking used a membership.",
+      "emptyTitle": "No appointments",
+      "emptyBody": "Bookings appear here once reception schedules them.",
+      "allStatuses": "All statuses",
+      "complete": "Complete",
+      "updated": "Appointment updated"
+    },
+    "branches": {
+      "title": "Branches",
+      "description": "Each branch keeps its own gapless invoice series and its own stock.",
+      "newTitle": "Open a branch",
+      "newHint": "The code prefixes this branch’s invoice numbers and cannot change once invoices exist.",
+      "codeHint": "Uppercase letters and digits, up to 8 characters.",
+      "create": "Open branch",
+      "created": "Branch opened",
+      "updated": "Branch updated",
+      "close": "Close",
+      "reopen": "Reopen",
+      "defaultBadge": "Default",
+      "emptyTitle": "No branches",
+      "emptyBody": "Every business starts with one branch; open another when you trade from a second location."
+    },
+    "pricing": {
+      "staffLimit": "Up to {count} staff",
+      "productLimit": "Up to {count} products"
     }
   }
 }

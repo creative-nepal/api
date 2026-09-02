@@ -9,6 +9,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { CurrentUser, type CurrentUserType } from '../../auth';
+import type { PaginatedResult } from '../../common/dto/pagination-query.dto';
 import { ListUsersQueryDto } from './dto/list-users-query.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserResponseDto } from './dto/user-response.dto';
@@ -28,9 +29,17 @@ export class UsersController {
   }
 
   @Get()
-  async list(@Query() query: ListUsersQueryDto): Promise<UserResponseDto[]> {
-    const users = await this.usersService.list(query.limit, query.offset);
-    return users.map((user) => new UserResponseDto(user));
+  async list(
+    @Query() query: ListUsersQueryDto,
+  ): Promise<PaginatedResult<UserResponseDto>> {
+    const { rows, total } = await this.usersService.list(query);
+
+    return {
+      data: rows.map((user) => new UserResponseDto(user)),
+      total,
+      limit: query.limit,
+      offset: query.offset,
+    };
   }
 
   @Get(':id')

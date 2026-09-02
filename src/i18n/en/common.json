@@ -3,7 +3,8 @@
   "sector": {
     "mart": "Mart",
     "medical": "Pharmacy",
-    "restaurant": "Restaurant"
+    "restaurant": "Restaurant",
+    "services": "Services"
   },
   "role": {
     "owner": "Owner",
@@ -11,7 +12,9 @@
     "cashier": "Cashier",
     "pharmacist": "Pharmacist",
     "waiter": "Waiter",
-    "chef": "Chef"
+    "chef": "Chef",
+    "receptionist": "Receptionist",
+    "practitioner": "Practitioner"
   },
   "status": {
     "active": "Active",
@@ -49,5 +52,24 @@
     "vat": "VAT",
     "total": "Total",
     "copy": "COPY"
+  },
+  "debitNoteReason": {
+    "return": "Return",
+    "short_supply": "Short supply",
+    "rate_difference": "Rate difference",
+    "other": "Other",
+    "debit_note": "Debit note"
+  },
+  "appointmentStatus": {
+    "booked": "Booked",
+    "completed": "Completed",
+    "no_show": "No show",
+    "canceled": "Canceled"
+  },
+  "membershipStatus": {
+    "active": "Active",
+    "exhausted": "Exhausted",
+    "expired": "Expired",
+    "canceled": "Canceled"
   }
 }

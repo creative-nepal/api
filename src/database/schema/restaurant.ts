@@ -10,7 +10,7 @@ import {
   uniqueIndex,
 } from 'drizzle-orm/pg-core';
 import { user } from './auth';
-import { businesses, orderItems, orders } from './billing';
+import { branches, businesses, orderItems, orders } from './billing';
 
 export const TABLE_STATUSES = ['empty', 'occupied', 'billed'] as const;
 export type TableStatus = (typeof TABLE_STATUSES)[number];
@@ -51,6 +51,9 @@ export const restaurantTables = pgTable(
     businessId: text('business_id')
       .notNull()
       .references(() => businesses.id, { onDelete: 'cascade' }),
+    branchId: text('branch_id')
+      .notNull()
+      .references(() => branches.id, { onDelete: 'restrict' }),
     tableNo: text('table_no').notNull(),
     seats: integer('seats').default(4).notNull(),
     status: text('status').default('empty').notNull(),

@@ -12,10 +12,10 @@ import {
   timestamp,
   uniqueIndex,
 } from 'drizzle-orm/pg-core';
-import { organization, user } from './auth';
+import { organization, team, user } from './auth';
 
-export const SECTORS = ['mart', 'medical', 'restaurant'] as const;
-export type Sector = (typeof SECTORS)[number];
+export { SECTOR_KEYS as SECTORS } from './sector-keys';
+export type { SectorKey as Sector } from './sector-keys';
 
 export const BUSINESS_STATUSES = ['active', 'suspended', 'closed'] as const;
 export type BusinessStatus = (typeof BUSINESS_STATUSES)[number];
@@ -86,6 +86,8 @@ export const businesses = pgTable(
     serviceChargePercent: integer('service_charge_percent')
       .default(0)
       .notNull(),
+    displayName: text('display_name'),
+    theme: jsonb('theme').$type<BusinessTheme>().default({}).notNull(),
     fiscalYearStartMonth: integer('fiscal_year_start_month')
       .default(4)
       .notNull(),
@@ -102,6 +104,53 @@ export const businesses = pgTable(
     uniqueIndex('businesses_organizationId_uidx').on(table.organizationId),
     index('businesses_sector_status_idx').on(table.sector, table.status),
     index('businesses_createdAt_idx').on(table.createdAt),
+  ],
+);
+
+export interface BusinessTheme {
+  primary?: string;
+  primaryForeground?: string;
+  accent?: string;
+  radius?: string;
+  logoUrl?: string;
+  defaultMode?: string;
+  [key: string]: unknown;
+}
+
+export const branches = pgTable(
+  'branches',
+  {
+    id: text('id').primaryKey(),
+    businessId: text('business_id')
+      .notNull()
+      .references(() => businesses.id, { onDelete: 'cascade' }),
+    teamId: text('team_id').references(() => team.id, { onDelete: 'set null' }),
+    name: text('name').notNull(),
+    code: text('code'),
+    address: text('address'),
+    isDefault: boolean('is_default').default(false).notNull(),
+    isActive: boolean('is_active').default(true).notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    uniqueIndex('branches_teamId_uidx').on(table.teamId),
+    uniqueIndex('branches_businessId_code_uidx').on(
+      table.businessId,
+      table.code,
+    ),
+    uniqueIndex('branches_businessId_default_uidx')
+      .on(table.businessId)
+      .where(sql`is_default = true`),
+    index('branches_businessId_isActive_idx').on(
+      table.businessId,
+      table.isActive,
+    ),
   ],
 );
 
@@ -215,6 +264,38 @@ export const products = pgTable(
   ],
 );
 
+export const productBranchStock = pgTable(
+  'product_branch_stock',
+  {
+    businessId: text('business_id')
+      .notNull()
+      .references(() => businesses.id, { onDelete: 'cascade' }),
+    branchId: text('branch_id')
+      .notNull()
+      .references(() => branches.id, { onDelete: 'cascade' }),
+    productId: text('product_id')
+      .notNull()
+      .references(() => products.id, { onDelete: 'cascade' }),
+    stockQty: numeric('stock_qty', { precision: 14, scale: 3 })
+      .default('0')
+      .notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    primaryKey({
+      name: 'product_branch_stock_pk',
+      columns: [table.branchId, table.productId],
+    }),
+    index('product_branch_stock_businessId_productId_idx').on(
+      table.businessId,
+      table.productId,
+    ),
+  ],
+);
+
 export const customers = pgTable(
   'customers',
   {
@@ -245,6 +326,9 @@ export const orders = pgTable(
     businessId: text('business_id')
       .notNull()
       .references(() => businesses.id, { onDelete: 'cascade' }),
+    branchId: text('branch_id')
+      .notNull()
+      .references(() => branches.id, { onDelete: 'restrict' }),
     customerId: text('customer_id').references(() => customers.id, {
       onDelete: 'set null',
     }),
@@ -297,6 +381,7 @@ export const orderItems = pgTable(
       onDelete: 'restrict',
     }),
     menuItemId: text('menu_item_id'),
+    serviceItemId: text('service_item_id'),
     modifiers: jsonb('modifiers')
       .$type<Array<{ name: string; label: string; priceDeltaCents: number }>>()
       .default([])
@@ -329,6 +414,9 @@ export const invoiceCounters = pgTable(
     businessId: text('business_id')
       .notNull()
       .references(() => businesses.id, { onDelete: 'cascade' }),
+    branchId: text('branch_id')
+      .notNull()
+      .references(() => branches.id, { onDelete: 'restrict' }),
     fiscalYear: text('fiscal_year').notNull(),
     lastNumber: integer('last_number').default(0).notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true })
@@ -339,7 +427,7 @@ export const invoiceCounters = pgTable(
   (table) => [
     primaryKey({
       name: 'invoice_counters_pk',
-      columns: [table.businessId, table.fiscalYear],
+      columns: [table.businessId, table.branchId, table.fiscalYear],
     }),
   ],
 );
@@ -351,6 +439,9 @@ export const invoiceLeases = pgTable(
     businessId: text('business_id')
       .notNull()
       .references(() => businesses.id, { onDelete: 'cascade' }),
+    branchId: text('branch_id')
+      .notNull()
+      .references(() => branches.id, { onDelete: 'restrict' }),
     fiscalYear: text('fiscal_year').notNull(),
     deviceId: text('device_id').notNull(),
     firstNumber: integer('first_number').notNull(),
@@ -391,6 +482,9 @@ export const businessInvoices = pgTable(
     orderId: text('order_id').references(() => orders.id, {
       onDelete: 'restrict',
     }),
+    branchId: text('branch_id')
+      .notNull()
+      .references(() => branches.id, { onDelete: 'restrict' }),
     invoiceNumber: integer('invoice_number').notNull(),
     fiscalYear: text('fiscal_year').notNull(),
     customerId: text('customer_id').references(() => customers.id, {
@@ -420,8 +514,9 @@ export const businessInvoices = pgTable(
       .notNull(),
   },
   (table) => [
-    uniqueIndex('business_invoices_businessId_fiscalYear_number_uidx').on(
+    uniqueIndex('business_invoices_branch_fiscalYear_number_uidx').on(
       table.businessId,
+      table.branchId,
       table.fiscalYear,
       table.invoiceNumber,
     ),
@@ -609,6 +704,9 @@ export type Order = typeof orders.$inferSelect;
 export type NewOrder = typeof orders.$inferInsert;
 export type OrderItem = typeof orderItems.$inferSelect;
 export type NewOrderItem = typeof orderItems.$inferInsert;
+export type ProductBranchStock = typeof productBranchStock.$inferSelect;
+export type Branch = typeof branches.$inferSelect;
+export type NewBranch = typeof branches.$inferInsert;
 export type InvoiceCounter = typeof invoiceCounters.$inferSelect;
 export type BusinessInvoice = typeof businessInvoices.$inferSelect;
 export type NewBusinessInvoice = typeof businessInvoices.$inferInsert;

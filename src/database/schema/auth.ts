@@ -26,8 +26,6 @@ export const user = pgTable('user', {
   banExpires: timestamp('ban_expires'),
 });
 
-export type User = typeof user.$inferSelect;
-
 export const session = pgTable(
   'session',
   {
@@ -45,6 +43,7 @@ export const session = pgTable(
       .references(() => user.id, { onDelete: 'cascade' }),
     impersonatedBy: text('impersonated_by'),
     activeOrganizationId: text('active_organization_id'),
+    activeTeamId: text('active_team_id'),
   },
   (table) => [index('session_userId_idx').on(table.userId)],
 );
@@ -126,6 +125,62 @@ export const organization = pgTable(
   (table) => [uniqueIndex('organization_slug_uidx').on(table.slug)],
 );
 
+export const organizationRole = pgTable(
+  'organization_role',
+  {
+    id: text('id').primaryKey(),
+    organizationId: text('organization_id')
+      .notNull()
+      .references(() => organization.id, { onDelete: 'cascade' }),
+    role: text('role').notNull(),
+    permission: text('permission').notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').$onUpdate(
+      () => /* @__PURE__ */ new Date(),
+    ),
+  },
+  (table) => [
+    index('organizationRole_organizationId_idx').on(table.organizationId),
+    index('organizationRole_role_idx').on(table.role),
+  ],
+);
+
+export const team = pgTable(
+  'team',
+  {
+    id: text('id').primaryKey(),
+    name: text('name').notNull(),
+    memberCount: integer('member_count').default(0).notNull(),
+    organizationId: text('organization_id')
+      .notNull()
+      .references(() => organization.id, { onDelete: 'cascade' }),
+    createdAt: timestamp('created_at').notNull(),
+    updatedAt: timestamp('updated_at').$onUpdate(
+      () => /* @__PURE__ */ new Date(),
+    ),
+  },
+  (table) => [index('team_organizationId_idx').on(table.organizationId)],
+);
+
+export const teamMember = pgTable(
+  'team_member',
+  {
+    id: text('id').primaryKey(),
+    teamId: text('team_id')
+      .notNull()
+      .references(() => team.id, { onDelete: 'cascade' }),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    membershipKey: text('membership_key').unique(),
+    createdAt: timestamp('created_at'),
+  },
+  (table) => [
+    index('teamMember_teamId_idx').on(table.teamId),
+    index('teamMember_userId_idx').on(table.userId),
+  ],
+);
+
 export const member = pgTable(
   'member',
   {
@@ -145,8 +200,6 @@ export const member = pgTable(
   ],
 );
 
-export type Member = typeof member.$inferSelect;
-
 export const invitation = pgTable(
   'invitation',
   {
@@ -156,6 +209,7 @@ export const invitation = pgTable(
       .references(() => organization.id, { onDelete: 'cascade' }),
     email: text('email').notNull(),
     role: text('role'),
+    teamId: text('team_id'),
     status: text('status').default('pending').notNull(),
     expiresAt: timestamp('expires_at').notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -173,6 +227,7 @@ export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),
   passkeys: many(passkey),
+  teamMembers: many(teamMember),
   members: many(member),
   invitations: many(invitation),
 }));
@@ -199,8 +254,39 @@ export const passkeyRelations = relations(passkey, ({ one }) => ({
 }));
 
 export const organizationRelations = relations(organization, ({ many }) => ({
+  organizationRoles: many(organizationRole),
+  teams: many(team),
   members: many(member),
   invitations: many(invitation),
+}));
+
+export const organizationRoleRelations = relations(
+  organizationRole,
+  ({ one }) => ({
+    organization: one(organization, {
+      fields: [organizationRole.organizationId],
+      references: [organization.id],
+    }),
+  }),
+);
+
+export const teamRelations = relations(team, ({ one, many }) => ({
+  organization: one(organization, {
+    fields: [team.organizationId],
+    references: [organization.id],
+  }),
+  teamMembers: many(teamMember),
+}));
+
+export const teamMemberRelations = relations(teamMember, ({ one }) => ({
+  team: one(team, {
+    fields: [teamMember.teamId],
+    references: [team.id],
+  }),
+  user: one(user, {
+    fields: [teamMember.userId],
+    references: [user.id],
+  }),
 }));
 
 export const memberRelations = relations(member, ({ one }) => ({
@@ -224,3 +310,8 @@ export const invitationRelations = relations(invitation, ({ one }) => ({
     references: [user.id],
   }),
 }));
+export type User = typeof user.$inferSelect;
+export type Member = typeof member.$inferSelect;
+export type Team = typeof team.$inferSelect;
+export type TeamMember = typeof teamMember.$inferSelect;
+export type OrganizationRole = typeof organizationRole.$inferSelect;

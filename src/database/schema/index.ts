@@ -4,4 +4,5 @@ export * from './medical';
 export * from './restaurant';
 export * from './platform';
 export * from './purchasing';
+export * from './services';
 export * from './content';

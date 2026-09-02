@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { eq } from 'drizzle-orm';
+import { brandName } from '../email/brand';
 import { getDb } from './client';
 import {
   type ContentBlock,
@@ -26,6 +27,8 @@ interface SeedPage {
   translations: SeedTranslation[];
 }
 
+const BRAND = brandName();
+
 const SEED_PAGES: SeedPage[] = [
   {
     slug: 'home',
@@ -33,10 +36,10 @@ const SEED_PAGES: SeedPage[] = [
     translations: [
       {
         locale: 'en',
-        title: 'Creative Nepal',
+        title: BRAND,
         navLabel: 'Home',
         seo: {
-          title: 'Creative Nepal — billing built for Nepali business',
+          title: `${BRAND} — billing built for Nepali business`,
           description:
             'Point of sale, IRD-ready invoicing and stock control for marts, pharmacies and restaurants.',
         },
@@ -115,7 +118,7 @@ const SEED_PAGES: SeedPage[] = [
         title: 'Pricing',
         navLabel: 'Pricing',
         seo: {
-          title: 'Pricing — Creative Nepal',
+          title: `Pricing — ${BRAND}`,
           description:
             'Simple monthly plans per business, priced for marts, pharmacies and restaurants.',
         },
@@ -126,6 +129,15 @@ const SEED_PAGES: SeedPage[] = [
             heading: 'One plan per business',
             subheading:
               'Pay per business, not per device. Add staff without adding invoices.',
+          },
+          {
+            id: 'pricing-plans',
+            type: 'pricing',
+            heading: 'Plans',
+            subheading:
+              'Priced per business. These cards read the live plan catalogue, so what you see is what is charged.',
+            ctaLabel: 'Start free',
+            ctaHref: '/register',
           },
           {
             id: 'pricing-faq',
@@ -156,14 +168,13 @@ const SEED_PAGES: SeedPage[] = [
         locale: 'en',
         title: 'About',
         navLabel: 'About',
-        seo: { title: 'About — Creative Nepal' },
+        seo: { title: `About — ${BRAND}` },
         blocks: [
           {
             id: 'about-body',
             type: 'richText',
             heading: 'Why we built this',
-            markdown:
-              'Creative Nepal started at a counter in Kathmandu, watching a shopkeeper reconcile a paper register against a spreadsheet at midnight.\n\nWe build billing software for the way Nepali businesses actually trade: mixed cash and digital payments, VAT that has to reconcile with the IRD, and stock that moves faster than any monthly stocktake can follow.',
+            markdown: `${BRAND} started at a counter in Kathmandu, watching a shopkeeper reconcile a paper register against a spreadsheet at midnight.\n\nWe build billing software for the way Nepali businesses actually trade: mixed cash and digital payments, VAT that has to reconcile with the IRD, and stock that moves faster than any monthly stocktake can follow.`,
           },
         ],
       },
@@ -177,7 +188,7 @@ const SEED_PAGES: SeedPage[] = [
         locale: 'en',
         title: 'Terms of service',
         navLabel: 'Terms',
-        seo: { title: 'Terms of service — Creative Nepal', noIndex: true },
+        seo: { title: `Terms of service — ${BRAND}`, noIndex: true },
         blocks: [
           {
             id: 'terms-body',
@@ -197,7 +208,7 @@ const SEED_PAGES: SeedPage[] = [
         locale: 'en',
         title: 'Privacy policy',
         navLabel: 'Privacy',
-        seo: { title: 'Privacy policy — Creative Nepal', noIndex: true },
+        seo: { title: `Privacy policy — ${BRAND}`, noIndex: true },
         blocks: [
           {
             id: 'privacy-body',
@@ -243,7 +254,7 @@ const SEED_NAVIGATION: Array<{
       },
     ],
     tagline: 'Billing built for Nepali business.',
-    copyright: 'Creative Nepal',
+    copyright: BRAND,
   },
   {
     locale: 'ne',

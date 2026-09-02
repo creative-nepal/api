@@ -3,6 +3,7 @@ import {
   IsBoolean,
   IsIn,
   IsInt,
+  IsObject,
   IsOptional,
   IsString,
   Max,
@@ -37,6 +38,15 @@ export class UpdateBusinessDto {
   @Min(1)
   @Max(12)
   fiscalYearStartMonth?: number;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  displayName?: string;
+
+  @IsOptional()
+  @IsObject()
+  theme?: Record<string, unknown>;
 }
 
 export class UpdateBusinessStatusDto {

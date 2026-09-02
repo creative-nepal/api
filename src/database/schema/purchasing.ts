@@ -6,6 +6,7 @@ import {
   integer,
   numeric,
   pgTable,
+  primaryKey,
   text,
   timestamp,
   uniqueIndex,
@@ -27,6 +28,15 @@ export const PURCHASE_BILL_STATUSES = [
   'partially_paid',
   'paid',
 ] as const;
+
+export const DEBIT_NOTE_REASONS = [
+  'return',
+  'damaged',
+  'short_supply',
+  'rate_difference',
+  'other',
+] as const;
+export type DebitNoteReason = (typeof DEBIT_NOTE_REASONS)[number];
 
 export const BASIS_POINTS_DIVISOR = 10_000;
 export type PurchaseBillStatus = (typeof PURCHASE_BILL_STATUSES)[number];
@@ -217,9 +227,114 @@ export const purchaseBillItems = pgTable(
   ],
 );
 
+export const debitNotes = pgTable(
+  'debit_notes',
+  {
+    id: text('id').primaryKey(),
+    businessId: text('business_id')
+      .notNull()
+      .references(() => businesses.id, { onDelete: 'cascade' }),
+    supplierId: text('supplier_id')
+      .notNull()
+      .references(() => suppliers.id, { onDelete: 'restrict' }),
+    purchaseBillId: text('purchase_bill_id')
+      .notNull()
+      .references(() => purchaseBills.id, { onDelete: 'restrict' }),
+    noteNumber: integer('note_number').notNull(),
+    series: text('series').notNull(),
+    reason: text('reason').notNull(),
+    note: text('note'),
+    subtotalCents: integer('subtotal_cents').default(0).notNull(),
+    vatCents: integer('vat_cents').default(0).notNull(),
+    totalCents: integer('total_cents').default(0).notNull(),
+    restocked: boolean('restocked').default(false).notNull(),
+    issuedAt: timestamp('issued_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    createdByUserId: text('created_by_user_id').references(() => user.id, {
+      onDelete: 'set null',
+    }),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    uniqueIndex('debit_notes_businessId_series_number_uidx').on(
+      table.businessId,
+      table.series,
+      table.noteNumber,
+    ),
+    index('debit_notes_businessId_billId_idx').on(
+      table.businessId,
+      table.purchaseBillId,
+    ),
+    index('debit_notes_businessId_supplierId_idx').on(
+      table.businessId,
+      table.supplierId,
+    ),
+    index('debit_notes_businessId_issuedAt_idx').on(
+      table.businessId,
+      table.issuedAt,
+    ),
+  ],
+);
+
+export const debitNoteItems = pgTable(
+  'debit_note_items',
+  {
+    id: text('id').primaryKey(),
+    businessId: text('business_id')
+      .notNull()
+      .references(() => businesses.id, { onDelete: 'cascade' }),
+    debitNoteId: text('debit_note_id')
+      .notNull()
+      .references(() => debitNotes.id, { onDelete: 'cascade' }),
+    purchaseBillItemId: text('purchase_bill_item_id').references(
+      () => purchaseBillItems.id,
+      { onDelete: 'set null' },
+    ),
+    productId: text('product_id').references(() => products.id, {
+      onDelete: 'set null',
+    }),
+    description: text('description').notNull(),
+    quantity: numeric('quantity', { precision: 14, scale: 3 })
+      .default('1')
+      .notNull(),
+    unitPriceCents: integer('unit_price_cents').notNull(),
+    vatCents: integer('vat_cents').default(0).notNull(),
+    lineTotalCents: integer('line_total_cents').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    index('debit_note_items_businessId_noteId_idx').on(
+      table.businessId,
+      table.debitNoteId,
+    ),
+  ],
+);
+
+export const debitNoteCounters = pgTable(
+  'debit_note_counters',
+  {
+    businessId: text('business_id')
+      .notNull()
+      .references(() => businesses.id, { onDelete: 'cascade' }),
+    series: text('series').notNull(),
+    lastNumber: integer('last_number').default(0).notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [primaryKey({ columns: [table.businessId, table.series] })],
+);
+
 export const suppliersRelations = relations(suppliers, ({ many }) => ({
   purchaseOrders: many(purchaseOrders),
   bills: many(purchaseBills),
+  debitNotes: many(debitNotes),
 }));
 
 export const purchaseOrdersRelations = relations(
@@ -255,6 +370,7 @@ export const purchaseBillsRelations = relations(
       references: [suppliers.id],
     }),
     items: many(purchaseBillItems),
+    debitNotes: many(debitNotes),
   }),
 );
 
@@ -268,6 +384,29 @@ export const purchaseBillItemsRelations = relations(
   }),
 );
 
+export const debitNotesRelations = relations(debitNotes, ({ one, many }) => ({
+  supplier: one(suppliers, {
+    fields: [debitNotes.supplierId],
+    references: [suppliers.id],
+  }),
+  bill: one(purchaseBills, {
+    fields: [debitNotes.purchaseBillId],
+    references: [purchaseBills.id],
+  }),
+  items: many(debitNoteItems),
+}));
+
+export const debitNoteItemsRelations = relations(debitNoteItems, ({ one }) => ({
+  debitNote: one(debitNotes, {
+    fields: [debitNoteItems.debitNoteId],
+    references: [debitNotes.id],
+  }),
+  product: one(products, {
+    fields: [debitNoteItems.productId],
+    references: [products.id],
+  }),
+}));
+
 export type Supplier = typeof suppliers.$inferSelect;
 export type NewSupplier = typeof suppliers.$inferInsert;
 export type PurchaseOrder = typeof purchaseOrders.$inferSelect;
@@ -278,3 +417,7 @@ export type PurchaseBill = typeof purchaseBills.$inferSelect;
 export type NewPurchaseBill = typeof purchaseBills.$inferInsert;
 export type PurchaseBillItem = typeof purchaseBillItems.$inferSelect;
 export type NewPurchaseBillItem = typeof purchaseBillItems.$inferInsert;
+export type DebitNote = typeof debitNotes.$inferSelect;
+export type NewDebitNote = typeof debitNotes.$inferInsert;
+export type DebitNoteItem = typeof debitNoteItems.$inferSelect;
+export type NewDebitNoteItem = typeof debitNoteItems.$inferInsert;

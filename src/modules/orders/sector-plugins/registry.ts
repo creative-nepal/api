@@ -3,6 +3,7 @@ import type { Business, Sector } from '../../../database/schema';
 import { MartSectorPlugin } from './mart.plugin';
 import { MedicalSectorPlugin } from './medical.plugin';
 import { RestaurantSectorPlugin } from './restaurant.plugin';
+import { ServicesSectorPlugin } from './services.plugin';
 import type { SectorPlugin } from './sector-plugin.interface';
 
 @Injectable()
@@ -13,11 +14,13 @@ export class SectorPluginRegistry {
     mart: MartSectorPlugin,
     medical: MedicalSectorPlugin,
     restaurant: RestaurantSectorPlugin,
+    services: ServicesSectorPlugin,
   ) {
     this.plugins = new Map<Sector, SectorPlugin>([
       [mart.sector, mart],
       [medical.sector, medical],
       [restaurant.sector, restaurant],
+      [services.sector, services],
     ]);
   }
 

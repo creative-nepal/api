@@ -15,6 +15,8 @@ import {
   CurrentBusiness,
   RequirePermission,
   RequirePermissionGuard,
+  RequireSector,
+  RequireSectorGuard,
 } from '../../common';
 import type { Business } from '../../database/schema';
 import type { PaginatedResult } from '../../common/dto/pagination-query.dto';
@@ -27,7 +29,8 @@ import {
 import { BatchResponseDto } from './dto/batch-response.dto';
 
 @Controller({ path: 'businesses/:businessId/batches', version: '1' })
-@UseGuards(BusinessAccessGuard, RequirePermissionGuard)
+@UseGuards(BusinessAccessGuard, RequirePermissionGuard, RequireSectorGuard)
+@RequireSector('medical')
 @UseInterceptors(ClassSerializerInterceptor)
 export class BatchesController {
   constructor(private readonly batchesService: BatchesService) {}
@@ -71,7 +74,8 @@ export class BatchesController {
   path: 'businesses/:businessId/products/:productId/batches',
   version: '1',
 })
-@UseGuards(BusinessAccessGuard, RequirePermissionGuard)
+@UseGuards(BusinessAccessGuard, RequirePermissionGuard, RequireSectorGuard)
+@RequireSector('medical')
 @UseInterceptors(ClassSerializerInterceptor)
 export class ProductBatchesController {
   constructor(private readonly batchesService: BatchesService) {}

@@ -4,6 +4,7 @@ import { and, eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { getDb } from '../database/client';
 import {
+  branches,
   businesses,
   plans,
   SECTORS,
@@ -67,10 +68,12 @@ export const organizationHooks = {
 
     const metadata = parsed.data;
 
-    await getDb()
-      .insert(businesses)
-      .values({
-        id: randomUUID(),
+    const businessId = randomUUID();
+    const db = getDb();
+
+    await db.transaction(async (tx) => {
+      await tx.insert(businesses).values({
+        id: businessId,
         organizationId: data.organization.id,
         sector: metadata.sector,
         legalName: metadata.legalName ?? data.organization.name,
@@ -81,6 +84,16 @@ export const organizationHooks = {
           metadata.fiscalYearStartMonth ?? DEFAULT_FISCAL_YEAR_START_MONTH,
         status: 'active',
       });
+
+      await tx.insert(branches).values({
+        id: randomUUID(),
+        businessId,
+        name: 'Main',
+        code: null,
+        isDefault: true,
+        isActive: true,
+      });
+    });
   },
 };
 

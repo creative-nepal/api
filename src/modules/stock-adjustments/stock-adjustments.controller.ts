@@ -12,13 +12,15 @@ import {
 } from '@nestjs/common';
 import { CurrentUser, type CurrentUserType } from '../../auth';
 import {
+  BranchScopeGuard,
   BusinessAccessGuard,
+  CurrentBranch,
   CurrentBusiness,
   RequirePermission,
   RequirePermissionGuard,
 } from '../../common';
 import type { PaginatedResult } from '../../common/dto/pagination-query.dto';
-import type { Business, StockAdjustment } from '../../database/schema';
+import type { Branch, Business, StockAdjustment } from '../../database/schema';
 import {
   CreateStockAdjustmentDto,
   ListStockAdjustmentsQueryDto,
@@ -26,7 +28,7 @@ import {
 import { StockAdjustmentsService } from './stock-adjustments.service';
 
 @Controller({ path: 'businesses/:businessId/stock-adjustments', version: '1' })
-@UseGuards(BusinessAccessGuard, RequirePermissionGuard)
+@UseGuards(BusinessAccessGuard, RequirePermissionGuard, BranchScopeGuard)
 @UseInterceptors(ClassSerializerInterceptor)
 export class StockAdjustmentsController {
   constructor(
@@ -34,6 +36,7 @@ export class StockAdjustmentsController {
   ) {}
 
   @Get()
+  @RequirePermission({ product: ['update'] })
   async list(
     @CurrentBusiness() business: Business,
     @Query() query: ListStockAdjustmentsQueryDto,
@@ -48,10 +51,16 @@ export class StockAdjustmentsController {
   @RequirePermission({ product: ['update'] })
   async create(
     @CurrentBusiness() business: Business,
+    @CurrentBranch() branch: Branch,
     @Body() dto: CreateStockAdjustmentDto,
     @CurrentUser() currentUser: CurrentUserType,
   ): Promise<StockAdjustment> {
-    return this.stockAdjustmentsService.create(business, dto, currentUser.id);
+    return this.stockAdjustmentsService.create(
+      business,
+      branch.id,
+      dto,
+      currentUser.id,
+    );
   }
 }
 
@@ -59,7 +68,7 @@ export class StockAdjustmentsController {
   path: 'businesses/:businessId/products/:productId/stock',
   version: '1',
 })
-@UseGuards(BusinessAccessGuard, RequirePermissionGuard)
+@UseGuards(BusinessAccessGuard, RequirePermissionGuard, BranchScopeGuard)
 @UseInterceptors(ClassSerializerInterceptor)
 export class ProductStockController {
   constructor(
@@ -70,12 +79,14 @@ export class ProductStockController {
   @RequirePermission({ product: ['update'] })
   async adjust(
     @CurrentBusiness() business: Business,
+    @CurrentBranch() branch: Branch,
     @Param('productId') productId: string,
     @Body() dto: Omit<CreateStockAdjustmentDto, 'productId'>,
     @CurrentUser() currentUser: CurrentUserType,
   ): Promise<StockAdjustment> {
     return this.stockAdjustmentsService.create(
       business,
+      branch.id,
       { ...dto, productId },
       currentUser.id,
     );

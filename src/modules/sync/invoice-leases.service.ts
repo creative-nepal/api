@@ -7,7 +7,7 @@ import {
 import { and, eq, gte, lte, sql } from 'drizzle-orm';
 import { PinoLogger } from 'nestjs-pino';
 import { type Database, InjectDatabase, schema } from '../../database';
-import type { Business, InvoiceLease } from '../../database/schema';
+import type { Branch, Business, InvoiceLease } from '../../database/schema';
 import { fiscalYearLabel } from '../invoices/fiscal-year';
 
 const LEASE_TTL_MS = 24 * 60 * 60 * 1000;
@@ -23,6 +23,7 @@ export class InvoiceLeasesService {
 
   async createLease(
     business: Business,
+    branch: Branch,
     deviceId: string,
     size: number,
   ): Promise<InvoiceLease> {
@@ -34,10 +35,16 @@ export class InvoiceLeasesService {
     return this.db.transaction(async (tx) => {
       const [counter] = await tx
         .insert(schema.invoiceCounters)
-        .values({ businessId: business.id, fiscalYear, lastNumber: size })
+        .values({
+          businessId: business.id,
+          branchId: branch.id,
+          fiscalYear,
+          lastNumber: size,
+        })
         .onConflictDoUpdate({
           target: [
             schema.invoiceCounters.businessId,
+            schema.invoiceCounters.branchId,
             schema.invoiceCounters.fiscalYear,
           ],
           set: {
@@ -54,6 +61,7 @@ export class InvoiceLeasesService {
         .values({
           id: randomUUID(),
           businessId: business.id,
+          branchId: branch.id,
           fiscalYear,
           deviceId,
           firstNumber,
@@ -225,6 +233,7 @@ export class InvoiceLeasesService {
         await tx.insert(schema.businessInvoices).values({
           id: invoiceId,
           businessId: business.id,
+          branchId: lease.branchId,
           orderId: null,
           invoiceNumber,
           fiscalYear: lease.fiscalYear,

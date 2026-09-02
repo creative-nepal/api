@@ -88,4 +88,16 @@ export class AppConfigService {
   get webRevalidateSecret(): string | undefined {
     return this.configService.get('WEB_REVALIDATE_SECRET', { infer: true });
   }
+
+  get sectorsEnabled(): string | undefined {
+    return this.configService.get('SECTORS_ENABLED', { infer: true });
+  }
+
+  get brandName(): string {
+    return this.configService.get('BRAND_NAME', { infer: true });
+  }
+
+  get brandSupportEmail(): string | undefined {
+    return this.configService.get('BRAND_SUPPORT_EMAIL', { infer: true });
+  }
 }
