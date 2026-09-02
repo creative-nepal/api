@@ -127,7 +127,8 @@
       "plans": "Plans",
       "billing": "Billing",
       "users": "Users",
-      "content": "Content"
+      "content": "Content",
+      "operations": "Operations"
     },
     "overview": {
       "title": "Overview",
@@ -365,6 +366,23 @@
       "navigationFailed": "Failed to save navigation",
       "translations": "Translations",
       "pricingSectorHint": "Which sector’s plans to list."
+    },
+    "notifications": {
+      "title": "Alerts",
+      "jobsTitle": "Scheduled jobs",
+      "runsTitle": "Recent runs",
+      "emailsTitle": "Email queue",
+      "runNow": "Run now",
+      "retry": "Retry",
+      "lastRun": "Last run",
+      "schedule": "Schedule",
+      "duration": "Duration",
+      "emailFailedTitle": "Emails could not be delivered",
+      "emailFailedBody": "{count} message(s) exhausted their retries",
+      "cbmsFailedTitle": "CBMS pushes failing",
+      "cbmsFailedBody": "{count} invoice(s) failed to reach the IRD",
+      "jobFailedTitle": "A scheduled job failed",
+      "jobFailedBody": "{count} run(s) failed in the last day"
     }
   },
   "web": {
@@ -531,7 +549,15 @@
         "chef": "Kitchen tickets only — never sees pricing or billing",
         "receptionist": "Book appointments, sell services, manage memberships",
         "practitioner": "Complete their own appointments; no billing"
-      }
+      },
+      "roleChanged": "Role updated",
+      "memberRemoved": "Member removed",
+      "invitationRevoked": "Invitation revoked",
+      "remove": "Remove",
+      "revoke": "Revoke",
+      "pendingTitle": "Pending invitations",
+      "removeTitle": "Remove this member?",
+      "removeBody": "{email} will lose access to this business immediately."
     },
     "nav": {
       "pos": "Point of sale",
@@ -546,7 +572,8 @@
       "settings": "Settings",
       "appointments": "Appointments",
       "services": "Services",
-      "branches": "Branches"
+      "branches": "Branches",
+      "notifications": "Notifications"
     },
     "services": {
       "title": "Services",
@@ -591,6 +618,20 @@
     "pricing": {
       "staffLimit": "Up to {count} staff",
       "productLimit": "Up to {count} products"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "empty": "Nothing to see",
+      "markAllRead": "Mark all read",
+      "allRead": "All caught up",
+      "lowStockTitle": "Low stock",
+      "lowStockBody": "{product} is down to {stock}",
+      "expiringTitle": "Batch expiring",
+      "expiringBody": "{product} batch {batch} expires {date}",
+      "pastDueTitle": "Subscription past due",
+      "pastDueBody": "Renew to keep issuing invoices",
+      "trialEndingTitle": "Trial ending",
+      "trialEndingBody": "Your trial ends on {date}"
     }
   }
 }

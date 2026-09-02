@@ -1,8 +1,14 @@
+import { randomUUID } from 'node:crypto';
 import { Injectable, Logger } from '@nestjs/common';
 import { render } from '@react-email/render';
 import type { ReactElement } from 'react';
 import { Resend } from 'resend';
+import { getDb } from '../database/client';
+import type { EmailOutboxRow, EmailTemplate } from '../database/schema';
+import { emailOutbox } from '../database/schema/operations';
 import { brandName, defaultEmailFrom } from './brand';
+import { NotificationDigestEmail } from './templates/notification-digest-email';
+import type { NotificationDigestEmailProps } from './templates/notification-digest-email';
 import { OrganizationInvitationEmail } from './templates/organization-invitation-email';
 import type { OrganizationInvitationEmailProps } from './templates/organization-invitation-email';
 import { OtpVerificationEmail } from './templates/otp-verification-email';
@@ -28,11 +34,12 @@ export class EmailService {
     to: string,
     props: ResetPasswordEmailProps,
   ): Promise<void> {
-    await this.send({
+    await this.enqueue(
       to,
-      subject: `Reset your ${this.brand} password`,
-      react: ResetPasswordEmail(props),
-    });
+      `Reset your ${this.brand} password`,
+      'reset-password',
+      props,
+    );
   }
 
   async sendOtpVerificationEmail(
@@ -46,37 +53,63 @@ export class EmailService {
       'change-email': `Confirm your new ${this.brand} email address`,
     };
 
-    await this.send({
+    await this.enqueue(
       to,
-      subject: subjectByType[props.type],
-      react: OtpVerificationEmail(props),
-    });
+      subjectByType[props.type],
+      'otp-verification',
+      props,
+    );
   }
 
   async sendOrganizationInvitationEmail(
     to: string,
     props: OrganizationInvitationEmailProps,
   ): Promise<void> {
-    await this.send({
+    await this.enqueue(
       to,
-      subject: `You have been invited to join ${props.organizationName}`,
-      react: OrganizationInvitationEmail(props),
-    });
+      `You have been invited to join ${props.organizationName}`,
+      'organization-invitation',
+      props,
+    );
   }
 
-  private async send({
-    to,
-    subject,
-    react,
-  }: {
-    to: string;
-    subject: string;
-    react: ReactElement;
-  }): Promise<void> {
+  async sendNotificationDigestEmail(
+    to: string,
+    props: NotificationDigestEmailProps,
+  ): Promise<void> {
+    await this.enqueue(
+      to,
+      `${props.businessName} — ${props.items.length} update(s)`,
+      'notification-digest',
+      props,
+    );
+  }
+
+  private async enqueue(
+    recipient: string,
+    subject: string,
+    template: EmailTemplate,
+    payload: object,
+  ): Promise<void> {
+    await getDb()
+      .insert(emailOutbox)
+      .values({
+        id: randomUUID(),
+        recipient,
+        subject,
+        template,
+        payload: payload as Record<string, unknown>,
+        status: 'pending',
+      });
+  }
+
+  async deliver(row: EmailOutboxRow): Promise<void> {
+    const react = this.renderFor(row);
+
     if (!this.resend) {
       const html = await render(react);
       this.logger.warn(
-        `RESEND_API_KEY is not set — logging email instead of sending. To: ${to}, Subject: ${subject}`,
+        `RESEND_API_KEY is not set — logging email instead of sending. To: ${row.recipient}, Subject: ${row.subject}`,
       );
       this.logger.debug(html);
       return;
@@ -84,16 +117,36 @@ export class EmailService {
 
     const { error } = await this.resend.emails.send({
       from: this.from,
-      to,
-      subject,
+      to: row.recipient,
+      subject: row.subject,
       react,
     });
 
     if (error) {
-      this.logger.error(
-        `Failed to send email to ${to}: ${error.name} - ${error.message}`,
-      );
-      throw new Error(`Failed to send email: ${error.message}`);
+      throw new Error(`${error.name}: ${error.message}`);
+    }
+  }
+
+  private renderFor(row: EmailOutboxRow): ReactElement {
+    switch (row.template as EmailTemplate) {
+      case 'reset-password':
+        return ResetPasswordEmail(
+          row.payload as unknown as ResetPasswordEmailProps,
+        );
+      case 'otp-verification':
+        return OtpVerificationEmail(
+          row.payload as unknown as OtpVerificationEmailProps,
+        );
+      case 'organization-invitation':
+        return OrganizationInvitationEmail(
+          row.payload as unknown as OrganizationInvitationEmailProps,
+        );
+      case 'notification-digest':
+        return NotificationDigestEmail(
+          row.payload as unknown as NotificationDigestEmailProps,
+        );
+      default:
+        throw new Error(`Unknown email template: ${row.template}`);
     }
   }
 }

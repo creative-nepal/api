@@ -127,7 +127,8 @@
       "plans": "योजनाहरू",
       "billing": "बिलिङ",
       "users": "प्रयोगकर्ताहरू",
-      "content": "सामग्री"
+      "content": "सामग्री",
+      "operations": "सञ्चालन"
     },
     "overview": {
       "title": "अवलोकन",
@@ -365,6 +366,23 @@
       "navigationFailed": "नेभिगेसन सुरक्षित गर्न सकिएन",
       "translations": "अनुवादहरू",
       "pricingSectorHint": "कुन क्षेत्रका योजना देखाउने।"
+    },
+    "notifications": {
+      "title": "सतर्कता",
+      "jobsTitle": "तालिकाबद्ध कार्यहरू",
+      "runsTitle": "हालका रन",
+      "emailsTitle": "इमेल लाम",
+      "runNow": "अहिले चलाउनुहोस्",
+      "retry": "पुनः प्रयास",
+      "lastRun": "अन्तिम रन",
+      "schedule": "तालिका",
+      "duration": "अवधि",
+      "emailFailedTitle": "इमेल पठाउन सकिएन",
+      "emailFailedBody": "{count} सन्देशको पुनः प्रयास सकियो",
+      "cbmsFailedTitle": "CBMS पुश असफल",
+      "cbmsFailedBody": "{count} बिल IRD सम्म पुगेन",
+      "jobFailedTitle": "तालिकाबद्ध कार्य असफल",
+      "jobFailedBody": "पछिल्लो दिनमा {count} रन असफल भए"
     }
   },
   "web": {
@@ -531,7 +549,15 @@
         "chef": "किचन टिकट मात्र — मूल्य वा बिलिङ देख्दैन",
         "receptionist": "अपोइन्टमेन्ट बुक, सेवा बिक्री, सदस्यता व्यवस्थापन",
         "practitioner": "आफ्ना अपोइन्टमेन्ट सम्पन्न गर्ने; बिलिङ छैन"
-      }
+      },
+      "roleChanged": "भूमिका अद्यावधिक भयो",
+      "memberRemoved": "सदस्य हटाइयो",
+      "invitationRevoked": "निमन्त्रणा रद्द गरियो",
+      "remove": "हटाउनुहोस्",
+      "revoke": "रद्द गर्नुहोस्",
+      "pendingTitle": "पर्खिरहेका निमन्त्रणा",
+      "removeTitle": "यो सदस्यलाई हटाउने?",
+      "removeBody": "{email} ले यो व्यवसायको पहुँच तुरुन्तै गुमाउनेछ।"
     },
     "nav": {
       "pos": "बिक्री केन्द्र",
@@ -546,7 +572,8 @@
       "settings": "सेटिङ",
       "appointments": "अपोइन्टमेन्ट",
       "services": "सेवाहरू",
-      "branches": "शाखाहरू"
+      "branches": "शाखाहरू",
+      "notifications": "सूचनाहरू"
     },
     "services": {
       "title": "सेवाहरू",
@@ -591,6 +618,20 @@
     "pricing": {
       "staffLimit": "{count} जनासम्म कर्मचारी",
       "productLimit": "{count} सम्म वस्तु"
+    },
+    "notifications": {
+      "title": "सूचनाहरू",
+      "empty": "हेर्नुपर्ने केही छैन",
+      "markAllRead": "सबै पढिएको चिन्ह लगाउनुहोस्",
+      "allRead": "सबै सकियो",
+      "lowStockTitle": "स्टक कम",
+      "lowStockBody": "{product} घटेर {stock} भयो",
+      "expiringTitle": "ब्याच म्याद सकिँदै",
+      "expiringBody": "{product} ब्याच {batch} को म्याद {date} मा सकिन्छ",
+      "pastDueTitle": "सदस्यता बाँकी",
+      "pastDueBody": "बिल जारी गरिरहन नवीकरण गर्नुहोस्",
+      "trialEndingTitle": "परीक्षण सकिँदै",
+      "trialEndingBody": "तपाईंको परीक्षण {date} मा सकिन्छ"
     }
   }
 }

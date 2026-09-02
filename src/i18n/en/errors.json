@@ -79,5 +79,11 @@
     "invalidMode": "Theme mode must be light, dark or system",
     "invalidLogo": "Logo must be an https URL or a site path",
     "unknownKey": "Unknown theme key: {key}"
+  },
+  "job": {
+    "unknown": "Unknown job: {name}",
+    "alreadyRunning": "Job {name} is already running",
+    "emailNotFound": "Queued email {id} not found",
+    "invalidCron": "Not a valid cron expression: {expression}"
   }
 }

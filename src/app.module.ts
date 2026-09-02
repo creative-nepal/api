@@ -14,6 +14,8 @@ import { BusinessesModule } from './modules/businesses/businesses.module';
 import { ContentModule } from './modules/content/content.module';
 import { EntitlementsModule } from './modules/entitlements/entitlements.module';
 import { InvoicesModule } from './modules/invoices/invoices.module';
+import { JobsModule } from './modules/jobs/jobs.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { PlansModule } from './modules/plans/plans.module';
 import { PlatformBillingModule } from './modules/platform-billing/platform-billing.module';
@@ -49,6 +51,8 @@ import { enabledSectorModules } from './sectors';
     InvoicesModule,
     OrdersModule,
     WorkspaceModule,
+    NotificationsModule,
+    JobsModule,
     ...enabledSectorModules(),
   ],
   providers: [

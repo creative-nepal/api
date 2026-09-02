@@ -358,7 +358,41 @@ Two gaps closed:
   tag so a publish revalidates both. The block's sector picker is server-driven like the rest of
   admin. Verified by raising Mart Basic to Rs 1,299 in admin and seeing the public page follow.
 
-## 12. Remaining phases
+## 12. Platform services — email, jobs, notifications ✅ BUILT
+
+**Email was fire-and-forget.** `auth.config.ts` called Resend inline and discarded the promise, so
+a Resend outage silently lost a password reset or a staff invitation with no record. Email is now
+an outbox: `sendX()` writes to `email_outbox`, and the `email-outbox` job claims due rows with
+`FOR UPDATE SKIP LOCKED` (two workers cannot take the same row), delivers, and retries with
+exponential backoff to `maxAttempts` before dead-lettering. Failed messages are listed and
+retryable from admin. Verified: a reset queued, drained and marked sent; a deliberately broken row
+retried once then dead-lettered with its error preserved, and requeued from admin.
+
+**Schedules are data, not decorators.** `@Cron` was hardcoded and only covered platform billing.
+Jobs are now rows in `job_schedules`, registered at boot through Nest's `SchedulerRegistry`, so a
+platform operator can change a cron expression or disable a job from admin and it takes effect
+live. Invalid expressions are refused. Verified: `stock-alerts` moved to a 2-minute cadence and
+fired on it; `platform-alerts` disabled and did not run.
+
+Six jobs, each wrapped by `JobRunnerService` which records start, duration, outcome and detail to
+`job_runs` — so a failure is visible rather than silent (it caught a real one: a
+`current_date + $param` cast error in the expiry scan). `email-outbox`, `invoice-lease-expiry`
+(the existing `expireStaleLeases` was written but never scheduled), `stock-alerts`,
+`subscription-lifecycle` (trials never transitioned on their own), `notification-digest` and
+`platform-alerts`.
+
+**Notifications** are scoped to a business or to the platform operator, with per-user read state,
+so one member dismissing a business-wide alert does not hide it from the rest. Every raise carries
+a `dedupeKey`, so a daily rescan is a no-op rather than a flood — verified by rerunning the scan
+and raising zero. Web gets a header bell with unread count; admin gets an operations console with
+jobs, runs, the email queue and platform alerts.
+
+**Clients manage their own staff.** The staff screen could only invite. It now lists members and
+pending invitations, changes roles, removes members and revokes invitations — each action wrapped
+in `<Can>` against `member:create/update/delete` and `invitation:cancel`, with the owner row
+protected.
+
+## 13. Remaining phases
 
 None. All phases are built.
 
@@ -367,7 +401,7 @@ compliance-critical numbering.
 
 ---
 
-## 13. Non-goals (unchanged)
+## 14. Non-goals (unchanged)
 
 Accounting (GL/double-entry) and payroll stay out per `system-design.md` §10. Also out:
 org-level bundled subscriptions, FIFO/LIFO costing, multi-warehouse within a branch, and
@@ -375,7 +409,7 @@ re-merging the three repos into a monorepo.
 
 ---
 
-## 14. Local environment
+## 15. Local environment
 
 Postgres runs in Docker (the local server's `nabin` role has no CREATEDB):
 
@@ -392,7 +426,7 @@ Admin login: `admin@creativenepal.test` / `Admin12345!`.
 Ports: API 3333, admin 3001, web **3002** (3000 was occupied by an unrelated app, so
 `CORS_ORIGINS` includes 3002 locally).
 
-## 15. Verification
+## 16. Verification
 
 ```sh
 # api

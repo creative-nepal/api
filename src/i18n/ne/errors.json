@@ -79,5 +79,11 @@
     "invalidMode": "थीम मोड light, dark वा system हुनुपर्छ",
     "invalidLogo": "लोगो https URL वा साइट पथ हुनुपर्छ",
     "unknownKey": "अज्ञात थीम कुञ्जी: {key}"
+  },
+  "job": {
+    "unknown": "अज्ञात कार्य: {name}",
+    "alreadyRunning": "कार्य {name} पहिले नै चलिरहेको छ",
+    "emailNotFound": "पङ्क्तिबद्ध इमेल {id} फेला परेन",
+    "invalidCron": "मान्य cron अभिव्यक्ति होइन: {expression}"
   }
 }

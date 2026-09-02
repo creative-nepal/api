@@ -120,6 +120,24 @@ Nest 12's `exports` map — that is why `LoggerModule.forRootAsync` in
   so a single-branch business's printed numbers are unprefixed and unchanged. Stock lives in
   `product_branch_stock` per branch, with `products.stockQty` as the cached business-wide total;
   the branch row carries the sufficiency check, so the cache can never authorize a sale.
+- `src/email/` — transactional email is an **outbox**, not a direct send. `EmailService.sendX()`
+  writes a row to `email_outbox` (it is constructed outside Nest DI by `auth.config.ts`, so it
+  reaches the database through `getDb()` like `organization-hooks` does); the `email-outbox` job
+  claims due rows with `FOR UPDATE SKIP LOCKED`, calls `deliver()`, and retries with exponential
+  backoff until `maxAttempts`, after which the row is dead-lettered and retryable from admin.
+  Never call Resend directly — a failed password reset would otherwise vanish.
+- `src/modules/jobs/` — every scheduled job. Schedules are **rows in `job_schedules`, not `@Cron`
+  decorators**: `JobsBootstrap` seeds defaults from `JobsRegistry` and registers each job with
+  Nest's `SchedulerRegistry` at boot, and a platform operator can change the cron expression or
+  disable a job from admin, applied live without a deploy. Every run is wrapped by
+  `JobRunnerService`, which records start, duration, outcome and detail to `job_runs` — so a
+  failing job is visible rather than silent. Adding a job means adding a descriptor to
+  `JobsRegistry`; nothing else.
+- `src/modules/notifications/` — in-app notifications, scoped to a business (`businessId`) or to
+  the platform operator (`businessId` null), optionally to one user. Read state is per user in
+  `notification_reads`, so one member dismissing a business-wide alert does not hide it from the
+  rest. Every raise carries a `dedupeKey` unique per scope, so a daily scan re-raising the same
+  low-stock condition is a no-op rather than a flood.
 - `src/modules/workspace/` — resolves what the signed-in member may see, server-side:
   `GET /v1/businesses/:id/workspace` returns the business, the membership role, that role's
   effective permissions, and the sector-scoped, permission-filtered navigation. The frontends

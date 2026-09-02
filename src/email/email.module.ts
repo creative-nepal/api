@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
+import { EmailOutboxRepository } from './email-outbox.repository';
 import { EmailService } from './email.service';
 
 @Module({
-  providers: [EmailService],
-  exports: [EmailService],
+  providers: [EmailService, EmailOutboxRepository],
+  exports: [EmailService, EmailOutboxRepository],
 })
 export class EmailModule {}

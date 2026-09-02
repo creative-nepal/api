@@ -64,6 +64,20 @@
       "when": 1788342336241,
       "tag": "0008_acoustic_puck",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1788344107988,
+      "tag": "0009_minor_alex_power",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1788344918396,
+      "tag": "0010_sturdy_sersi",
+      "breakpoints": true
     }
   ]
 }
