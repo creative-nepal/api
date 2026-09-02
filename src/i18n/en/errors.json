@@ -85,5 +85,12 @@
     "alreadyRunning": "Job {name} is already running",
     "emailNotFound": "Queued email {id} not found",
     "invalidCron": "Not a valid cron expression: {expression}"
+  },
+  "file": {
+    "storageDisabled": "File storage is not configured on this deployment",
+    "unsupportedType": "{contentType} is not allowed for {purpose}",
+    "notUploaded": "File {fileId} has not finished uploading",
+    "tooLarge": "File is {actual} bytes; the limit is {limit}",
+    "notFound": "File {fileId} not found"
   }
 }

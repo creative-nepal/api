@@ -124,6 +124,51 @@ export const notificationReads = pgTable(
   ],
 );
 
+export const FILE_PURPOSES = [
+  'prescription',
+  'business-logo',
+  'product-image',
+  'content-image',
+  'attachment',
+] as const;
+export type FilePurpose = (typeof FILE_PURPOSES)[number];
+
+export const FILE_STATUSES = ['pending', 'ready'] as const;
+export type FileStatus = (typeof FILE_STATUSES)[number];
+
+export const storedFiles = pgTable(
+  'stored_files',
+  {
+    id: text('id').primaryKey(),
+    businessId: text('business_id').references(() => businesses.id, {
+      onDelete: 'cascade',
+    }),
+    purpose: text('purpose').notNull(),
+    storageKey: text('storage_key').notNull().unique(),
+    originalName: text('original_name').notNull(),
+    contentType: text('content_type').notNull(),
+    sizeBytes: integer('size_bytes').default(0).notNull(),
+    status: text('status').default('pending').notNull(),
+    uploadedByUserId: text('uploaded_by_user_id').references(() => user.id, {
+      onDelete: 'set null',
+    }),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    readyAt: timestamp('ready_at', { withTimezone: true }),
+  },
+  (table) => [
+    index('stored_files_businessId_purpose_idx').on(
+      table.businessId,
+      table.purpose,
+    ),
+    index('stored_files_status_createdAt_idx').on(
+      table.status,
+      table.createdAt,
+    ),
+  ],
+);
+
 export const jobSchedules = pgTable('job_schedules', {
   name: text('name').primaryKey(),
   cronExpression: text('cron_expression').notNull(),
@@ -178,3 +223,4 @@ export type Notification = typeof notifications.$inferSelect;
 export type NewNotification = typeof notifications.$inferInsert;
 export type JobRun = typeof jobRuns.$inferSelect;
 export type JobSchedule = typeof jobSchedules.$inferSelect;
+export type StoredFile = typeof storedFiles.$inferSelect;

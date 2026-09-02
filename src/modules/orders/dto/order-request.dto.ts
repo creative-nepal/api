@@ -64,10 +64,10 @@ export class PrescriptionDto {
   @MaxLength(255)
   patientName!: string;
 
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
-  @MaxLength(2048)
-  attachmentUrl!: string;
+  attachmentFileId?: string;
 }
 
 export class BuyerIdentityDto {

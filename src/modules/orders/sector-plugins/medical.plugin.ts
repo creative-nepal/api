@@ -138,7 +138,7 @@ export class MedicalSectorPlugin implements SectorPlugin {
           orderId: committed.order.id,
           doctorName: context.dto.prescription.doctorName,
           patientName: context.dto.prescription.patientName,
-          attachmentUrl: context.dto.prescription.attachmentUrl,
+          attachmentFileId: context.dto.prescription.attachmentFileId ?? null,
         })
         .returning();
       prescriptionId = row.id;

@@ -85,5 +85,12 @@
     "alreadyRunning": "कार्य {name} पहिले नै चलिरहेको छ",
     "emailNotFound": "पङ्क्तिबद्ध इमेल {id} फेला परेन",
     "invalidCron": "मान्य cron अभिव्यक्ति होइन: {expression}"
+  },
+  "file": {
+    "storageDisabled": "यो डिप्लोयमेन्टमा फाइल भण्डारण कन्फिगर गरिएको छैन",
+    "unsupportedType": "{purpose} का लागि {contentType} अनुमति छैन",
+    "notUploaded": "फाइल {fileId} को अपलोड सकिएको छैन",
+    "tooLarge": "फाइल {actual} बाइट छ; सीमा {limit} हो",
+    "notFound": "फाइल {fileId} फेला परेन"
   }
 }

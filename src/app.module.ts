@@ -5,6 +5,7 @@ import { AuthModule } from './auth';
 import { ConfigModule } from './config';
 import { DatabaseModule } from './database';
 import { EmailModule } from './email';
+import { StorageModule } from './storage';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { LoggingModule } from './common/logging/logging.module';
 import { HealthModule } from './health';
@@ -13,6 +14,7 @@ import { BranchesModule } from './modules/branches/branches.module';
 import { BusinessesModule } from './modules/businesses/businesses.module';
 import { ContentModule } from './modules/content/content.module';
 import { EntitlementsModule } from './modules/entitlements/entitlements.module';
+import { FilesModule } from './modules/files/files.module';
 import { InvoicesModule } from './modules/invoices/invoices.module';
 import { JobsModule } from './modules/jobs/jobs.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
@@ -35,6 +37,7 @@ import { enabledSectorModules } from './sectors';
     I18nModule,
     DatabaseModule,
     EmailModule,
+    StorageModule,
     AuthModule,
     HealthModule,
     UsersModule,
@@ -52,6 +55,7 @@ import { enabledSectorModules } from './sectors';
     OrdersModule,
     WorkspaceModule,
     NotificationsModule,
+    FilesModule,
     JobsModule,
     ...enabledSectorModules(),
   ],

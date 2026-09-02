@@ -365,7 +365,9 @@
       "navigationSaved": "{locale} navigation saved",
       "navigationFailed": "Failed to save navigation",
       "translations": "Translations",
-      "pricingSectorHint": "Which sector’s plans to list."
+      "pricingSectorHint": "Which sector’s plans to list.",
+      "uploadImage": "Upload image",
+      "replaceImage": "Replace image"
     },
     "notifications": {
       "title": "Alerts",
@@ -409,7 +411,10 @@
       "serviceCharge": "Service charge",
       "newSale": "New sale",
       "vat": "VAT {rate}%",
-      "noBusiness": "No business selected"
+      "noBusiness": "No business selected",
+      "attachPrescription": "Attach prescription",
+      "prescriptionAttached": "Prescription attached",
+      "prescriptionUploaded": "Prescription uploaded"
     },
     "products": {
       "title": "Products",
@@ -530,7 +535,15 @@
       "noPlatformInvoices": "No platform invoices yet.",
       "renews": "Renews",
       "includes": "Includes",
-      "noPlan": "No active plan. Ask the operator to assign one."
+      "noPlan": "No active plan. Ask the operator to assign one.",
+      "brandingTitle": "Branding",
+      "brandingDescription": "How this business appears to your staff. Colours are validated before they are stored.",
+      "displayName": "Display name",
+      "primaryColour": "Primary colour",
+      "logo": "Logo",
+      "uploadLogo": "Upload logo",
+      "replaceLogo": "Replace logo",
+      "brandingSaved": "Branding saved"
     },
     "staff": {
       "title": "Staff",

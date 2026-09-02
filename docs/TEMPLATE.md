@@ -66,13 +66,18 @@ done
 Keep the sibling layout (`api/`, `web/`, `admin/` in one parent). Nothing depends on it at build
 time, but every doc and the sync script assume it.
 
-### 2.2 Database
+### 2.2 Local services
+
+Postgres and RustFS both come from `api/docker-compose.yml`, which reads `api/.env` — the same
+file the API reads, so container and client credentials cannot drift:
 
 ```sh
-docker run -d --name myvertical-pg \
-  -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -e POSTGRES_DB=myvertical \
-  -p 5433:5432 postgres:16-alpine
+cd api && docker compose up -d      # postgres on :5433, rustfs on :9000
 ```
+
+Rename the containers and volumes in `docker-compose.yml` per clone if you run several side by
+side. RustFS is S3-compatible, so production can point at any S3 endpoint by changing
+`RUSTFS_ENDPOINT` and the credentials — no code change.
 
 ### 2.3 Configure
 
@@ -87,6 +92,10 @@ BETTER_AUTH_SECRET=$(openssl rand -base64 32)
 BETTER_AUTH_URL=https://api.medibill.example
 CORS_ORIGINS=https://medibill.example,https://admin.medibill.example
 ```
+
+`RUSTFS_ACCESS_KEY`/`RUSTFS_SECRET_KEY` are required in production — the API refuses to start
+without them, because uploads would otherwise fail at the point a pharmacist tries to attach a
+prescription.
 
 `CORS_ORIGINS` also drives Better Auth's `trustedOrigins`, so sign-in works on the clone's real
 domains with no code change. Every origin the frontends are served from must be listed.

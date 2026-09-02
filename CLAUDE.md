@@ -19,6 +19,7 @@ do not use npm/yarn/pnpm). Any CLI generator (`@better-auth/cli`, `drizzle-kit`,
 must be invoked via **`bunx`, never `npx`**.
 
 ```sh
+docker compose up -d     # postgres :5433 + rustfs :9000, reading this repo's .env
 bun run dev              # nest start --watch, port 3333
 bun run build            # nest build
 bun run lint             # eslint --fix
@@ -138,6 +139,14 @@ Nest 12's `exports` map — that is why `LoggerModule.forRootAsync` in
   `notification_reads`, so one member dismissing a business-wide alert does not hide it from the
   rest. Every raise carries a `dedupeKey` unique per scope, so a daily scan re-raising the same
   low-stock condition is a no-op rather than a flood.
+- `src/storage/` + `src/modules/files/` — object storage on **RustFS** (S3-compatible), reached
+  with the AWS S3 client and `forcePathStyle: true`, which path-addressed stores require. The API
+  **never proxies bytes**: it signs a short-lived PUT, the browser uploads straight to RustFS, and
+  `complete` verifies what actually landed with `HeadObject` — so a client that declares 100 bytes
+  and uploads 12 MB is rejected and the object deleted. Content types are allow-listed per purpose
+  (`svg` is refused for product images because it can carry script). The bucket is created on boot
+  if missing; without `RUSTFS_ACCESS_KEY`/`SECRET_KEY` uploads are refused rather than silently
+  dropped, and production start-up fails outright.
 - `src/modules/workspace/` — resolves what the signed-in member may see, server-side:
   `GET /v1/businesses/:id/workspace` returns the business, the membership role, that role's
   effective permissions, and the sector-scoped, permission-filtered navigation. The frontends

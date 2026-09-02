@@ -365,7 +365,9 @@
       "navigationSaved": "{locale} नेभिगेसन सुरक्षित भयो",
       "navigationFailed": "नेभिगेसन सुरक्षित गर्न सकिएन",
       "translations": "अनुवादहरू",
-      "pricingSectorHint": "कुन क्षेत्रका योजना देखाउने।"
+      "pricingSectorHint": "कुन क्षेत्रका योजना देखाउने।",
+      "uploadImage": "तस्बिर अपलोड गर्नुहोस्",
+      "replaceImage": "तस्बिर बदल्नुहोस्"
     },
     "notifications": {
       "title": "सतर्कता",
@@ -409,7 +411,10 @@
       "serviceCharge": "सेवा शुल्क",
       "newSale": "नयाँ बिक्री",
       "vat": "मू.अ.कर {rate}%",
-      "noBusiness": "कुनै व्यवसाय छानिएको छैन"
+      "noBusiness": "कुनै व्यवसाय छानिएको छैन",
+      "attachPrescription": "प्रिस्क्रिप्सन संलग्न गर्नुहोस्",
+      "prescriptionAttached": "प्रिस्क्रिप्सन संलग्न भयो",
+      "prescriptionUploaded": "प्रिस्क्रिप्सन अपलोड भयो"
     },
     "products": {
       "title": "सामानहरू",
@@ -530,7 +535,15 @@
       "noPlatformInvoices": "अझै कुनै प्लेटफर्म बीजक छैन।",
       "renews": "नवीकरण",
       "includes": "समावेश",
-      "noPlan": "सक्रिय योजना छैन। सञ्चालकलाई योजना तोक्न भन्नुहोस्।"
+      "noPlan": "सक्रिय योजना छैन। सञ्चालकलाई योजना तोक्न भन्नुहोस्।",
+      "brandingTitle": "ब्रान्डिङ",
+      "brandingDescription": "यो व्यवसाय कर्मचारीलाई कस्तो देखिन्छ। रङहरू भण्डारण गर्नुअघि जाँचिन्छन्।",
+      "displayName": "देखिने नाम",
+      "primaryColour": "मुख्य रङ",
+      "logo": "लोगो",
+      "uploadLogo": "लोगो अपलोड गर्नुहोस्",
+      "replaceLogo": "लोगो बदल्नुहोस्",
+      "brandingSaved": "ब्रान्डिङ सुरक्षित भयो"
     },
     "staff": {
       "title": "कर्मचारी",

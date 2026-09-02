@@ -110,7 +110,8 @@ export const prescriptions = pgTable(
     }),
     doctorName: text('doctor_name').notNull(),
     patientName: text('patient_name').notNull(),
-    attachmentUrl: text('attachment_url').notNull(),
+    attachmentUrl: text('attachment_url'),
+    attachmentFileId: text('attachment_file_id'),
     createdAt: timestamp('created_at', { withTimezone: true })
       .defaultNow()
       .notNull(),

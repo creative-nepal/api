@@ -93,6 +93,24 @@ export class AppConfigService {
     return this.configService.get('SECTORS_ENABLED', { infer: true });
   }
 
+  get storage(): {
+    endpoint: string;
+    region: string;
+    bucket: string;
+    accessKey: string | undefined;
+    secretKey: string | undefined;
+    publicUrl: string | undefined;
+  } {
+    return {
+      endpoint: this.configService.get('RUSTFS_ENDPOINT', { infer: true }),
+      region: this.configService.get('RUSTFS_REGION', { infer: true }),
+      bucket: this.configService.get('RUSTFS_BUCKET', { infer: true }),
+      accessKey: this.configService.get('RUSTFS_ACCESS_KEY', { infer: true }),
+      secretKey: this.configService.get('RUSTFS_SECRET_KEY', { infer: true }),
+      publicUrl: this.configService.get('RUSTFS_PUBLIC_URL', { infer: true }),
+    };
+  }
+
   get brandName(): string {
     return this.configService.get('BRAND_NAME', { infer: true });
   }

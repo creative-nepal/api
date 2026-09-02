@@ -53,6 +53,13 @@ export const envSchema = z.object({
       },
     ),
 
+  RUSTFS_ENDPOINT: z.string().default('http://localhost:9000'),
+  RUSTFS_REGION: z.string().default('us-east-1'),
+  RUSTFS_BUCKET: z.string().default('creative-nepal'),
+  RUSTFS_ACCESS_KEY: z.string().optional(),
+  RUSTFS_SECRET_KEY: z.string().optional(),
+  RUSTFS_PUBLIC_URL: z.string().optional(),
+
   BRAND_NAME: z.string().default('Creative Nepal'),
   BRAND_SUPPORT_EMAIL: z.string().optional(),
 });
@@ -67,6 +74,12 @@ function assertProductionReady(env: Env): void {
   if (!env.RESEND_API_KEY) {
     problems.push(
       'RESEND_API_KEY is required in production — without it password resets, OTPs and staff invitations are logged instead of sent',
+    );
+  }
+
+  if (!env.RUSTFS_ACCESS_KEY || !env.RUSTFS_SECRET_KEY) {
+    problems.push(
+      'RUSTFS_ACCESS_KEY and RUSTFS_SECRET_KEY are required in production — without them prescription attachments and uploads cannot be stored',
     );
   }
 
