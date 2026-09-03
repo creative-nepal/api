@@ -28,6 +28,7 @@ export interface IssueInvoiceParams {
   branchId: string;
   orderId: string | null;
   subtotalCents: number;
+  discountCents?: number;
   serviceChargeCents?: number;
   customerId?: string | null;
   customerName?: string | null;
@@ -63,9 +64,16 @@ export class InvoicesService {
     );
 
     const serviceChargeCents = params.serviceChargeCents ?? 0;
+    const discountCents = params.discountCents ?? 0;
+
+    if (discountCents > params.subtotalCents) {
+      throw new BadRequestException('i18n:errors.discount.exceedsAmount');
+    }
+
+    const netCents = params.subtotalCents - discountCents;
 
     const vatCents = computeVatCents(
-      params.subtotalCents + serviceChargeCents,
+      netCents + serviceChargeCents,
       business.vatRegistered,
     );
 
@@ -80,9 +88,10 @@ export class InvoicesService {
       customerName: params.customerName ?? null,
       customerPan: params.customerPan ?? null,
       subtotalCents: params.subtotalCents,
+      discountCents,
       serviceChargeCents,
       vatCents,
-      totalCents: params.subtotalCents + serviceChargeCents + vatCents,
+      totalCents: netCents + serviceChargeCents + vatCents,
       status: 'issued',
       printedCount: 0,
       cbmsStatus: business.cbmsRequired ? 'pending' : null,
@@ -206,7 +215,17 @@ export class InvoicesService {
         fiscalYear,
       );
 
-      const vatCents = computeVatCents(subtotalCents, business.vatRegistered);
+      const ratio = subtotalCents / original.subtotalCents;
+      const discountCents = Math.round(original.discountCents * ratio);
+      const serviceChargeCents = Math.round(
+        original.serviceChargeCents * ratio,
+      );
+      const netCents = subtotalCents - discountCents;
+
+      const vatCents = computeVatCents(
+        netCents + serviceChargeCents,
+        business.vatRegistered,
+      );
 
       const creditNote = await this.invoicesRepository.insertInvoice(tx, {
         id: randomUUID(),
@@ -219,8 +238,10 @@ export class InvoicesService {
         customerName: original.customerName,
         customerPan: original.customerPan,
         subtotalCents,
+        discountCents,
+        serviceChargeCents,
         vatCents,
-        totalCents: subtotalCents + vatCents,
+        totalCents: netCents + serviceChargeCents + vatCents,
         status: 'credit_note',
         printedCount: 0,
         cbmsStatus: business.cbmsRequired ? 'pending' : null,

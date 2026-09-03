@@ -10,6 +10,8 @@ export class BusinessResponseDto {
   @Expose() panNumber: string | null;
   @Expose() vatRegistered: boolean;
   @Expose() cbmsRequired: boolean;
+  @Expose() serviceChargePercent: number;
+  @Expose() maxDiscountPercent: number;
   @Expose() fiscalYearStartMonth: number;
   @Expose() displayName: string | null;
   @Expose() theme: Record<string, unknown>;
@@ -27,6 +29,8 @@ export class BusinessResponseDto {
     this.cbmsRequired = business.cbmsRequired;
     this.displayName = business.displayName;
     this.theme = business.theme ?? {};
+    this.serviceChargePercent = business.serviceChargePercent;
+    this.maxDiscountPercent = business.maxDiscountPercent;
     this.fiscalYearStartMonth = business.fiscalYearStartMonth;
     this.status = business.status;
     this.createdAt = business.createdAt;

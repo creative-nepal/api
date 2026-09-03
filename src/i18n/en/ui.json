@@ -177,7 +177,10 @@
       "branchesTab": "Branches",
       "branchesTitle": "Branches",
       "branchesDescription": "Each branch keeps its own gapless invoice series and its own stock.",
-      "defaultBranch": "Default"
+      "defaultBranch": "Default",
+      "serviceCharge": "Service charge",
+      "maxDiscount": "Maximum discount",
+      "discountsOff": "Off"
     },
     "plans": {
       "title": "Plans",
@@ -415,7 +418,13 @@
       "attachPrescription": "Attach prescription",
       "prescriptionAttached": "Prescription attached",
       "prescriptionUploaded": "Prescription uploaded",
-      "prescriptionHint": "JPEG, PNG, WebP or PDF, up to 10 MB"
+      "prescriptionHint": "JPEG, PNG, WebP or PDF, up to 10 MB",
+      "discount": "Discount",
+      "discountPercent": "Discount %",
+      "discountHint": "Up to {max}% for this business",
+      "completeSale": "Complete sale",
+      "processing": "Processing...",
+      "checkoutFailed": "Checkout failed"
     },
     "products": {
       "title": "Products",
@@ -543,7 +552,14 @@
       "primaryColour": "Primary colour",
       "logo": "Logo",
       "uploadLogo": "Upload logo",
-      "brandingSaved": "Branding saved"
+      "brandingSaved": "Branding saved",
+      "billingRules": "Billing rules",
+      "billingRulesHint": "How service charge and discounts are applied to every sale.",
+      "serviceChargePercent": "Service charge %",
+      "serviceChargePercentHint": "Added to the discounted subtotal before VAT. 0 switches it off.",
+      "maxDiscountPercent": "Maximum discount %",
+      "maxDiscountPercentHint": "The largest discount staff may apply to a sale. 0 switches discounts off.",
+      "billingRulesUpdated": "Billing rules saved"
     },
     "staff": {
       "title": "Staff",

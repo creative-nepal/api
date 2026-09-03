@@ -119,5 +119,12 @@
     "outsideHours": "That time is outside this person’s working hours",
     "onTimeOff": "This person is on time off then",
     "doubleBooked": "This person already has an appointment then"
+  },
+  "discount": {
+    "ambiguous": "Send either a discount amount or a discount percent, not both",
+    "exceedsAmount": "The discount is larger than the amount being discounted",
+    "notAllowed": "Discounts are switched off for this business; set a maximum discount percent first",
+    "exceedsCap": "The discount is above the maximum allowed for this business",
+    "notPermitted": "You do not have permission to discount a sale"
   }
 }

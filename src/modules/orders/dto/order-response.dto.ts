@@ -16,6 +16,7 @@ export class OrderItemResponseDto {
   }>;
   @Expose() quantity: number;
   @Expose() unitPriceCents: number;
+  @Expose() discountCents: number;
   @Expose() lineTotalCents: number;
   @Expose() invoiceId: string | null;
   @Expose() batchId: string | null;
@@ -30,6 +31,7 @@ export class OrderItemResponseDto {
     this.batchId = item.batchId;
     this.quantity = Number(item.quantity);
     this.unitPriceCents = item.unitPriceCents;
+    this.discountCents = item.discountCents;
     this.lineTotalCents = item.lineTotalCents;
   }
 }
@@ -43,6 +45,7 @@ export class OrderResponseDto {
   @Expose() tableId: string | null;
   @Expose() source: string;
   @Expose() subtotalCents: number;
+  @Expose() discountCents: number;
   @Expose() serviceChargeCents: number;
   @Expose() taxCents: number;
   @Expose() totalCents: number;
@@ -63,6 +66,7 @@ export class OrderResponseDto {
     this.tableId = order.tableId;
     this.source = order.source;
     this.subtotalCents = order.subtotalCents;
+    this.discountCents = order.discountCents;
     this.serviceChargeCents = order.serviceChargeCents;
     this.taxCents = order.taxCents;
     this.totalCents = order.totalCents;

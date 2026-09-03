@@ -58,6 +58,8 @@ export class BusinessesService {
         | 'vatRegistered'
         | 'cbmsRequired'
         | 'fiscalYearStartMonth'
+        | 'serviceChargePercent'
+        | 'maxDiscountPercent'
         | 'displayName'
       >
     > & { theme?: Record<string, unknown> },

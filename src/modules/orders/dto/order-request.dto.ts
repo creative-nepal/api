@@ -10,6 +10,7 @@ import {
   IsObject,
   IsOptional,
   IsString,
+  Max,
   MaxLength,
   Min,
   ValidateNested,
@@ -52,6 +53,19 @@ export class CheckoutItemDto {
   @IsOptional()
   @IsArray()
   modifiers?: Array<{ name: string; label: string }>;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  discountCents?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @Min(0)
+  @Max(100)
+  discountPercent?: number;
 }
 
 export class PrescriptionDto {
@@ -144,6 +158,24 @@ export class CreateOrderDto {
   @IsOptional()
   @IsBoolean()
   onCredit?: boolean;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  discountCents?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @Min(0)
+  @Max(100)
+  discountPercent?: number;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  discountReason?: string;
 
   @IsOptional()
   @IsString()

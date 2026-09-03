@@ -1,9 +1,12 @@
 import { randomUUID } from 'node:crypto';
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { fromNodeHeaders } from 'better-auth/node';
+import { auth } from '../../auth/auth.config';
 import type { PaginatedResult } from '../../common/dto/pagination-query.dto';
 import {
   type Database,
@@ -21,7 +24,13 @@ import type {
 } from '../../database/schema';
 import { InvoicesService } from '../invoices/invoices.service';
 import { computeVatCents } from '../invoices/vat';
-import type { CreateOrderDto } from './dto/order-request.dto';
+import {
+  apportion,
+  assertWithinBase,
+  assertWithinCap,
+  resolveDiscountCents,
+} from './discounts';
+import type { CheckoutItemDto, CreateOrderDto } from './dto/order-request.dto';
 import { type ListOrdersFilters, OrdersRepository } from './orders.repository';
 import { CustomersService } from '../customers/customers.service';
 import { SectorPluginRegistry } from './sector-plugins/registry';
@@ -44,6 +53,7 @@ function lineKey(item: {
 
 interface CheckoutTotals {
   subtotalCents: number;
+  discountCents: number;
   serviceChargeCents: number;
   taxCents: number;
   totalCents: number;
@@ -158,12 +168,18 @@ export class OrdersService {
       );
 
       for (const item of items) {
-        lines.push(...(await plugin.onLineItemAdd(context, item)));
+        const produced = await plugin.onLineItemAdd(context, item);
+        this.applyLineDiscount(item, produced);
+        lines.push(...produced);
       }
 
       await plugin.beforeCheckout(context, lines, customer);
 
-      const totals = this.computeTotals(business, lines, customer);
+      const totals = this.computeTotals(business, dto, lines, customer);
+
+      if (totals.discountCents > 0) {
+        await this.assertMayDiscount(business, headers);
+      }
 
       const order = await this.ordersRepository.insertOrder(tx, {
         id: randomUUID(),
@@ -175,6 +191,7 @@ export class OrdersService {
         status: plugin.billsOnCreate ? 'billed' : 'placed',
         serviceChargeCents: totals.serviceChargeCents,
         subtotalCents: totals.subtotalCents,
+        discountCents: totals.discountCents,
         taxCents: totals.taxCents,
         totalCents: totals.totalCents,
         createdByUserId: actorUserId,
@@ -200,6 +217,7 @@ export class OrdersService {
           batchId: line.batchId,
           quantity: line.quantity.toFixed(QUANTITY_SCALE),
           unitPriceCents: line.unitPriceCents,
+          discountCents: line.discountCents ?? 0,
           lineTotalCents: line.lineTotalCents,
         })),
       );
@@ -252,8 +270,52 @@ export class OrdersService {
     });
   }
 
+  private async assertMayDiscount(
+    business: Business,
+    headers: Record<string, string | string[] | undefined>,
+  ): Promise<void> {
+    const result = await auth.api.hasPermission({
+      headers: fromNodeHeaders(headers),
+      body: {
+        organizationId: business.organizationId,
+        permissions: { order: ['discount'] },
+      },
+    });
+
+    if (!result?.success) {
+      throw new ForbiddenException('i18n:errors.discount.notPermitted');
+    }
+  }
+
+  private applyLineDiscount(
+    item: CheckoutItemDto,
+    produced: CheckoutLine[],
+  ): void {
+    const grossCents = produced.reduce(
+      (total, line) => total + line.lineTotalCents,
+      0,
+    );
+    const discountCents = resolveDiscountCents(grossCents, item);
+
+    if (discountCents === 0) {
+      return;
+    }
+
+    assertWithinBase(discountCents, grossCents);
+
+    const shares = apportion(
+      discountCents,
+      produced.map((line) => line.lineTotalCents),
+    );
+
+    produced.forEach((line, index) => {
+      line.discountCents = shares[index];
+    });
+  }
+
   private computeTotals(
     business: Business,
+    dto: CreateOrderDto,
     lines: CheckoutLine[],
     customer: Customer | null,
   ): CheckoutTotals {
@@ -262,14 +324,36 @@ export class OrdersService {
       0,
     );
 
+    const lineDiscountCents = lines.reduce(
+      (total, line) => total + (line.discountCents ?? 0),
+      0,
+    );
+
+    const netOfLinesCents = subtotalCents - lineDiscountCents;
+    const orderDiscountCents = resolveDiscountCents(netOfLinesCents, dto);
+    assertWithinBase(orderDiscountCents, netOfLinesCents);
+
+    const orderShares = apportion(
+      orderDiscountCents,
+      lines.map((line) => line.lineTotalCents - (line.discountCents ?? 0)),
+    );
+
+    lines.forEach((line, index) => {
+      line.discountCents = (line.discountCents ?? 0) + orderShares[index];
+    });
+
+    const discountCents = lineDiscountCents + orderDiscountCents;
+    assertWithinCap(discountCents, subtotalCents, business.maxDiscountPercent);
+
+    const netCents = subtotalCents - discountCents;
     const serviceChargeCents = Math.round(
-      (subtotalCents * business.serviceChargePercent) / 100,
+      (netCents * business.serviceChargePercent) / 100,
     );
     const taxCents = computeVatCents(
-      subtotalCents + serviceChargeCents,
+      netCents + serviceChargeCents,
       business.vatRegistered,
     );
-    const totalCents = subtotalCents + serviceChargeCents + taxCents;
+    const totalCents = netCents + serviceChargeCents + taxCents;
 
     if (
       business.vatRegistered &&
@@ -279,7 +363,13 @@ export class OrdersService {
       throw new BadRequestException('i18n:errors.invoice.buyerPanRequired');
     }
 
-    return { subtotalCents, serviceChargeCents, taxCents, totalCents };
+    return {
+      subtotalCents,
+      discountCents,
+      serviceChargeCents,
+      taxCents,
+      totalCents,
+    };
   }
 
   async listForTable(businessId: string, tableId: string): Promise<Order[]> {
@@ -298,6 +388,8 @@ export class OrdersService {
       branchId: branch.id,
       orderId: order.id,
       subtotalCents: order.subtotalCents,
+      discountCents: order.discountCents,
+      serviceChargeCents: order.serviceChargeCents,
       customerId: customer?.id ?? null,
       customerName: customer?.name ?? null,
       customerPan: customer?.panNumber ?? null,

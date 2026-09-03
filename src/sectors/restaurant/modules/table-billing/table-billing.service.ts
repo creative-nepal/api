@@ -51,8 +51,14 @@ export class TableBillingService {
           0,
         );
 
+        const discountCents = lines.reduce(
+          (total, line) => total + line.discountCents,
+          0,
+        );
+
         const serviceChargeCents = Math.round(
-          (subtotalCents * business.serviceChargePercent) / 100,
+          ((subtotalCents - discountCents) * business.serviceChargePercent) /
+            100,
         );
 
         const invoice = await this.invoicesService.issue(tx, {
@@ -60,6 +66,7 @@ export class TableBillingService {
           branchId: table.branchId,
           orderId: null,
           subtotalCents,
+          discountCents,
           serviceChargeCents,
           actorUserId,
         });

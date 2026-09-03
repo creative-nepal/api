@@ -86,6 +86,7 @@ export const businesses = pgTable(
     serviceChargePercent: integer('service_charge_percent')
       .default(0)
       .notNull(),
+    maxDiscountPercent: integer('max_discount_percent').default(0).notNull(),
     displayName: text('display_name'),
     theme: jsonb('theme').$type<BusinessTheme>().default({}).notNull(),
     fiscalYearStartMonth: integer('fiscal_year_start_month')
@@ -372,6 +373,7 @@ export const orders = pgTable(
     tableId: text('table_id'),
     source: text('source').default('staff').notNull(),
     subtotalCents: integer('subtotal_cents').notNull(),
+    discountCents: integer('discount_cents').default(0).notNull(),
     serviceChargeCents: integer('service_charge_cents').default(0).notNull(),
     taxCents: integer('tax_cents').default(0).notNull(),
     totalCents: integer('total_cents').notNull(),
@@ -427,6 +429,7 @@ export const orderItems = pgTable(
     batchId: text('batch_id'),
     quantity: numeric('quantity', { precision: 14, scale: 3 }).notNull(),
     unitPriceCents: integer('unit_price_cents').notNull(),
+    discountCents: integer('discount_cents').default(0).notNull(),
     lineTotalCents: integer('line_total_cents').notNull(),
     createdAt: timestamp('created_at', { withTimezone: true })
       .defaultNow()
@@ -529,6 +532,7 @@ export const businessInvoices = pgTable(
     customerName: text('customer_name'),
     customerPan: text('customer_pan'),
     subtotalCents: integer('subtotal_cents').notNull(),
+    discountCents: integer('discount_cents').default(0).notNull(),
     serviceChargeCents: integer('service_charge_cents').default(0).notNull(),
     vatCents: integer('vat_cents').default(0).notNull(),
     totalCents: integer('total_cents').notNull(),

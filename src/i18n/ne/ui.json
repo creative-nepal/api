@@ -177,7 +177,10 @@
       "branchesTab": "शाखाहरू",
       "branchesTitle": "शाखाहरू",
       "branchesDescription": "प्रत्येक शाखाले आफ्नै निरन्तर बिल शृंखला र आफ्नै स्टक राख्छ।",
-      "defaultBranch": "पूर्वनिर्धारित"
+      "defaultBranch": "पूर्वनिर्धारित",
+      "serviceCharge": "सेवा शुल्क",
+      "maxDiscount": "अधिकतम छुट",
+      "discountsOff": "बन्द"
     },
     "plans": {
       "title": "योजनाहरू",
@@ -415,7 +418,13 @@
       "attachPrescription": "प्रिस्क्रिप्सन संलग्न गर्नुहोस्",
       "prescriptionAttached": "प्रिस्क्रिप्सन संलग्न भयो",
       "prescriptionUploaded": "प्रिस्क्रिप्सन अपलोड भयो",
-      "prescriptionHint": "JPEG, PNG, WebP वा PDF, बढीमा १० MB"
+      "prescriptionHint": "JPEG, PNG, WebP वा PDF, बढीमा १० MB",
+      "discount": "छुट",
+      "discountPercent": "छुट %",
+      "discountHint": "यो व्यवसायका लागि बढीमा {max}%",
+      "completeSale": "बिक्री पूरा गर्नुहोस्",
+      "processing": "प्रक्रियामा...",
+      "checkoutFailed": "बिक्री असफल भयो"
     },
     "products": {
       "title": "सामानहरू",
@@ -543,7 +552,14 @@
       "primaryColour": "मुख्य रङ",
       "logo": "लोगो",
       "uploadLogo": "लोगो अपलोड गर्नुहोस्",
-      "brandingSaved": "ब्रान्डिङ सुरक्षित भयो"
+      "brandingSaved": "ब्रान्डिङ सुरक्षित भयो",
+      "billingRules": "बिलिङ नियम",
+      "billingRulesHint": "हरेक बिक्रीमा सेवा शुल्क र छुट कसरी लाग्छ।",
+      "serviceChargePercent": "सेवा शुल्क %",
+      "serviceChargePercentHint": "छुट कटाएपछिको रकममा भ्याट अघि जोडिन्छ। ० भए लाग्दैन।",
+      "maxDiscountPercent": "अधिकतम छुट %",
+      "maxDiscountPercentHint": "कर्मचारीले बिक्रीमा दिन सक्ने अधिकतम छुट। ० भए छुट बन्द हुन्छ।",
+      "billingRulesUpdated": "बिलिङ नियम सुरक्षित भयो"
     },
     "staff": {
       "title": "कर्मचारी",

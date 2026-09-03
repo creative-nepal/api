@@ -22,6 +22,7 @@ export interface CheckoutLine {
   quantity: number;
   unitPriceCents: number;
   lineTotalCents: number;
+  discountCents?: number;
   batchId: string | null;
 }
 

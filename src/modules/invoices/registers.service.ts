@@ -78,6 +78,10 @@ export class RegistersService {
   private toRow(invoice: BusinessInvoice): RegisterRow {
     const sign = invoice.status === 'credit_note' ? -1 : 1;
     const isVatable = invoice.vatCents > 0;
+    const taxableBaseCents =
+      invoice.subtotalCents -
+      invoice.discountCents +
+      invoice.serviceChargeCents;
 
     return {
       dateBs: toBikramSambat(invoice.createdAt).formatted,
@@ -91,8 +95,8 @@ export class RegistersService {
       description:
         invoice.status === 'credit_note' ? 'Credit note' : 'Goods/Services',
       totalSales: toRupees(sign * invoice.totalCents),
-      exemptSales: isVatable ? 0 : toRupees(sign * invoice.subtotalCents),
-      taxableSales: isVatable ? toRupees(sign * invoice.subtotalCents) : 0,
+      exemptSales: isVatable ? 0 : toRupees(sign * taxableBaseCents),
+      taxableSales: isVatable ? toRupees(sign * taxableBaseCents) : 0,
       vatAmount: toRupees(sign * invoice.vatCents),
     };
   }

@@ -13,6 +13,7 @@ export class InvoiceResponseDto {
   @Expose() customerName: string | null;
   @Expose() customerPan: string | null;
   @Expose() subtotalCents: number;
+  @Expose() discountCents: number;
   @Expose() serviceChargeCents: number;
   @Expose() vatCents: number;
   @Expose() totalCents: number;
@@ -33,6 +34,7 @@ export class InvoiceResponseDto {
     this.customerName = invoice.customerName;
     this.customerPan = invoice.customerPan;
     this.subtotalCents = invoice.subtotalCents;
+    this.discountCents = invoice.discountCents;
     this.serviceChargeCents = invoice.serviceChargeCents;
     this.vatCents = invoice.vatCents;
     this.totalCents = invoice.totalCents;

@@ -40,6 +40,20 @@ export class UpdateBusinessDto {
   fiscalYearStartMonth?: number;
 
   @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  @Max(100)
+  serviceChargePercent?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  @Max(100)
+  maxDiscountPercent?: number;
+
+  @IsOptional()
   @IsString()
   @MaxLength(255)
   displayName?: string;
