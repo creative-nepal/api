@@ -157,5 +157,9 @@
     "sessionClosed": "This till session is already closed",
     "noOpenSession": "Open the till before taking a cash payment",
     "overTender": "That is more than the {due} still due on this invoice"
+  },
+  "channel": {
+    "notFound": "Delivery channel {channelId} not found",
+    "duplicate": "A channel called {name} already exists"
   }
 }

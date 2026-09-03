@@ -46,7 +46,7 @@ export interface CheckoutCommitted {
 export interface SectorPlugin {
   readonly sector: Sector;
 
-  readonly billsOnCreate: boolean;
+  billsOnCreate(dto: CreateOrderDto): boolean;
 
   beforeCreate(business: Business): void;
 

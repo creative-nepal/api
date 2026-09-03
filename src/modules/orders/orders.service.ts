@@ -12,6 +12,7 @@ import {
   type Database,
   type DatabaseExecutor,
   InjectDatabase,
+  schema,
 } from '../../database';
 import type {
   Branch,
@@ -32,6 +33,7 @@ import {
 } from './discounts';
 import type { CheckoutItemDto, CreateOrderDto } from './dto/order-request.dto';
 import { type ListOrdersFilters, OrdersRepository } from './orders.repository';
+import { and, eq } from 'drizzle-orm';
 import { CashService } from '../cash/cash.service';
 import { CustomersService } from '../customers/customers.service';
 import { SectorPluginRegistry } from './sector-plugins/registry';
@@ -150,6 +152,8 @@ export class OrdersService {
     this.assertNoDuplicateProducts(dto);
 
     return this.db.transaction(async (tx) => {
+      const billsNow = plugin.billsOnCreate(dto);
+
       const context: CheckoutContext = {
         executor: tx,
         business,
@@ -179,6 +183,13 @@ export class OrdersService {
 
       const totals = this.computeTotals(business, dto, lines, customer);
 
+      const channelCommissionCents = await this.resolveChannelCommission(
+        tx,
+        business.id,
+        dto.channelId,
+        totals.totalCents,
+      );
+
       if (totals.discountCents > 0) {
         await this.assertMayDiscount(business, headers);
       }
@@ -190,7 +201,9 @@ export class OrdersService {
         customerId: customer?.id ?? null,
         tableId: dto.tableId ?? null,
         source: dto.source ?? 'staff',
-        status: plugin.billsOnCreate ? 'billed' : 'placed',
+        channelId: dto.channelId ?? null,
+        channelCommissionCents,
+        status: billsNow ? 'billed' : 'placed',
         serviceChargeCents: totals.serviceChargeCents,
         subtotalCents: totals.subtotalCents,
         discountCents: totals.discountCents,
@@ -224,7 +237,7 @@ export class OrdersService {
         })),
       );
 
-      const invoice = plugin.billsOnCreate
+      const invoice = billsNow
         ? await this.invoicesService.issue(
             tx,
             this.invoiceLineBuilder(
@@ -280,6 +293,38 @@ export class OrdersService {
 
       return { order, items: orderItems, invoice };
     });
+  }
+
+  private async resolveChannelCommission(
+    executor: DatabaseExecutor,
+    businessId: string,
+    channelId: string | undefined,
+    totalCents: number,
+  ): Promise<number> {
+    if (!channelId) {
+      return 0;
+    }
+
+    const [channel] = await executor
+      .select()
+      .from(schema.salesChannels)
+      .where(
+        and(
+          eq(schema.salesChannels.businessId, businessId),
+          eq(schema.salesChannels.id, channelId),
+          eq(schema.salesChannels.isActive, true),
+        ),
+      )
+      .limit(1);
+
+    if (!channel) {
+      throw new NotFoundException({
+        message: 'i18n:errors.channel.notFound',
+        channelId,
+      });
+    }
+
+    return Math.round((totalCents * Number(channel.commissionPercent)) / 100);
   }
 
   private async assertMayDiscount(

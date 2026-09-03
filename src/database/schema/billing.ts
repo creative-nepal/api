@@ -375,6 +375,10 @@ export const orders = pgTable(
     status: text('status').default('placed').notNull(),
     tableId: text('table_id'),
     source: text('source').default('staff').notNull(),
+    channelId: text('channel_id'),
+    channelCommissionCents: integer('channel_commission_cents')
+      .default(0)
+      .notNull(),
     subtotalCents: integer('subtotal_cents').notNull(),
     discountCents: integer('discount_cents').default(0).notNull(),
     serviceChargeCents: integer('service_charge_cents').default(0).notNull(),

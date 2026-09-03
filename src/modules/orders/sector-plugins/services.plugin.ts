@@ -17,7 +17,9 @@ import type {
 export class ServicesSectorPlugin implements SectorPlugin {
   readonly sector: Sector = 'services';
 
-  readonly billsOnCreate = true;
+  billsOnCreate(): boolean {
+    return true;
+  }
 
   beforeCreate(): void {}
 

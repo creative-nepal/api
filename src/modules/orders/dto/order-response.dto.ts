@@ -45,6 +45,8 @@ export class OrderResponseDto {
   @Expose() tableId: string | null;
   @Expose() source: string;
   @Expose() subtotalCents: number;
+  @Expose() channelId: string | null;
+  @Expose() channelCommissionCents: number;
   @Expose() discountCents: number;
   @Expose() serviceChargeCents: number;
   @Expose() taxCents: number;
@@ -66,6 +68,8 @@ export class OrderResponseDto {
     this.tableId = order.tableId;
     this.source = order.source;
     this.subtotalCents = order.subtotalCents;
+    this.channelId = order.channelId;
+    this.channelCommissionCents = order.channelCommissionCents;
     this.discountCents = order.discountCents;
     this.serviceChargeCents = order.serviceChargeCents;
     this.taxCents = order.taxCents;

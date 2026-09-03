@@ -21,7 +21,9 @@ const QUANTITY_SCALE = 3;
 @Injectable()
 export class MartSectorPlugin implements SectorPlugin {
   readonly sector: Sector = 'mart';
-  readonly billsOnCreate = true;
+  billsOnCreate(): boolean {
+    return true;
+  }
 
   constructor(private readonly productsRepository: ProductsRepository) {}
 

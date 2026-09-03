@@ -10,7 +10,7 @@ import type {
   SelectedModifier,
   Sector,
 } from '../../../database/schema';
-import type { CheckoutItemDto } from '../dto/order-request.dto';
+import type { CheckoutItemDto, CreateOrderDto } from '../dto/order-request.dto';
 import type {
   CheckoutContext,
   CheckoutLine,
@@ -20,7 +20,9 @@ import type {
 @Injectable()
 export class RestaurantSectorPlugin implements SectorPlugin {
   readonly sector: Sector = 'restaurant';
-  readonly billsOnCreate = false;
+  billsOnCreate(dto: CreateOrderDto): boolean {
+    return !dto.tableId;
+  }
 
   beforeCreate(): void {}
 

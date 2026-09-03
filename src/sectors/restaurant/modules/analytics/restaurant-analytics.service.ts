@@ -28,7 +28,17 @@ export interface StuckOrder {
   minutesInStatus: number;
 }
 
+export interface ChannelPerformance {
+  channelId: string | null;
+  name: string;
+  orders: number;
+  grossCents: number;
+  commissionCents: number;
+  netCents: number;
+}
+
 export interface RestaurantAnalytics {
+  channelPerformance: ChannelPerformance[];
   tableTurnover: TableTurnover[];
   itemPerformance: ItemPerformance[];
   peakHours: HourBucket[];
@@ -47,15 +57,67 @@ export class RestaurantAnalyticsService {
   ): Promise<RestaurantAnalytics> {
     const since = new Date(Date.now() - sinceDays * 86_400_000);
 
-    const [tableTurnover, itemPerformance, peakHours, stuckOrders] =
-      await Promise.all([
-        this.tableTurnover(businessId, since),
-        this.itemPerformance(businessId, since),
-        this.peakHours(businessId, since),
-        this.stuckOrders(businessId),
-      ]);
+    const [
+      channelPerformance,
+      tableTurnover,
+      itemPerformance,
+      peakHours,
+      stuckOrders,
+    ] = await Promise.all([
+      this.channelPerformance(businessId, since),
+      this.tableTurnover(businessId, since),
+      this.itemPerformance(businessId, since),
+      this.peakHours(businessId, since),
+      this.stuckOrders(businessId),
+    ]);
 
-    return { tableTurnover, itemPerformance, peakHours, stuckOrders };
+    return {
+      channelPerformance,
+      tableTurnover,
+      itemPerformance,
+      peakHours,
+      stuckOrders,
+    };
+  }
+
+  private async channelPerformance(
+    businessId: string,
+    since: Date,
+  ): Promise<ChannelPerformance[]> {
+    const rows = await this.db
+      .select({
+        channelId: schema.orders.channelId,
+        name: schema.salesChannels.name,
+        orders: sql<string>`count(*)`,
+        grossCents: sql<string>`coalesce(sum(${schema.orders.totalCents}), 0)`,
+        commissionCents: sql<string>`coalesce(sum(${schema.orders.channelCommissionCents}), 0)`,
+      })
+      .from(schema.orders)
+      .leftJoin(
+        schema.salesChannels,
+        eq(schema.salesChannels.id, schema.orders.channelId),
+      )
+      .where(
+        and(
+          eq(schema.orders.businessId, businessId),
+          gte(schema.orders.createdAt, since),
+        ),
+      )
+      .groupBy(schema.orders.channelId, schema.salesChannels.name);
+
+    return rows.map((row) => {
+      const grossCents = Number(row.grossCents);
+      const commissionCents = Number(row.commissionCents);
+
+      return {
+        channelId: row.channelId,
+        name: row.name ?? 'direct',
+        orders: Number(row.orders),
+        grossCents,
+        commissionCents,
+        netCents: grossCents - commissionCents,
+      };
+    });
   }
 
   private async tableTurnover(

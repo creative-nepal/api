@@ -32,7 +32,7 @@ export const RESERVATION_STATUSES = [
 export type ReservationStatus = (typeof RESERVATION_STATUSES)[number];
 export type TableStatus = (typeof TABLE_STATUSES)[number];
 
-export const ORDER_SOURCES = ['staff', 'qr'] as const;
+export const ORDER_SOURCES = ['staff', 'qr', 'delivery'] as const;
 export type OrderSource = (typeof ORDER_SOURCES)[number];
 
 export const KITCHEN_STATUSES = [
@@ -356,6 +356,37 @@ export const reservationsRelations = relations(reservations, ({ one }) => ({
   }),
 }));
 
+export const salesChannels = pgTable(
+  'sales_channels',
+  {
+    id: text('id').primaryKey(),
+    businessId: text('business_id')
+      .notNull()
+      .references(() => businesses.id, { onDelete: 'cascade' }),
+    name: text('name').notNull(),
+    commissionPercent: numeric('commission_percent', {
+      precision: 5,
+      scale: 2,
+    })
+      .default('0')
+      .notNull(),
+    isActive: boolean('is_active').default(true).notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    uniqueIndex('sales_channels_businessId_name_uidx').on(
+      table.businessId,
+      table.name,
+    ),
+  ],
+);
+
 export type RestaurantTable = typeof restaurantTables.$inferSelect;
 export type NewRestaurantTable = typeof restaurantTables.$inferInsert;
 export type MenuItem = typeof menuItems.$inferSelect;
@@ -370,3 +401,5 @@ export type MenuItemIngredient = typeof menuItemIngredients.$inferSelect;
 export type NewMenuItemIngredient = typeof menuItemIngredients.$inferInsert;
 export type Reservation = typeof reservations.$inferSelect;
 export type NewReservation = typeof reservations.$inferInsert;
+export type SalesChannel = typeof salesChannels.$inferSelect;
+export type NewSalesChannel = typeof salesChannels.$inferInsert;

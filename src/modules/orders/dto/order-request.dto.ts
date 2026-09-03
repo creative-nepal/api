@@ -193,6 +193,10 @@ export class CreateOrderDto {
   source?: OrderSource;
 
   @IsOptional()
+  @IsString()
+  channelId?: string;
+
+  @IsOptional()
   @ValidateNested()
   @Type(() => PrescriptionDto)
   prescription?: PrescriptionDto;

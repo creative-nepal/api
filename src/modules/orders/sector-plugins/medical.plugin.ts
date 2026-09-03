@@ -49,7 +49,9 @@ function needsPrescription(schedule: DrugSchedule): boolean {
 @Injectable()
 export class MedicalSectorPlugin implements SectorPlugin {
   readonly sector: Sector = 'medical';
-  readonly billsOnCreate = true;
+  billsOnCreate(): boolean {
+    return true;
+  }
 
   constructor(
     private readonly productsRepository: ProductsRepository,
