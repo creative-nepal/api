@@ -126,5 +126,14 @@
     "notAllowed": "Discounts are switched off for this business; set a maximum discount percent first",
     "exceedsCap": "The discount is above the maximum allowed for this business",
     "notPermitted": "You do not have permission to discount a sale"
+  },
+  "stockTake": {
+    "notFound": "Stock take {stockTakeId} not found",
+    "alreadyOpen": "Stock take {reference} is still open on this branch; finish or cancel it first",
+    "nothingToCount": "There is nothing to count on this branch",
+    "notOpen": "This stock take is already closed",
+    "lineNotFound": "One of the counted lines does not belong to this stock take",
+    "duplicateLine": "A line was counted more than once in the same request",
+    "uncountedLines": "{uncounted} line(s) still have no count; count or cancel them before completing"
   }
 }

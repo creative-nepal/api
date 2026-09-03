@@ -38,6 +38,7 @@ const kernelStatements = {
   product: ['create', 'update', 'delete'],
   order: ['create', 'refund', 'confirm', 'serve', 'discount'],
   invoice: ['issue', 'print', 'credit-note'],
+  stocktake: ['open', 'count', 'complete'],
 } as const;
 
 export const statement = {
@@ -63,6 +64,7 @@ export const ownerRole = ac.newRole({
   product: ['create', 'update', 'delete'],
   order: ['create', 'refund', 'confirm', 'serve', 'discount'],
   invoice: ['issue', 'print', 'credit-note'],
+  stocktake: ['open', 'count', 'complete'],
   ...martOwnerGrants,
   ...medicalOwnerGrants,
   ...restaurantOwnerGrants,
@@ -73,6 +75,7 @@ export const managerRole = ac.newRole({
   product: ['create', 'update', 'delete'],
   order: ['create', 'refund', 'confirm', 'serve', 'discount'],
   invoice: ['issue', 'print', 'credit-note'],
+  stocktake: ['open', 'count', 'complete'],
   ...martManagerGrants,
   ...medicalManagerGrants,
   ...restaurantManagerGrants,

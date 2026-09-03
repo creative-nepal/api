@@ -605,7 +605,8 @@
       "notifications": "Notifications",
       "customers": "Customers",
       "claims": "Claims",
-      "availability": "Availability"
+      "availability": "Availability",
+      "stockTakes": "Stock takes"
     },
     "services": {
       "title": "Services",
@@ -713,6 +714,35 @@
       "rejectReason": "Reason",
       "claimUpdated": "Claim updated",
       "claimsEmpty": "No claims"
+    },
+    "stockTakes": {
+      "title": "Stock takes",
+      "description": "Count what is physically on the shelf and reconcile it against the system.",
+      "open": "Start a count",
+      "openTitle": "Start a stock take",
+      "openHint": "This snapshots every product's current quantity on this branch. Sales made while you count are preserved.",
+      "reference": "Reference",
+      "referencePlaceholder": "ST-2083-001",
+      "note": "Note",
+      "empty": "No stock takes yet.",
+      "emptyHint": "Start one to reconcile shelf quantities against the system.",
+      "countSheet": "Count sheet",
+      "product": "Product",
+      "batch": "Batch",
+      "systemQty": "System",
+      "countedQty": "Counted",
+      "variance": "Variance",
+      "saveCounts": "Save counts",
+      "complete": "Complete and apply",
+      "cancel": "Cancel count",
+      "cancelConfirm": "Cancel this stock take? Nothing will be applied to stock.",
+      "completeConfirm": "Apply {count} variance line(s) to stock? This cannot be undone.",
+      "countsSaved": "Counts saved",
+      "completed": "Stock take applied: {applied} line(s) adjusted",
+      "cancelled": "Stock take cancelled",
+      "progress": "{counted} of {total} counted",
+      "varianceLines": "{count} with a variance",
+      "uncounted": "Not counted"
     }
   }
 }

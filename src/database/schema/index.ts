@@ -5,5 +5,6 @@ export * from './restaurant';
 export * from './platform';
 export * from './purchasing';
 export * from './services';
+export * from './stock-takes';
 export * from './operations';
 export * from './content';

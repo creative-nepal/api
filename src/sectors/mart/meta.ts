@@ -14,6 +14,12 @@ const navItems: WorkspaceNavItem[] = [
     titleKey: 'ui.web.nav.products',
     permission: { product: ['create'] },
   },
+  {
+    key: 'stock-takes',
+    href: '/stock-takes',
+    titleKey: 'ui.web.nav.stockTakes',
+    permission: { stocktake: ['count'] },
+  },
 ];
 
 export const martMeta: SectorMeta = {

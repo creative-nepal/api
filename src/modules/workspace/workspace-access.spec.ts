@@ -32,6 +32,7 @@ describe('navForSector', () => {
       'kitchen',
       'menu',
       'products',
+      'stock-takes',
       'purchasing',
       'customers',
       'invoices',

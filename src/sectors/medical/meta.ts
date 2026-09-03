@@ -26,6 +26,12 @@ const navItems: WorkspaceNavItem[] = [
     titleKey: 'ui.web.nav.batches',
     permission: { product: ['update'] },
   },
+  {
+    key: 'stock-takes',
+    href: '/stock-takes',
+    titleKey: 'ui.web.nav.stockTakes',
+    permission: { stocktake: ['count'] },
+  },
 ];
 
 export const medicalMeta: SectorMeta = {
