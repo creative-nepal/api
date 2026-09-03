@@ -86,5 +86,15 @@
     "thursday": "Thursday",
     "friday": "Friday",
     "saturday": "Saturday"
+  },
+  "paymentMethod": {
+    "cash": "Cash",
+    "esewa": "eSewa",
+    "khalti": "Khalti",
+    "fonepay": "Fonepay",
+    "connectips": "ConnectIPS",
+    "card": "Card",
+    "bank_transfer": "Bank transfer",
+    "credit": "Credit"
   }
 }

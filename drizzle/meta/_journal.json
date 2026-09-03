@@ -155,6 +155,13 @@
       "when": 1788427943201,
       "tag": "0021_pack_units",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1788435870473,
+      "tag": "0022_cash_sessions",
+      "breakpoints": true
     }
   ]
 }

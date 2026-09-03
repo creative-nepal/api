@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { BranchesCoreModule } from '../branches/branches-core.module';
+import { CashCoreModule } from '../cash/cash-core.module';
 import { BatchesCoreModule } from '../batches/batches-core.module';
 import { CustomersCoreModule } from '../customers/customers-core.module';
 import { InvoicesModule } from '../invoices/invoices.module';
@@ -20,6 +21,7 @@ import { SectorPluginRegistry } from './sector-plugins/registry';
     BatchesCoreModule,
     BranchesCoreModule,
     CustomersCoreModule,
+    CashCoreModule,
   ],
   controllers: [OrdersController],
   providers: [

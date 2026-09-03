@@ -150,5 +150,12 @@
   "product": {
     "notFound": "Product {productId} not found",
     "repackNotExact": "Changing the pack size to {unitsPerPack} would leave a fractional pack in stock. Sell or write off the loose remainder first."
+  },
+  "cash": {
+    "sessionAlreadyOpen": "A till is already open on this branch; close it before opening another",
+    "sessionNotFound": "Till session {sessionId} not found",
+    "sessionClosed": "This till session is already closed",
+    "noOpenSession": "Open the till before taking a cash payment",
+    "overTender": "That is more than the {due} still due on this invoice"
   }
 }

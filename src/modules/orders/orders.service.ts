@@ -32,6 +32,7 @@ import {
 } from './discounts';
 import type { CheckoutItemDto, CreateOrderDto } from './dto/order-request.dto';
 import { type ListOrdersFilters, OrdersRepository } from './orders.repository';
+import { CashService } from '../cash/cash.service';
 import { CustomersService } from '../customers/customers.service';
 import { SectorPluginRegistry } from './sector-plugins/registry';
 import type {
@@ -87,6 +88,7 @@ export class OrdersService {
     private readonly invoicesService: InvoicesService,
     private readonly sectorPlugins: SectorPluginRegistry,
     private readonly customers: CustomersService,
+    private readonly cash: CashService,
   ) {}
 
   async getById(businessId: string, id: string): Promise<OrderDetail> {
@@ -256,6 +258,16 @@ export class OrdersService {
           invoice.id,
           actorUserId,
         );
+      }
+
+      if (invoice && dto.payments?.length) {
+        await this.cash.recordPayments(tx, {
+          businessId: business.id,
+          branchId: branch.id,
+          invoice,
+          payments: dto.payments,
+          actorUserId,
+        });
       }
 
       await plugin.afterCheckout(context, {

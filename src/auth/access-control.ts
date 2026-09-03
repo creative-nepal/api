@@ -39,6 +39,7 @@ const kernelStatements = {
   order: ['create', 'refund', 'confirm', 'serve', 'discount'],
   invoice: ['issue', 'print', 'credit-note'],
   stocktake: ['open', 'count', 'complete'],
+  cash: ['view', 'open', 'close', 'move', 'take-payment'],
 } as const;
 
 export const statement = {
@@ -65,6 +66,7 @@ export const ownerRole = ac.newRole({
   order: ['create', 'refund', 'confirm', 'serve', 'discount'],
   invoice: ['issue', 'print', 'credit-note'],
   stocktake: ['open', 'count', 'complete'],
+  cash: ['view', 'open', 'close', 'move', 'take-payment'],
   ...martOwnerGrants,
   ...medicalOwnerGrants,
   ...restaurantOwnerGrants,
@@ -76,6 +78,7 @@ export const managerRole = ac.newRole({
   order: ['create', 'refund', 'confirm', 'serve', 'discount'],
   invoice: ['issue', 'print', 'credit-note'],
   stocktake: ['open', 'count', 'complete'],
+  cash: ['view', 'open', 'close', 'move', 'take-payment'],
   ...martManagerGrants,
   ...medicalManagerGrants,
   ...restaurantManagerGrants,
@@ -85,6 +88,7 @@ export const managerRole = ac.newRole({
 export const cashierRole = ac.newRole({
   order: ['create'],
   invoice: ['issue', 'print'],
+  cash: ['view', 'open', 'close', 'move', 'take-payment'],
 });
 
 const sectorRoles = {

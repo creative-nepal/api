@@ -16,6 +16,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { PaginationQueryDto } from '../../../common/dto/pagination-query.dto';
+import { PaymentDto } from '../../cash/dto/cash.dto';
 import {
   BUYER_ID_TYPES,
   type BuyerIdType,
@@ -176,6 +177,12 @@ export class CreateOrderDto {
   @IsString()
   @MaxLength(255)
   discountReason?: string;
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => PaymentDto)
+  payments?: PaymentDto[];
 
   @IsOptional()
   @IsString()
