@@ -38,6 +38,7 @@ describe('navForSector', () => {
       'products',
       'stock-takes',
       'reservations',
+      'channels',
       'purchasing',
       'customers',
       'cash',
