@@ -26,7 +26,9 @@
     "archive": "Archive",
     "revoke": "Revoke",
     "viewDetails": "View details",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "enable": "Enable",
+    "disable": "Disable"
   },
   "field": {
     "name": "Name",
@@ -642,7 +644,8 @@
       "availability": "Availability",
       "stockTakes": "Stock takes",
       "reservations": "Reservations",
-      "cash": "Till"
+      "cash": "Till",
+      "channels": "Delivery"
     },
     "services": {
       "title": "Services",
@@ -850,6 +853,26 @@
       "reference": "Reference",
       "due": "Due",
       "takePayment": "Take payment"
+    },
+    "channels": {
+      "title": "Delivery channels",
+      "description": "Aggregators you sell through, and what each one costs you.",
+      "add": "Add a channel",
+      "name": "Channel",
+      "commission": "Commission",
+      "orders": "Orders",
+      "gross": "Gross",
+      "commissionCost": "Commission",
+      "net": "You keep",
+      "direct": "Direct",
+      "empty": "No delivery channels yet.",
+      "emptyHint": "Add Foodmandu, Bhoj or Pathao Food with the commission each charges.",
+      "added": "Channel added",
+      "updated": "Channel updated",
+      "active": "Active",
+      "performance": "Last 30 days",
+      "channel": "Channel",
+      "none": "Dine-in or counter"
     }
   }
 }

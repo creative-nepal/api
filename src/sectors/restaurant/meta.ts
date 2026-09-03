@@ -39,6 +39,12 @@ const navItems: WorkspaceNavItem[] = [
     titleKey: 'ui.web.nav.reservations',
     permission: { reservation: ['view'] },
   },
+  {
+    key: 'channels',
+    href: '/channels',
+    titleKey: 'ui.web.nav.channels',
+    permission: { order: ['create'] },
+  },
 ];
 
 const theme: SectorTheme = {
