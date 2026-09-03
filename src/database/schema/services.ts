@@ -102,6 +102,63 @@ export const serviceMemberships = pgTable(
   ],
 );
 
+export const staffAvailability = pgTable(
+  'staff_availability',
+  {
+    id: text('id').primaryKey(),
+    businessId: text('business_id')
+      .notNull()
+      .references(() => businesses.id, { onDelete: 'cascade' }),
+    staffUserId: text('staff_user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    /** 0 = Sunday, matching Postgres `extract(dow)`. */
+    dayOfWeek: integer('day_of_week').notNull(),
+    startMinute: integer('start_minute').notNull(),
+    endMinute: integer('end_minute').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    uniqueIndex('staff_availability_staff_day_start_uidx').on(
+      table.staffUserId,
+      table.dayOfWeek,
+      table.startMinute,
+    ),
+    index('staff_availability_businessId_staff_idx').on(
+      table.businessId,
+      table.staffUserId,
+    ),
+  ],
+);
+
+export const staffTimeOff = pgTable(
+  'staff_time_off',
+  {
+    id: text('id').primaryKey(),
+    businessId: text('business_id')
+      .notNull()
+      .references(() => businesses.id, { onDelete: 'cascade' }),
+    staffUserId: text('staff_user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    startsAt: timestamp('starts_at', { withTimezone: true }).notNull(),
+    endsAt: timestamp('ends_at', { withTimezone: true }).notNull(),
+    reason: text('reason'),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    index('staff_time_off_businessId_staff_startsAt_idx').on(
+      table.businessId,
+      table.staffUserId,
+      table.startsAt,
+    ),
+  ],
+);
+
 export const serviceAppointments = pgTable(
   'service_appointments',
   {
@@ -196,3 +253,5 @@ export type ServiceMembership = typeof serviceMemberships.$inferSelect;
 export type NewServiceMembership = typeof serviceMemberships.$inferInsert;
 export type ServiceAppointment = typeof serviceAppointments.$inferSelect;
 export type NewServiceAppointment = typeof serviceAppointments.$inferInsert;
+export type StaffAvailability = typeof staffAvailability.$inferSelect;
+export type StaffTimeOff = typeof staffTimeOff.$inferSelect;

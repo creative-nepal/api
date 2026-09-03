@@ -306,6 +306,8 @@ export const customers = pgTable(
     name: text('name').notNull(),
     phone: text('phone'),
     panNumber: text('pan_number'),
+    creditLimitCents: integer('credit_limit_cents').default(0).notNull(),
+    balanceCents: integer('balance_cents').default(0).notNull(),
     createdAt: timestamp('created_at', { withTimezone: true })
       .defaultNow()
       .notNull(),
@@ -316,6 +318,40 @@ export const customers = pgTable(
   },
   (table) => [
     index('customers_businessId_phone_idx').on(table.businessId, table.phone),
+  ],
+);
+
+export const LEDGER_ENTRY_TYPES = ['sale', 'payment', 'adjustment'] as const;
+export type LedgerEntryType = (typeof LEDGER_ENTRY_TYPES)[number];
+
+export const customerLedgerEntries = pgTable(
+  'customer_ledger_entries',
+  {
+    id: text('id').primaryKey(),
+    businessId: text('business_id')
+      .notNull()
+      .references(() => businesses.id, { onDelete: 'cascade' }),
+    customerId: text('customer_id')
+      .notNull()
+      .references(() => customers.id, { onDelete: 'cascade' }),
+    type: text('type').notNull(),
+    amountCents: integer('amount_cents').notNull(),
+    balanceAfterCents: integer('balance_after_cents').notNull(),
+    invoiceId: text('invoice_id'),
+    note: text('note'),
+    actorUserId: text('actor_user_id').references(() => user.id, {
+      onDelete: 'set null',
+    }),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    index('customer_ledger_businessId_customerId_createdAt_idx').on(
+      table.businessId,
+      table.customerId,
+      table.createdAt,
+    ),
   ],
 );
 
@@ -699,6 +735,7 @@ export type NewSubscription = typeof subscriptions.$inferInsert;
 export type Product = typeof products.$inferSelect;
 export type NewProduct = typeof products.$inferInsert;
 export type Customer = typeof customers.$inferSelect;
+export type CustomerLedgerEntry = typeof customerLedgerEntries.$inferSelect;
 export type NewCustomer = typeof customers.$inferInsert;
 export type Order = typeof orders.$inferSelect;
 export type NewOrder = typeof orders.$inferInsert;

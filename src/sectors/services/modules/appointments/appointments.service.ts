@@ -10,6 +10,7 @@ import { type Database, InjectDatabase } from '../../../../database';
 import type { ServiceAppointment } from '../../../../database/schema';
 import { EntitlementsService } from '../../../../modules/entitlements/entitlements.service';
 import { ServicesRepository } from '../services/services.repository';
+import { AvailabilityService } from './availability.service';
 import { AppointmentsRepository } from './appointments.repository';
 import type {
   CreateAppointmentDto,
@@ -25,6 +26,7 @@ export class AppointmentsService {
     private readonly appointmentsRepository: AppointmentsRepository,
     private readonly servicesRepository: ServicesRepository,
     private readonly entitlements: EntitlementsService,
+    private readonly availability: AvailabilityService,
   ) {}
 
   async list(
@@ -109,6 +111,15 @@ export class AppointmentsService {
           'i18n:errors.services.membershipServiceMismatch',
         );
       }
+    }
+
+    if (dto.staffUserId) {
+      await this.availability.assertBookable(
+        businessId,
+        dto.staffUserId,
+        new Date(dto.scheduledAt),
+        dto.durationMinutes ?? item.durationMinutes,
+      );
     }
 
     return this.appointmentsRepository.insert({

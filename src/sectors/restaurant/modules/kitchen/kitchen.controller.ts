@@ -18,6 +18,7 @@ import {
   RequireSector,
   RequireSectorGuard,
 } from '../../../../common';
+import { CurrentUser, type CurrentUserType } from '../../../../auth';
 import type { Business } from '../../../../database/schema';
 import {
   KitchenTicketResponseDto,
@@ -73,6 +74,7 @@ export class OrderLifecycleController {
   async confirm(
     @CurrentBusiness() business: Business,
     @Param('orderId') orderId: string,
+    @CurrentUser() currentUser: CurrentUserType,
   ): Promise<{
     orderId: string;
     tickets: Array<{ id: string; station: string }>;
@@ -80,6 +82,7 @@ export class OrderLifecycleController {
     const tickets = await this.kitchenService.confirmOrder(
       business.id,
       orderId,
+      currentUser.id,
     );
 
     return {

@@ -33,6 +33,7 @@ describe('navForSector', () => {
       'menu',
       'products',
       'purchasing',
+      'customers',
       'invoices',
       'branches',
       'staff',
@@ -43,7 +44,7 @@ describe('navForSector', () => {
   it('hides staff, settings and products from a cashier', () => {
     const keys = navKeys('mart', 'cashier');
 
-    expect(keys).toEqual(['pos', 'invoices']);
+    expect(keys).toEqual(['pos', 'customers', 'invoices']);
   });
 
   it('gives a chef only the kitchen board', () => {

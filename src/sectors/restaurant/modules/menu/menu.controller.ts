@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Patch,
+  Put,
   Post,
   Query,
   UseGuards,
@@ -25,8 +26,10 @@ import {
   ListMenuQueryDto,
   MenuItemResponseDto,
   SetAvailabilityDto,
+  SetRecipeDto,
   UpdateMenuItemDto,
 } from './dto/menu.dto';
+import { type RecipeLine, RecipesService } from './recipes.service';
 import { MenuService } from './menu.service';
 
 @Controller({ path: 'businesses/:businessId/menu', version: '1' })
@@ -34,7 +37,10 @@ import { MenuService } from './menu.service';
 @RequireSector('restaurant')
 @UseInterceptors(ClassSerializerInterceptor)
 export class MenuController {
-  constructor(private readonly menuService: MenuService) {}
+  constructor(
+    private readonly menuService: MenuService,
+    private readonly recipes: RecipesService,
+  ) {}
 
   @Get()
   async list(
@@ -83,6 +89,25 @@ export class MenuController {
     return new MenuItemResponseDto(
       await this.menuService.update(business, menuItemId, dto),
     );
+  }
+
+  @Get(':menuItemId/recipe')
+  @RequirePermission({ product: ['create'] })
+  async getRecipe(
+    @CurrentBusiness() business: Business,
+    @Param('menuItemId') menuItemId: string,
+  ): Promise<RecipeLine[]> {
+    return this.recipes.get(business.id, menuItemId);
+  }
+
+  @Put(':menuItemId/recipe')
+  @RequirePermission({ product: ['update'] })
+  async setRecipe(
+    @CurrentBusiness() business: Business,
+    @Param('menuItemId') menuItemId: string,
+    @Body() dto: SetRecipeDto,
+  ): Promise<RecipeLine[]> {
+    return this.recipes.set(business.id, menuItemId, dto.lines);
   }
 
   @Patch(':menuItemId/availability')

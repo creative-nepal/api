@@ -15,6 +15,12 @@ const navItems: WorkspaceNavItem[] = [
     permission: { product: ['create'] },
   },
   {
+    key: 'claims',
+    href: '/claims',
+    titleKey: 'ui.web.nav.claims',
+    permission: { invoice: ['print'] },
+  },
+  {
     key: 'batches',
     href: '/batches',
     titleKey: 'ui.web.nav.batches',

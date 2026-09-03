@@ -92,5 +92,32 @@
     "notUploaded": "File {fileId} has not finished uploading",
     "tooLarge": "File is {actual} bytes; the limit is {limit}",
     "notFound": "File {fileId} not found"
+  },
+  "recipe": {
+    "menuItemNotFound": "Menu item {menuItemId} not found",
+    "duplicateIngredient": "Product {productId} appears twice in the recipe",
+    "productNotFound": "Product {productId} is not in this business"
+  },
+  "customer": {
+    "notFound": "Customer {customerId} not found",
+    "creditLimitExceeded": "This sale would take the balance past the credit limit of {limit} (currently {balance})",
+    "overPayment": "Payment of {amount} exceeds the outstanding balance of {balance}",
+    "creditNeedsCustomer": "A credit sale needs a customer on the order",
+    "creditNeedsInvoice": "A credit sale needs an invoice; this sector bills later"
+  },
+  "claim": {
+    "notFound": "Claim {claimId} not found",
+    "badTransition": "A claim cannot move from {from} to {to}",
+    "settledRequired": "An approved claim needs the settled amount",
+    "settledExceedsClaim": "Settled {settled} is more than the claimed {claimed}",
+    "reasonRequired": "A rejected claim needs a reason"
+  },
+  "availability": {
+    "badWindow": "A working window must end after it starts",
+    "pastMidnight": "A working window cannot run past midnight",
+    "badTimeOff": "Time off must end after it starts",
+    "outsideHours": "That time is outside this person’s working hours",
+    "onTimeOff": "This person is on time off then",
+    "doubleBooked": "This person already has an appointment then"
   }
 }

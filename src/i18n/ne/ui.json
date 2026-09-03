@@ -70,7 +70,8 @@
     "branch": "शाखा",
     "code": "कोड",
     "allBranches": "सबै शाखा",
-    "address": "ठेगाना"
+    "address": "ठेगाना",
+    "phone": "फोन"
   },
   "error": {
     "serverTitle": "केही गडबड भयो",
@@ -585,7 +586,10 @@
       "appointments": "अपोइन्टमेन्ट",
       "services": "सेवाहरू",
       "branches": "शाखाहरू",
-      "notifications": "सूचनाहरू"
+      "notifications": "सूचनाहरू",
+      "customers": "ग्राहकहरू",
+      "claims": "दाबी",
+      "availability": "उपलब्धता"
     },
     "services": {
       "title": "सेवाहरू",
@@ -610,7 +614,16 @@
       "emptyBody": "रिसेप्सनले तालिका बनाएपछि बुकिङहरू यहाँ देखिन्छन्।",
       "allStatuses": "सबै स्थिति",
       "complete": "सम्पन्न गर्नुहोस्",
-      "updated": "अपोइन्टमेन्ट अद्यावधिक भयो"
+      "updated": "अपोइन्टमेन्ट अद्यावधिक भयो",
+      "availability": "उपलब्धता",
+      "workingHours": "कार्य समय",
+      "timeOff": "बिदा",
+      "addWindow": "समय थप्नुहोस्",
+      "saveAvailability": "समय सुरक्षित",
+      "availabilitySaved": "समय सुरक्षित भयो",
+      "from": "देखि",
+      "to": "सम्म",
+      "noHours": "समय तोकिएको छैन — जुनसुकै बेला बुक गर्न सकिन्छ"
     },
     "branches": {
       "title": "शाखाहरू",
@@ -643,7 +656,47 @@
       "pastDueTitle": "सदस्यता बाँकी",
       "pastDueBody": "बिल जारी गरिरहन नवीकरण गर्नुहोस्",
       "trialEndingTitle": "परीक्षण सकिँदै",
-      "trialEndingBody": "तपाईंको परीक्षण {date} मा सकिन्छ"
+      "trialEndingBody": "तपाईंको परीक्षण {date} मा सकिन्छ",
+      "shortfallTitle": "सामग्री कम भयो",
+      "shortfallBody": "अर्डर पुष्टि हुँदा {items} ऋणात्मक भयो",
+      "writtenOffTitle": "म्याद सकिएको स्टक हटाइयो",
+      "writtenOffBody": "{count} ब्याच हटाइयो: {items}"
+    },
+    "menu": {
+      "recipeTitle": "रेसिपी",
+      "recipeHint": "एक सर्भिङमा के खपत हुन्छ। किचनमा अर्डर पुष्टि गर्दा यी शाखा स्टकबाट घट्छन्।",
+      "addIngredient": "सामग्री थप्नुहोस्",
+      "noRecipe": "रेसिपी छैन — यो आइटमले केही घटाउँदैन",
+      "saveRecipe": "रेसिपी सुरक्षित गर्नुहोस्",
+      "recipeSaved": "रेसिपी सुरक्षित भयो",
+      "perServing": "प्रति सर्भिङ"
+    },
+    "customers": {
+      "title": "ग्राहकहरू",
+      "description": "कसले उधारोमा किन्छ, र कति तिर्न बाँकी छ।",
+      "creditLimit": "ऋण सीमा",
+      "balance": "बाँकी",
+      "ledger": "खाता",
+      "recordPayment": "भुक्तानी दर्ता",
+      "paymentRecorded": "भुक्तानी दर्ता भयो",
+      "addCustomer": "ग्राहक थप्नुहोस्",
+      "customerAdded": "ग्राहक थपियो",
+      "emptyTitle": "कुनै ग्राहक छैन",
+      "emptyBody": "उधारोमा बेच्न र बाँकी रकम ट्र्याक गर्न ग्राहक थप्नुहोस्।",
+      "owingOnly": "बाँकी भएका मात्र",
+      "onCredit": "उधारोमा",
+      "settled": "चुक्ता"
+    },
+    "medical": {
+      "claimsTitle": "बीमा दाबी",
+      "submit": "पेश गर्नुहोस्",
+      "approve": "स्वीकृत",
+      "reject": "अस्वीकृत",
+      "settledAmount": "भुक्तानी रकम",
+      "claimReference": "सन्दर्भ",
+      "rejectReason": "कारण",
+      "claimUpdated": "दाबी अद्यावधिक भयो",
+      "claimsEmpty": "कुनै दाबी छैन"
     }
   }
 }

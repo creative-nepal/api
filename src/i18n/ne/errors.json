@@ -92,5 +92,32 @@
     "notUploaded": "फाइल {fileId} को अपलोड सकिएको छैन",
     "tooLarge": "फाइल {actual} बाइट छ; सीमा {limit} हो",
     "notFound": "फाइल {fileId} फेला परेन"
+  },
+  "recipe": {
+    "menuItemNotFound": "मेनु आइटम {menuItemId} फेला परेन",
+    "duplicateIngredient": "उत्पादन {productId} रेसिपीमा दुई पटक छ",
+    "productNotFound": "उत्पादन {productId} यो व्यवसायमा छैन"
+  },
+  "customer": {
+    "notFound": "ग्राहक {customerId} फेला परेन",
+    "creditLimitExceeded": "यो बिक्रीले ऋण सीमा {limit} नाघ्छ (हाल {balance})",
+    "overPayment": "{amount} भुक्तानी बाँकी रकम {balance} भन्दा बढी छ",
+    "creditNeedsCustomer": "उधारो बिक्रीका लागि अर्डरमा ग्राहक चाहिन्छ",
+    "creditNeedsInvoice": "उधारो बिक्रीका लागि बिल चाहिन्छ; यो क्षेत्रले पछि बिल गर्छ"
+  },
+  "claim": {
+    "notFound": "दाबी {claimId} फेला परेन",
+    "badTransition": "दाबी {from} बाट {to} मा जान सक्दैन",
+    "settledRequired": "स्वीकृत दाबीलाई भुक्तानी रकम चाहिन्छ",
+    "settledExceedsClaim": "भुक्तानी {settled} दाबी {claimed} भन्दा बढी छ",
+    "reasonRequired": "अस्वीकृत दाबीलाई कारण चाहिन्छ"
+  },
+  "availability": {
+    "badWindow": "कार्य समय सुरुपछि सकिनुपर्छ",
+    "pastMidnight": "कार्य समय मध्यरात नाघ्न सक्दैन",
+    "badTimeOff": "बिदा सुरुपछि सकिनुपर्छ",
+    "outsideHours": "त्यो समय यो व्यक्तिको कार्य समयभन्दा बाहिर छ",
+    "onTimeOff": "त्यति बेला यो व्यक्ति बिदामा छ",
+    "doubleBooked": "त्यति बेला यो व्यक्तिको अर्को अपोइन्टमेन्ट छ"
   }
 }

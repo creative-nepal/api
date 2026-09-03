@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import {
+  IsArray,
   IsDateString,
   IsIn,
   IsInt,
@@ -9,6 +10,7 @@ import {
   Max,
   MaxLength,
   Min,
+  ValidateNested,
 } from 'class-validator';
 import { ListQueryDto } from '../../../../../common/dto/list-query.dto';
 import {
@@ -45,4 +47,23 @@ export class ListAppointmentsQueryDto extends ListQueryDto {
   @IsOptional() @IsString() customerId?: string;
   @IsOptional() @IsDateString() from?: string;
   @IsOptional() @IsDateString() to?: string;
+}
+
+export class AvailabilityWindowDto {
+  @Type(() => Number) @IsInt() @Min(0) @Max(6) dayOfWeek!: number;
+  @Type(() => Number) @IsInt() @Min(0) @Max(1440) startMinute!: number;
+  @Type(() => Number) @IsInt() @Min(0) @Max(1440) endMinute!: number;
+}
+
+export class SetAvailabilityDto {
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => AvailabilityWindowDto)
+  windows!: AvailabilityWindowDto[];
+}
+
+export class CreateTimeOffDto {
+  @IsDateString() startsAt!: string;
+  @IsDateString() endsAt!: string;
+  @IsOptional() @IsString() @MaxLength(255) reason?: string;
 }

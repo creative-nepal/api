@@ -4,11 +4,13 @@ import {
   IsBoolean,
   IsInt,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   Max,
   MaxLength,
   Min,
+  ValidateNested,
 } from 'class-validator';
 import { PaginationQueryDto } from '../../../../../common/dto/pagination-query.dto';
 import type { MenuItem, MenuModifier } from '../../../../../database/schema';
@@ -121,4 +123,20 @@ export class MenuItemResponseDto {
     this.imageUrl = item.imageUrl;
     this.station = item.station;
   }
+}
+
+export class RecipeLineDto {
+  @IsString() @IsNotEmpty() productId!: string;
+
+  @Type(() => Number)
+  @IsNumber({ maxDecimalPlaces: 3 })
+  @Min(0.001)
+  quantity!: number;
+}
+
+export class SetRecipeDto {
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => RecipeLineDto)
+  lines!: RecipeLineDto[];
 }

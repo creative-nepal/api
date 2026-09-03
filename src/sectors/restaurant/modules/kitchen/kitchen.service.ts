@@ -5,6 +5,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { and, asc, eq, inArray, ne } from 'drizzle-orm';
+import { NotificationsService } from '../../../../modules/notifications/notifications.service';
+import { RecipesService } from '../menu/recipes.service';
 import {
   type Database,
   type DatabaseExecutor,
@@ -37,11 +39,16 @@ const KITCHEN_RANK: Record<KitchenStatus, number> = {
 
 @Injectable()
 export class KitchenService {
-  constructor(@InjectDatabase() private readonly db: Database) {}
+  constructor(
+    @InjectDatabase() private readonly db: Database,
+    private readonly recipes: RecipesService,
+    private readonly notifications: NotificationsService,
+  ) {}
 
   async confirmOrder(
     businessId: string,
     orderId: string,
+    actorUserId: string | null = null,
   ): Promise<KitchenTicket[]> {
     return this.db.transaction(async (tx) => {
       const [order] = await tx
@@ -122,6 +129,27 @@ export class KitchenService {
         );
 
         tickets.push(ticket);
+      }
+
+      const depletion = await this.recipes.depleteForOrder(
+        tx,
+        businessId,
+        order.branchId,
+        orderId,
+        actorUserId,
+      );
+
+      if (depletion.shortfalls.length > 0) {
+        await this.notifications.raise({
+          businessId,
+          type: 'stock.shortfall',
+          severity: 'warning',
+          titleKey: 'ui.web.notifications.shortfallTitle',
+          bodyKey: 'ui.web.notifications.shortfallBody',
+          params: { items: depletion.shortfalls.join(', ') },
+          href: '/products',
+          dedupeKey: `stock.shortfall:${orderId}`,
+        });
       }
 
       await tx

@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   Query,
   UseGuards,
   UseInterceptors,
@@ -19,11 +20,19 @@ import {
   RequireSectorGuard,
 } from '../../../../common';
 import type { PaginatedResult } from '../../../../common/dto/pagination-query.dto';
-import type { Business, ServiceAppointment } from '../../../../database/schema';
+import type {
+  Business,
+  ServiceAppointment,
+  StaffAvailability,
+  StaffTimeOff,
+} from '../../../../database/schema';
+import { AvailabilityService } from './availability.service';
 import { AppointmentsService } from './appointments.service';
 import {
   CreateAppointmentDto,
+  CreateTimeOffDto,
   ListAppointmentsQueryDto,
+  SetAvailabilityDto,
   UpdateAppointmentStatusDto,
 } from './dto/appointments.dto';
 
@@ -32,7 +41,10 @@ import {
 @RequireSector('services')
 @UseInterceptors(ClassSerializerInterceptor)
 export class AppointmentsController {
-  constructor(private readonly appointmentsService: AppointmentsService) {}
+  constructor(
+    private readonly appointmentsService: AppointmentsService,
+    private readonly availability: AvailabilityService,
+  ) {}
 
   @Get()
   @RequirePermission({ appointment: ['complete'] })
@@ -50,6 +62,41 @@ export class AppointmentsController {
     @Body() dto: CreateAppointmentDto,
   ): Promise<ServiceAppointment> {
     return this.appointmentsService.book(business.id, dto);
+  }
+
+  @Get('availability/:staffUserId')
+  @RequirePermission({ appointment: ['complete'] })
+  async getAvailability(
+    @CurrentBusiness() business: Business,
+    @Param('staffUserId') staffUserId: string,
+  ): Promise<StaffAvailability[]> {
+    return this.availability.listFor(business.id, staffUserId);
+  }
+
+  @Put('availability/:staffUserId')
+  @RequirePermission({ membership: ['manage'] })
+  async setAvailability(
+    @CurrentBusiness() business: Business,
+    @Param('staffUserId') staffUserId: string,
+    @Body() dto: SetAvailabilityDto,
+  ): Promise<StaffAvailability[]> {
+    return this.availability.setFor(business.id, staffUserId, dto.windows);
+  }
+
+  @Post('availability/:staffUserId/time-off')
+  @RequirePermission({ membership: ['manage'] })
+  async addTimeOff(
+    @CurrentBusiness() business: Business,
+    @Param('staffUserId') staffUserId: string,
+    @Body() dto: CreateTimeOffDto,
+  ): Promise<StaffTimeOff> {
+    return this.availability.addTimeOff(
+      business.id,
+      staffUserId,
+      new Date(dto.startsAt),
+      new Date(dto.endsAt),
+      dto.reason ?? null,
+    );
   }
 
   @Get(':appointmentId')

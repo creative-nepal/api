@@ -5,6 +5,7 @@ import { FilesCoreModule } from '../files/files-core.module';
 import { NotificationsCoreModule } from '../notifications/notifications-core.module';
 import { SyncModule } from '../sync/sync.module';
 import { EmailOutboxJob } from './handlers/email-outbox.job';
+import { ExpiryWriteOffJob } from './handlers/expiry-write-off.job';
 import { FileCleanupJob } from './handlers/file-cleanup.job';
 import { InvoiceLeaseExpiryJob } from './handlers/invoice-lease-expiry.job';
 import { JobRunnerService } from './job-runner.service';
@@ -33,6 +34,7 @@ import { SubscriptionLifecycleJob } from './handlers/subscription-lifecycle.job'
     JobsBootstrap,
     EmailOutboxJob,
     FileCleanupJob,
+    ExpiryWriteOffJob,
     InvoiceLeaseExpiryJob,
     StockAlertsJob,
     SubscriptionLifecycleJob,

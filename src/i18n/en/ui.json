@@ -70,7 +70,8 @@
     "branch": "Branch",
     "code": "Code",
     "allBranches": "All branches",
-    "address": "Address"
+    "address": "Address",
+    "phone": "Phone"
   },
   "error": {
     "serverTitle": "Something went wrong",
@@ -585,7 +586,10 @@
       "appointments": "Appointments",
       "services": "Services",
       "branches": "Branches",
-      "notifications": "Notifications"
+      "notifications": "Notifications",
+      "customers": "Customers",
+      "claims": "Claims",
+      "availability": "Availability"
     },
     "services": {
       "title": "Services",
@@ -610,7 +614,16 @@
       "emptyBody": "Bookings appear here once reception schedules them.",
       "allStatuses": "All statuses",
       "complete": "Complete",
-      "updated": "Appointment updated"
+      "updated": "Appointment updated",
+      "availability": "Availability",
+      "workingHours": "Working hours",
+      "timeOff": "Time off",
+      "addWindow": "Add hours",
+      "saveAvailability": "Save hours",
+      "availabilitySaved": "Hours saved",
+      "from": "From",
+      "to": "To",
+      "noHours": "No hours set — this person can be booked any time"
     },
     "branches": {
       "title": "Branches",
@@ -643,7 +656,47 @@
       "pastDueTitle": "Subscription past due",
       "pastDueBody": "Renew to keep issuing invoices",
       "trialEndingTitle": "Trial ending",
-      "trialEndingBody": "Your trial ends on {date}"
+      "trialEndingBody": "Your trial ends on {date}",
+      "shortfallTitle": "Ingredients ran short",
+      "shortfallBody": "{items} went negative when an order was confirmed",
+      "writtenOffTitle": "Expired stock written off",
+      "writtenOffBody": "{count} batch(es) written off: {items}"
+    },
+    "menu": {
+      "recipeTitle": "Recipe",
+      "recipeHint": "What one serving consumes. Confirming an order to the kitchen depletes these from branch stock.",
+      "addIngredient": "Add ingredient",
+      "noRecipe": "No recipe — this item depletes nothing",
+      "saveRecipe": "Save recipe",
+      "recipeSaved": "Recipe saved",
+      "perServing": "Per serving"
+    },
+    "customers": {
+      "title": "Customers",
+      "description": "Who buys on account, and what they owe.",
+      "creditLimit": "Credit limit",
+      "balance": "Owed",
+      "ledger": "Ledger",
+      "recordPayment": "Record payment",
+      "paymentRecorded": "Payment recorded",
+      "addCustomer": "Add customer",
+      "customerAdded": "Customer added",
+      "emptyTitle": "No customers",
+      "emptyBody": "Add a customer to sell on account and track what they owe.",
+      "owingOnly": "Owing only",
+      "onCredit": "On account",
+      "settled": "Settled"
+    },
+    "medical": {
+      "claimsTitle": "Insurance claims",
+      "submit": "Submit",
+      "approve": "Approve",
+      "reject": "Reject",
+      "settledAmount": "Settled amount",
+      "claimReference": "Reference",
+      "rejectReason": "Reason",
+      "claimUpdated": "Claim updated",
+      "claimsEmpty": "No claims"
     }
   }
 }

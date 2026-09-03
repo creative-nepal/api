@@ -23,6 +23,7 @@ import { InvoicesService } from '../invoices/invoices.service';
 import { computeVatCents } from '../invoices/vat';
 import type { CreateOrderDto } from './dto/order-request.dto';
 import { type ListOrdersFilters, OrdersRepository } from './orders.repository';
+import { CustomersService } from '../customers/customers.service';
 import { SectorPluginRegistry } from './sector-plugins/registry';
 import type {
   CheckoutContext,
@@ -75,6 +76,7 @@ export class OrdersService {
     private readonly ordersRepository: OrdersRepository,
     private readonly invoicesService: InvoicesService,
     private readonly sectorPlugins: SectorPluginRegistry,
+    private readonly customers: CustomersService,
   ) {}
 
   async getById(businessId: string, id: string): Promise<OrderDetail> {
@@ -214,6 +216,29 @@ export class OrdersService {
             ),
           )
         : null;
+
+      if (dto.onCredit) {
+        if (!customer) {
+          throw new BadRequestException(
+            'i18n:errors.customer.creditNeedsCustomer',
+          );
+        }
+
+        if (!invoice) {
+          throw new BadRequestException(
+            'i18n:errors.customer.creditNeedsInvoice',
+          );
+        }
+
+        await this.customers.chargeSale(
+          tx,
+          business.id,
+          customer.id,
+          invoice.totalCents,
+          invoice.id,
+          actorUserId,
+        );
+      }
 
       await plugin.afterCheckout(context, {
         order,

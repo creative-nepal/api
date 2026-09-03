@@ -38,6 +38,7 @@ export const STOCK_ADJUSTMENT_REASONS = [
   'expired_write_off',
   'customer_return',
   'debit_note',
+  'recipe_depletion',
 ] as const;
 export type StockAdjustmentReason = (typeof STOCK_ADJUSTMENT_REASONS)[number];
 
@@ -186,6 +187,11 @@ export const insuranceClaims = pgTable(
     policyNumber: text('policy_number').notNull(),
     claimedAmountCents: integer('claimed_amount_cents').default(0).notNull(),
     status: text('status').default('draft').notNull(),
+    settledAmountCents: integer('settled_amount_cents'),
+    reference: text('reference'),
+    reason: text('reason'),
+    submittedAt: timestamp('submitted_at', { withTimezone: true }),
+    settledAt: timestamp('settled_at', { withTimezone: true }),
     createdAt: timestamp('created_at', { withTimezone: true })
       .defaultNow()
       .notNull(),
@@ -198,6 +204,34 @@ export const insuranceClaims = pgTable(
     index('insurance_claims_businessId_status_idx').on(
       table.businessId,
       table.status,
+    ),
+  ],
+);
+
+export const claimAuditLog = pgTable(
+  'claim_audit_log',
+  {
+    id: text('id').primaryKey(),
+    businessId: text('business_id')
+      .notNull()
+      .references(() => businesses.id, { onDelete: 'cascade' }),
+    claimId: text('claim_id')
+      .notNull()
+      .references(() => insuranceClaims.id, { onDelete: 'cascade' }),
+    fromStatus: text('from_status').notNull(),
+    toStatus: text('to_status').notNull(),
+    note: text('note'),
+    actorUserId: text('actor_user_id').references(() => user.id, {
+      onDelete: 'set null',
+    }),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    index('claim_audit_log_businessId_claimId_idx').on(
+      table.businessId,
+      table.claimId,
     ),
   ],
 );
@@ -319,3 +353,4 @@ export interface MedicalProductData {
   schedule?: DrugSchedule;
   [key: string]: unknown;
 }
+export type ClaimAuditEntry = typeof claimAuditLog.$inferSelect;

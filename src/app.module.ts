@@ -13,6 +13,7 @@ import { I18nModule } from './i18n/i18n.module';
 import { BranchesModule } from './modules/branches/branches.module';
 import { BusinessesModule } from './modules/businesses/businesses.module';
 import { ContentModule } from './modules/content/content.module';
+import { CustomersModule } from './modules/customers/customers.module';
 import { EntitlementsModule } from './modules/entitlements/entitlements.module';
 import { FilesModule } from './modules/files/files.module';
 import { InvoicesModule } from './modules/invoices/invoices.module';
@@ -46,6 +47,7 @@ import { enabledSectorModules } from './sectors';
     BranchesModule,
     PlansModule,
     ContentModule,
+    CustomersModule,
     PlatformModule,
     PlatformBillingModule,
     SubscriptionsModule,

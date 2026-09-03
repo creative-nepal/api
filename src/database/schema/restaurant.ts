@@ -4,13 +4,14 @@ import {
   index,
   integer,
   jsonb,
+  numeric,
   pgTable,
   text,
   timestamp,
   uniqueIndex,
 } from 'drizzle-orm/pg-core';
 import { user } from './auth';
-import { branches, businesses, orderItems, orders } from './billing';
+import { branches, businesses, orderItems, orders, products } from './billing';
 
 export const TABLE_STATUSES = ['empty', 'occupied', 'billed'] as const;
 export type TableStatus = (typeof TABLE_STATUSES)[number];
@@ -110,6 +111,36 @@ export const menuItems = pgTable(
     index('menu_items_businessId_isAvailable_idx').on(
       table.businessId,
       table.isAvailable,
+    ),
+  ],
+);
+
+export const menuItemIngredients = pgTable(
+  'menu_item_ingredients',
+  {
+    id: text('id').primaryKey(),
+    businessId: text('business_id')
+      .notNull()
+      .references(() => businesses.id, { onDelete: 'cascade' }),
+    menuItemId: text('menu_item_id')
+      .notNull()
+      .references(() => menuItems.id, { onDelete: 'cascade' }),
+    productId: text('product_id')
+      .notNull()
+      .references(() => products.id, { onDelete: 'restrict' }),
+    quantity: numeric('quantity', { precision: 14, scale: 3 }).notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    uniqueIndex('menu_item_ingredients_menuItemId_productId_uidx').on(
+      table.menuItemId,
+      table.productId,
+    ),
+    index('menu_item_ingredients_businessId_menuItemId_idx').on(
+      table.businessId,
+      table.menuItemId,
     ),
   ],
 );
@@ -255,3 +286,5 @@ export type KitchenTicket = typeof kitchenTickets.$inferSelect;
 export type NewKitchenTicket = typeof kitchenTickets.$inferInsert;
 export type KitchenTicketItem = typeof kitchenTicketItems.$inferSelect;
 export type NewKitchenTicketItem = typeof kitchenTicketItems.$inferInsert;
+export type MenuItemIngredient = typeof menuItemIngredients.$inferSelect;
+export type NewMenuItemIngredient = typeof menuItemIngredients.$inferInsert;

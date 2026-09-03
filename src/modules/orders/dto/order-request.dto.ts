@@ -1,6 +1,7 @@
 import { Type } from 'class-transformer';
 import {
   ArrayMinSize,
+  IsBoolean,
   IsArray,
   IsIn,
   IsInt,
@@ -139,6 +140,10 @@ export class CreateOrderDto {
   @IsString()
   @MaxLength(64)
   clientRequestId?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  onCredit?: boolean;
 
   @IsOptional()
   @IsString()

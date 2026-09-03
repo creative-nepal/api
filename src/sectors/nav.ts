@@ -15,6 +15,12 @@ export const KERNEL_NAV_ITEMS: WorkspaceNavItem[] = [
     permission: { product: ['update'] },
   },
   {
+    key: 'customers',
+    href: '/customers',
+    titleKey: 'ui.web.nav.customers',
+    permission: { order: ['create'] },
+  },
+  {
     key: 'invoices',
     href: '/invoices',
     titleKey: 'ui.web.nav.invoices',

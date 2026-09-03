@@ -71,5 +71,20 @@
     "exhausted": "सकिएको",
     "expired": "म्याद सकिएको",
     "canceled": "रद्द"
+  },
+  "claimStatus": {
+    "draft": "मस्यौदा",
+    "submitted": "पेश गरिएको",
+    "approved": "स्वीकृत",
+    "rejected": "अस्वीकृत"
+  },
+  "day": {
+    "sunday": "आइतबार",
+    "monday": "सोमबार",
+    "tuesday": "मंगलबार",
+    "wednesday": "बुधबार",
+    "thursday": "बिहीबार",
+    "friday": "शुक्रबार",
+    "saturday": "शनिबार"
   }
 }

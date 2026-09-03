@@ -15,6 +15,12 @@ const navItems: WorkspaceNavItem[] = [
     permission: { membership: ['manage'] },
   },
   {
+    key: 'availability',
+    href: '/availability',
+    titleKey: 'ui.web.nav.availability',
+    permission: { membership: ['manage'] },
+  },
+  {
     key: 'pos',
     href: '/pos',
     titleKey: 'ui.web.nav.pos',

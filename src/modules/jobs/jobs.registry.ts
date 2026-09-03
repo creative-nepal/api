@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { EmailOutboxJob } from './handlers/email-outbox.job';
+import { ExpiryWriteOffJob } from './handlers/expiry-write-off.job';
 import { FileCleanupJob } from './handlers/file-cleanup.job';
 import { InvoiceLeaseExpiryJob } from './handlers/invoice-lease-expiry.job';
 import type { JobDetail } from './job-runner.service';
@@ -26,6 +27,7 @@ export class JobsRegistry {
     digest: NotificationDigestJob,
     platformAlerts: PlatformAlertsJob,
     fileCleanup: FileCleanupJob,
+    expiryWriteOff: ExpiryWriteOffJob,
   ) {
     const descriptors: JobDescriptor[] = [
       {
@@ -57,6 +59,11 @@ export class JobsRegistry {
         name: PlatformAlertsJob.NAME,
         defaultCron: '0 */30 * * * *',
         run: () => platformAlerts.run(),
+      },
+      {
+        name: ExpiryWriteOffJob.NAME,
+        defaultCron: '0 15 3 * * *',
+        run: () => expiryWriteOff.run(),
       },
       {
         name: FileCleanupJob.NAME,

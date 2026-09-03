@@ -1,4 +1,7 @@
 import {
+  Param,
+  Patch,
+  Body,
   ClassSerializerInterceptor,
   Controller,
   Get,
@@ -8,6 +11,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { IsIn, IsOptional, IsString } from 'class-validator';
+import { CurrentUser, type CurrentUserType } from '../../../../auth';
 import type { Response } from 'express';
 import {
   BusinessAccessGuard,
@@ -25,6 +29,8 @@ import type {
   InsuranceClaim,
 } from '../../../../database/schema';
 import { BatchReportService } from './batch-report.service';
+import { ClaimsService } from './claims.service';
+import { TransitionClaimDto } from './dto/claims.dto';
 import { MedicalService } from './medical.service';
 
 class BatchReportQueryDto {
@@ -45,6 +51,7 @@ export class MedicalController {
   constructor(
     private readonly medicalService: MedicalService,
     private readonly batchReportService: BatchReportService,
+    private readonly claims: ClaimsService,
   ) {}
 
   @Get('controlled-register')
@@ -71,6 +78,26 @@ export class MedicalController {
       query.limit,
       query.offset,
     );
+  }
+
+  @Patch('insurance-claims/:claimId/status')
+  @RequirePermission({ invoice: ['credit-note'] })
+  async transitionClaim(
+    @CurrentBusiness() business: Business,
+    @Param('claimId') claimId: string,
+    @Body() dto: TransitionClaimDto,
+    @CurrentUser() currentUser: CurrentUserType,
+  ): Promise<InsuranceClaim> {
+    return this.claims.transition(business.id, claimId, dto, currentUser.id);
+  }
+
+  @Get('insurance-claims/:claimId/history')
+  @RequirePermission({ invoice: ['print'] })
+  async claimHistory(
+    @CurrentBusiness() business: Business,
+    @Param('claimId') claimId: string,
+  ) {
+    return this.claims.history(business.id, claimId);
   }
 
   @Get('reports/batch-wise')
