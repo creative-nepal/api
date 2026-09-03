@@ -2,7 +2,7 @@
 
 **Date:** 2026-09-02
 **Spans:** `api/`, `web/`, `admin/` (three sibling repos; each change lands as separate PRs per repo)
-**Status:** Phases A–F all **built and verified**.
+**Status:** Phases A–F **built and verified**, plus two rounds of per-sector depth (§13).
 
 ---
 
@@ -392,16 +392,117 @@ pending invitations, changes roles, removes members and revokes invitations — 
 in `<Can>` against `member:create/update/delete` and `invitation:cancel`, with the owner row
 protected.
 
-## 13. Remaining phases
+## 13. Sector depth — round 2 ✅ BUILT
 
-None. All phases are built.
+Round 1 closed the structural gaps (registry, branches, services sector, clone playbook).
+Round 2 closed the gaps a shop actually notices on day one. Every item is API + web, with
+admin touched only where a platform operator needs to see it.
 
-**Order:** B ✅ → C ✅ → E ✅ → D ✅. D was taken last because its migration touches
-compliance-critical numbering.
+### 13.1 Discounts — kernel, all four sectors
+
+A POS that cannot discount a sale is not a POS, so this landed as kernel billing rather than
+per sector.
+
+Discount reduces the taxable base **before** VAT — service charge applies to the discounted
+subtotal, and VAT to that sum. Accepted per line and per order, as an amount or a percent
+(never both). The order-level discount is apportioned down onto the lines at checkout, so
+line discounts are the single source of truth and every downstream path inherits them,
+including the restaurant split-bill.
+
+Two guard rails, because a discount is revenue leaving the till:
+
+- `businesses.max_discount_percent` caps the giveaway and **defaults to 0**, so discounts stay
+  off until an owner opts in from Settings → Billing rules.
+- `order:discount` is granted to owner and manager but **not cashier** — a cashier can sell but
+  cannot self-approve a discount.
+
+Three pre-existing defects surfaced while wiring it and are fixed here:
+
+| Defect | Effect |
+|---|---|
+| `invoiceLineBuilder` never passed `serviceChargeCents` | any restaurant with a service charge issued an invoice whose total disagreed with the order |
+| Sales register reported gross subtotal and omitted service charge | `taxableSales × 13%` did not reconcile against `vatAmount` |
+| Credit notes ignored discount and service charge | refunded VAT that was never collected |
+
+Invariant now holds for every VAT invoice in the database:
+`vat = round((subtotal − discount + serviceCharge) × 0.13)` and
+`total = subtotal − discount + serviceCharge + vat`.
+
+### 13.2 Stock takes — mart, medical, restaurant
+
+Opening a take snapshots current quantities: per branch for mart and restaurant, per batch for
+medical, matching how each sector tracks stock. `services` is excluded by `RequireSector` — a
+salon has no shelf to count.
+
+The variance applies as `delta = counted − snapshot`, deliberately **not** "set stock to
+counted". Those differ whenever a sale lands mid-count, and the delta is the correct one: the
+counted figure was true at snapshot time, so movements since then legitimately apply on top.
+Setting stock to the counted figure would silently erase every sale made while counting.
+
+Variances are written through `StockAdjustmentsService`, so a count lands in the same ledger as
+every other movement and the medical batch→product rollup stays consistent.
+
+Two constraints live in the database rather than in a read-then-write check: a partial unique
+index allows one open count per branch, and line uniqueness uses `NULLS NOT DISTINCT` so it
+actually holds where `batch_id` is null.
+
+`stocktake:open / count / complete` split so a client can hand counting to a stock clerk via a
+custom role while the write-off decision stays with a manager.
+
+### 13.3 Reservations — restaurant
+
+Bookings can be taken without a table and assigned one at seating, which is how a host works.
+Double-booking uses half-open interval overlap, so a booking ending exactly when another starts
+is allowed. The window end is computed in SQL as
+`reserved_for + make_interval(mins => duration_minutes)` rather than stored, so changing a
+booking's length cannot leave a stale end. Party size is checked against the table's seats.
+
+`booked → seated → completed`, with `no_show` and `cancelled` as alternative closes, enforced by
+conditional UPDATEs so two concurrent seatings cannot both succeed. Seating flips the table to
+`occupied`. A waiter may view/book/seat; cancelling loses business, so it stays with a manager.
+
+### 13.4 Appointment reminders — services
+
+An hourly job claims appointments due within 24 hours, emails the customer through the existing
+outbox and raises an in-app notification.
+
+The claim comes first — a conditional `UPDATE … RETURNING` stamps `reminder_sent_at` before any
+email is enqueued, the same claim-then-work shape the outbox uses. Marking afterwards would
+double-send everything in flight if the process died mid-run.
+
+This needed `customers.email`, which did not exist: a customer record held a phone and a PAN but
+no way to reach anyone by mail. It is now on create/update and searchable alongside name and
+phone.
+
+The job registers through `JobsRegistry`, so it appears in the admin operations screen with an
+operator-editable schedule and **no admin-side change**.
+
+### 13.5 Substitution and batch recall — medical
+
+`genericName` was already stored on medical products and nothing ever read it — the field
+existed, the lookup did not. Matching normalises case and whitespace, since
+`Paracetamol 500mg` and `paracetamol 500MG ` are the same drug typed by two people. Each
+alternative returns stock, price, manufacturer and earliest expiry.
+
+Recall traces every dispense of a batch back to the customer's name, phone and email;
+quarantine writes off the remainder under a new `recalled` adjustment reason and deactivates the
+batch, taking it out of FEFO. The dispense history deliberately survives quarantine — writing
+off the stock is the easy half, the shop still has to ring the people who already have it.
+
+`recall:view` vs `recall:quarantine` splits looking up buyers from writing off stock.
 
 ---
 
-## 14. Non-goals (unchanged)
+## 14. Remaining phases
+
+None. All phases are built.
+
+**Order:** B ✅ → C ✅ → E ✅ → D ✅, then sector depth round 1 ✅ and round 2 ✅. D was taken
+before the depth rounds because its migration touches compliance-critical numbering.
+
+---
+
+## 15. Non-goals (unchanged)
 
 Accounting (GL/double-entry) and payroll stay out per `system-design.md` §10. Also out:
 org-level bundled subscriptions, FIFO/LIFO costing, multi-warehouse within a branch, and
@@ -409,7 +510,7 @@ re-merging the three repos into a monorepo.
 
 ---
 
-## 15. Local environment
+## 16. Local environment
 
 Postgres runs in Docker (the local server's `nabin` role has no CREATEDB):
 
@@ -426,7 +527,7 @@ Admin login: `admin@creativenepal.test` / `Admin12345!`.
 Ports: API 3333, admin 3001, web **3002** (3000 was occupied by an unrelated app, so
 `CORS_ORIGINS` includes 3002 locally).
 
-## 16. Verification
+## 17. Verification
 
 ```sh
 # api
@@ -439,9 +540,20 @@ bun run check-types && bun run lint
 cd web && ./scripts/sync-ui.sh diff     # shared design system must not drift
 ```
 
-All green as of 2026-09-02: api **49 tests passing with `TEST_DATABASE_URL` set** (41 without —
-the two integration suites skip), three repos type-clean and lint-clean, i18n catalogues
-key-for-key identical (common 57, errors 46, ui 496), no shared-UI drift, no schema drift.
+All green as of 2026-09-03: api **57 tests passing** (8 more skip without `TEST_DATABASE_URL`),
+three repos type-clean and lint-clean, i18n catalogues key-for-key identical (common 68,
+errors 109, ui 718), no shared-UI drift, no schema drift.
+
+Route tables per `SECTORS_ENABLED` after round 2 — the check that a sector only mounts what it
+should:
+
+| `SECTORS_ENABLED` | routes | of which stock-take |
+|---|---|---|
+| `mart` | 134 | 6 |
+| `medical` | 147 | 6 |
+| `restaurant` | 163 | 6 |
+| `services` | 118 | 0 |
+| all four | 189 | 6 |
 
 Run the numbering integration suite against a real database — it is the one that guards the
 compliance-critical invariant:
