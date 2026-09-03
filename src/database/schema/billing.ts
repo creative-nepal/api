@@ -306,6 +306,7 @@ export const customers = pgTable(
       .references(() => businesses.id, { onDelete: 'cascade' }),
     name: text('name').notNull(),
     phone: text('phone'),
+    email: text('email'),
     panNumber: text('pan_number'),
     creditLimitCents: integer('credit_limit_cents').default(0).notNull(),
     balanceCents: integer('balance_cents').default(0).notNull(),

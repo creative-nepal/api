@@ -36,6 +36,7 @@ export class CustomersService {
             or(
               ilike(schema.customers.name, `%${term}%`),
               ilike(schema.customers.phone, `%${term}%`),
+              ilike(schema.customers.email, `%${term}%`),
             ),
           ]
         : []),
@@ -91,6 +92,7 @@ export class CustomersService {
         businessId,
         name: dto.name,
         phone: dto.phone ?? null,
+        email: dto.email ?? null,
         panNumber: dto.panNumber ?? null,
         creditLimitCents: dto.creditLimitCents ?? 0,
         balanceCents: 0,
@@ -112,6 +114,7 @@ export class CustomersService {
       .set({
         ...(dto.name === undefined ? {} : { name: dto.name }),
         ...(dto.phone === undefined ? {} : { phone: dto.phone }),
+        ...(dto.email === undefined ? {} : { email: dto.email }),
         ...(dto.creditLimitCents === undefined
           ? {}
           : { creditLimitCents: dto.creditLimitCents }),

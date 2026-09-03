@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import {
+  IsEmail,
   IsInt,
   IsNotEmpty,
   IsOptional,
@@ -12,6 +13,7 @@ import { ListQueryDto } from '../../../common/dto/list-query.dto';
 export class CreateCustomerDto {
   @IsString() @IsNotEmpty() @MaxLength(255) name!: string;
   @IsOptional() @IsString() @MaxLength(32) phone?: string;
+  @IsOptional() @IsEmail() @MaxLength(255) email?: string;
   @IsOptional() @IsString() @MaxLength(32) panNumber?: string;
 
   @IsOptional()
@@ -24,6 +26,7 @@ export class CreateCustomerDto {
 export class UpdateCustomerDto {
   @IsOptional() @IsString() @IsNotEmpty() @MaxLength(255) name?: string;
   @IsOptional() @IsString() @MaxLength(32) phone?: string;
+  @IsOptional() @IsEmail() @MaxLength(255) email?: string;
   @IsOptional() @Type(() => Number) @IsInt() @Min(0) creditLimitCents?: number;
 }
 

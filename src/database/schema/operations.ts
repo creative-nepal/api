@@ -21,6 +21,7 @@ export const EMAIL_TEMPLATES = [
   'otp-verification',
   'organization-invitation',
   'notification-digest',
+  'appointment-reminder',
 ] as const;
 export type EmailTemplate = (typeof EMAIL_TEMPLATES)[number];
 

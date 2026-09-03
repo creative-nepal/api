@@ -15,6 +15,7 @@ import { JobSchedulesService } from './job-schedules.service';
 import { JobsBootstrap } from './jobs.bootstrap';
 import { NotificationDigestJob } from './handlers/notification-digest.job';
 import { PlatformAlertsJob } from './handlers/platform-alerts.job';
+import { AppointmentRemindersJob } from './handlers/appointment-reminders.job';
 import { StockAlertsJob } from './handlers/stock-alerts.job';
 import { SubscriptionLifecycleJob } from './handlers/subscription-lifecycle.job';
 
@@ -37,6 +38,7 @@ import { SubscriptionLifecycleJob } from './handlers/subscription-lifecycle.job'
     ExpiryWriteOffJob,
     InvoiceLeaseExpiryJob,
     StockAlertsJob,
+    AppointmentRemindersJob,
     SubscriptionLifecycleJob,
     NotificationDigestJob,
     PlatformAlertsJob,

@@ -185,6 +185,7 @@ export const serviceAppointments = pgTable(
     note: text('note'),
     orderId: text('order_id'),
     completedAt: timestamp('completed_at', { withTimezone: true }),
+    reminderSentAt: timestamp('reminder_sent_at', { withTimezone: true }),
     createdAt: timestamp('created_at', { withTimezone: true })
       .defaultNow()
       .notNull(),

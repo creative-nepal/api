@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { AppointmentRemindersJob } from './handlers/appointment-reminders.job';
 import { EmailOutboxJob } from './handlers/email-outbox.job';
 import { ExpiryWriteOffJob } from './handlers/expiry-write-off.job';
 import { FileCleanupJob } from './handlers/file-cleanup.job';
@@ -28,6 +29,7 @@ export class JobsRegistry {
     platformAlerts: PlatformAlertsJob,
     fileCleanup: FileCleanupJob,
     expiryWriteOff: ExpiryWriteOffJob,
+    appointmentReminders: AppointmentRemindersJob,
   ) {
     const descriptors: JobDescriptor[] = [
       {
@@ -64,6 +66,11 @@ export class JobsRegistry {
         name: ExpiryWriteOffJob.NAME,
         defaultCron: '0 15 3 * * *',
         run: () => expiryWriteOff.run(),
+      },
+      {
+        name: AppointmentRemindersJob.NAME,
+        defaultCron: '0 0 * * * *',
+        run: () => appointmentReminders.run(),
       },
       {
         name: FileCleanupJob.NAME,

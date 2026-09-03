@@ -678,7 +678,9 @@
       "shortfallTitle": "Ingredients ran short",
       "shortfallBody": "{items} went negative when an order was confirmed",
       "writtenOffTitle": "Expired stock written off",
-      "writtenOffBody": "{count} batch(es) written off: {items}"
+      "writtenOffBody": "{count} batch(es) written off: {items}",
+      "appointmentReminderTitle": "Appointment tomorrow",
+      "appointmentReminderBody": "{service} for {customer} at {at}"
     },
     "menu": {
       "recipeTitle": "Recipe",

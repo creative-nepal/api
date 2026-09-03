@@ -678,7 +678,9 @@
       "shortfallTitle": "सामग्री कम भयो",
       "shortfallBody": "अर्डर पुष्टि हुँदा {items} ऋणात्मक भयो",
       "writtenOffTitle": "म्याद सकिएको स्टक हटाइयो",
-      "writtenOffBody": "{count} ब्याच हटाइयो: {items}"
+      "writtenOffBody": "{count} ब्याच हटाइयो: {items}",
+      "appointmentReminderTitle": "भोलिको अपोइन्टमेन्ट",
+      "appointmentReminderBody": "{at} बजे {customer} का लागि {service}"
     },
     "menu": {
       "recipeTitle": "रेसिपी",

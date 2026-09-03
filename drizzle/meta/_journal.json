@@ -141,6 +141,13 @@
       "when": 1788423158582,
       "tag": "0019_reservations",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1788423617482,
+      "tag": "0020_appointment_reminders",
+      "breakpoints": true
     }
   ]
 }

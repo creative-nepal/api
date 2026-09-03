@@ -7,6 +7,8 @@ import { getDb } from '../database/client';
 import type { EmailOutboxRow, EmailTemplate } from '../database/schema';
 import { emailOutbox } from '../database/schema/operations';
 import { brandName, defaultEmailFrom } from './brand';
+import { AppointmentReminderEmail } from './templates/appointment-reminder-email';
+import type { AppointmentReminderEmailProps } from './templates/appointment-reminder-email';
 import { NotificationDigestEmail } from './templates/notification-digest-email';
 import type { NotificationDigestEmailProps } from './templates/notification-digest-email';
 import { OrganizationInvitationEmail } from './templates/organization-invitation-email';
@@ -69,6 +71,18 @@ export class EmailService {
       to,
       `You have been invited to join ${props.organizationName}`,
       'organization-invitation',
+      props,
+    );
+  }
+
+  async sendAppointmentReminderEmail(
+    to: string,
+    props: AppointmentReminderEmailProps,
+  ): Promise<void> {
+    await this.enqueue(
+      to,
+      `Reminder: ${props.serviceName} on ${props.scheduledAtLabel}`,
+      'appointment-reminder',
       props,
     );
   }
@@ -136,6 +150,10 @@ export class EmailService {
       case 'otp-verification':
         return OtpVerificationEmail(
           row.payload as unknown as OtpVerificationEmailProps,
+        );
+      case 'appointment-reminder':
+        return AppointmentReminderEmail(
+          row.payload as unknown as AppointmentReminderEmailProps,
         );
       case 'organization-invitation':
         return OrganizationInvitationEmail(
