@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { EmailOutboxJob } from './email-outbox.job';
-import { FileCleanupJob } from './file-cleanup.job';
-import { InvoiceLeaseExpiryJob } from './invoice-lease-expiry.job';
+import { EmailOutboxJob } from './handlers/email-outbox.job';
+import { FileCleanupJob } from './handlers/file-cleanup.job';
+import { InvoiceLeaseExpiryJob } from './handlers/invoice-lease-expiry.job';
 import type { JobDetail } from './job-runner.service';
-import { NotificationDigestJob } from './notification-digest.job';
-import { PlatformAlertsJob } from './platform-alerts.job';
-import { StockAlertsJob } from './stock-alerts.job';
-import { SubscriptionLifecycleJob } from './subscription-lifecycle.job';
+import { NotificationDigestJob } from './handlers/notification-digest.job';
+import { PlatformAlertsJob } from './handlers/platform-alerts.job';
+import { StockAlertsJob } from './handlers/stock-alerts.job';
+import { SubscriptionLifecycleJob } from './handlers/subscription-lifecycle.job';
 
 export interface JobDescriptor {
   name: string;

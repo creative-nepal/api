@@ -28,7 +28,10 @@ A service importing `drizzle-orm` or `schema` is a bug — move that query into 
 
 ## Steps
 
-1. `src/modules/<domain>/` — create the four files above plus `dto/`.
+1. Decide where it lives, then create the four files above plus `dto/`:
+   - every sector needs it → `src/modules/<domain>/` (kernel)
+   - one sector owns it → `src/sectors/<key>/modules/<domain>/`
+   - two sectors share it → kernel, not duplicated into both
 2. Repository: inject with `@InjectDatabase() private readonly db: Database`, never import
    the client module directly. For sortable lists declare a `SORTABLE` map of allowed
    columns and resolve with `resolveOrderBy()` from `common/repository/sorting` — do not
@@ -81,8 +84,11 @@ A service importing `drizzle-orm` or `schema` is a bug — move that query into 
 - Biome is deliberately absent here — `useImportType` rewrites constructor-injected classes to
   `import type` and breaks Nest DI at runtime. Do not add it, do not convert an injected
   constructor parameter's import to `import type`.
-- Two audiences over one service = two controllers, like `content.controller.ts` (anonymous,
-  published-only) and `content-admin.controller.ts` (permission-gated, sees drafts). Do not
-  branch on the session inside one controller.
+- Two audiences over one service = two controllers: `<domain>.controller.ts` for the client
+  (`BusinessAccessGuard` + `@RequirePermission`) and `<domain>-admin.controller.ts` for the
+  platform operator (`@UserHasPermission`, no business guard). Do not branch on the session inside
+  one controller. When both share a path prefix, register the **client controller first** in
+  `controllers: []` — Nest matches in declaration order, so `/businesses/me` would otherwise be
+  captured by the admin controller's `/businesses/:businessId`.
 - New response fields are a frontend contract: check `../web` and `../admin` `types/` before
   renaming or removing one.

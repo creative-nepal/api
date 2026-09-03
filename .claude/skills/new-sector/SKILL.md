@@ -41,7 +41,10 @@ pull in Nest.
    `bun run check-types` now enumerates every remaining registration point — let it drive you.
 6. **Schema**: `src/database/schema/<key>.ts`, `export *` from `index.ts`, then
    `bun run db:generate` (see `drizzle-schema-change`).
-7. **Modules** under `src/modules/`, per `nest-module`. Every business-scoped controller carries
+7. **Modules** under `src/sectors/<key>/modules/`, per `nest-module` — a sector's domains live
+   with the sector, so a clone that never enables it has one folder to ignore rather than a dozen
+   scattered through `src/modules/`. Anything a second sector also needs belongs in
+   `src/modules/` instead. Every business-scoped controller carries
    `@RequireSector('<key>')` and `@RequirePermission(...)` on **every route, reads included**.
 8. **Selling?** Add a `SectorPlugin` in `src/modules/orders/sector-plugins/` and register it in
    that folder's `registry.ts` and in `orders.module.ts`. Reuse the order → invoice engine; never

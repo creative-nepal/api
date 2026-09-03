@@ -1,16 +1,12 @@
 import { Module } from '@nestjs/common';
 import { FilesController } from './files.controller';
-import { FilesPlatformController } from './files-platform.controller';
+import { FilesAdminController } from './files-admin.controller';
 import { FilesPublicController } from './files-public.controller';
 import { FilesCoreModule } from './files-core.module';
 
 @Module({
   imports: [FilesCoreModule],
-  controllers: [
-    FilesController,
-    FilesPlatformController,
-    FilesPublicController,
-  ],
+  controllers: [FilesController, FilesAdminController, FilesPublicController],
   exports: [FilesCoreModule],
 })
 export class FilesModule {}

@@ -65,11 +65,23 @@ export class StorageService implements OnModuleInit {
 
     try {
       await this.client.send(new HeadBucketCommand({ Bucket: this.bucket }));
+      return;
     } catch {
+      // Absent, or the store is unreachable — the create below tells us which.
+    }
+
+    try {
       await this.client.send(new CreateBucketCommand({ Bucket: this.bucket }));
       this.logger.info(
         { bucket: this.bucket },
         'Created object storage bucket',
+      );
+    } catch (cause) {
+      // Selling must not stop because object storage is down. Uploads fail
+      // loudly at the point of use; everything else keeps working.
+      this.logger.error(
+        { err: cause, bucket: this.bucket },
+        'Object storage is unreachable — uploads will fail until it recovers',
       );
     }
   }

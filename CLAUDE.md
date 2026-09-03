@@ -84,9 +84,14 @@ Nest 12's `exports` map — that is why `LoggerModule.forRootAsync` in
   and `HttpExceptionFilter` translates it, interpolating `{placeholder}` from the payload. An
   argument value may itself carry the marker so slugs localize too. The catalogues are JSON, so
   `nest-cli.json`'s `assets` entry is what gets them into `dist` — do not remove it.
-- `src/modules/<domain>/` — one folder per bounded domain, each following the repository pattern
-  (`*.controller.ts` → `*.service.ts` → `*.repository.ts`, never skip a layer). `modules/users/`
-  is the reference implementation.
+- `src/modules/<domain>/` — **kernel** domains only: every sector has them. One folder per bounded
+  domain, each following the repository pattern (`*.controller.ts` → `*.service.ts` →
+  `*.repository.ts`, never skip a layer). `modules/users/` is the reference implementation.
+- `src/sectors/<key>/modules/<domain>/` — domains **one sector owns**, in the same layering. The
+  folder tree and `SECTORS_ENABLED` therefore tell the same story: a restaurant clone's medical
+  code is not scattered through `modules/`, it is one folder it never mounts. A domain shared by
+  two sectors (products, batches, purchasing) is kernel, not sector-owned — put it in
+  `src/modules/` even if only two of four sectors use it today.
 - `src/sectors/` — the sector plugin seam that makes this repo a clonable multi-vertical template.
   Sectors shipped: `mart`, `medical`, `restaurant`, `services` (appointments/memberships —
   non-inventory, and the worked example of adding one; see `docs/TEMPLATE.md` §3).
@@ -127,7 +132,7 @@ Nest 12's `exports` map — that is why `LoggerModule.forRootAsync` in
   claims due rows with `FOR UPDATE SKIP LOCKED`, calls `deliver()`, and retries with exponential
   backoff until `maxAttempts`, after which the row is dead-lettered and retryable from admin.
   Never call Resend directly — a failed password reset would otherwise vanish.
-- `src/modules/jobs/` — every scheduled job. Schedules are **rows in `job_schedules`, not `@Cron`
+- `src/modules/jobs/` — every scheduled job; the implementations live in `jobs/handlers/`. Schedules are **rows in `job_schedules`, not `@Cron`
   decorators**: `JobsBootstrap` seeds defaults from `JobsRegistry` and registers each job with
   Nest's `SchedulerRegistry` at boot, and a platform operator can change the cron expression or
   disable a job from admin, applied live without a deploy. Every run is wrapped by
@@ -152,9 +157,18 @@ Nest 12's `exports` map — that is why `LoggerModule.forRootAsync` in
   effective permissions, and the sector-scoped, permission-filtered navigation. The frontends
   render from this; they never derive a menu or a permission locally. The pure resolution logic
   lives in `workspace-access.ts` (no Nest import) so it is unit-tested directly.
-- `src/modules/content/` — the CMS. Two controllers over one service: `content.controller.ts` is
-  anonymous, cacheable and published-only; `content-admin.controller.ts` is gated on the platform
-  `content` permission and can see drafts.
+- **One controller per audience**, never a mixed one. A domain that both a business and a platform
+  operator reach splits into `<domain>.controller.ts` (client: `BusinessAccessGuard` +
+  `@RequirePermission`, membership-scoped) and `<domain>-admin.controller.ts` (platform:
+  `@UserHasPermission`, no business guard). They may share a path prefix — Nest registers by
+  declaration order, so list the **client controller first** in `controllers: []` where a literal
+  segment competes with a parameter: `/businesses/me` is only reachable because its controller is
+  registered ahead of the admin one's `/businesses/:businessId`. Never branch on the session
+  inside a single controller to decide which audience is calling.
+  Split today: `businesses`, `subscriptions`, `content`, `files`.
+- `src/modules/content/` — the CMS, and the original example of that split: `content.controller.ts`
+  is anonymous, cacheable and published-only; `content-admin.controller.ts` is gated on the
+  platform `content` permission and can see drafts.
 - `src/common/` — cross-cutting only: exception filter, logging interceptor.
 
 Auth schema regeneration: `bun run auth:generate` re-runs `@better-auth/cli generate` against

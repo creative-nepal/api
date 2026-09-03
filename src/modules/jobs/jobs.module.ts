@@ -4,18 +4,18 @@ import { EmailModule } from '../../email';
 import { FilesCoreModule } from '../files/files-core.module';
 import { NotificationsCoreModule } from '../notifications/notifications-core.module';
 import { SyncModule } from '../sync/sync.module';
-import { EmailOutboxJob } from './email-outbox.job';
-import { FileCleanupJob } from './file-cleanup.job';
-import { InvoiceLeaseExpiryJob } from './invoice-lease-expiry.job';
+import { EmailOutboxJob } from './handlers/email-outbox.job';
+import { FileCleanupJob } from './handlers/file-cleanup.job';
+import { InvoiceLeaseExpiryJob } from './handlers/invoice-lease-expiry.job';
 import { JobRunnerService } from './job-runner.service';
 import { JobsController } from './jobs.controller';
 import { JobsRegistry } from './jobs.registry';
 import { JobSchedulesService } from './job-schedules.service';
 import { JobsBootstrap } from './jobs.bootstrap';
-import { NotificationDigestJob } from './notification-digest.job';
-import { PlatformAlertsJob } from './platform-alerts.job';
-import { StockAlertsJob } from './stock-alerts.job';
-import { SubscriptionLifecycleJob } from './subscription-lifecycle.job';
+import { NotificationDigestJob } from './handlers/notification-digest.job';
+import { PlatformAlertsJob } from './handlers/platform-alerts.job';
+import { StockAlertsJob } from './handlers/stock-alerts.job';
+import { SubscriptionLifecycleJob } from './handlers/subscription-lifecycle.job';
 
 @Module({
   imports: [
