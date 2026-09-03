@@ -10,7 +10,7 @@ Enabling one sector does not mean one customer.
 ```
 template (upstream)                    clone: "MediBill"
  ├── api    ──────────────────────────► api    SECTORS_ENABLED=medical
- ├── web    ──────────────────────────► web    tenants: pharmacy A, clinic B, hospital C
+ ├── web    ──────────────────────────► web    tenants: pharmacy A, pharmacy B, chain C
  └── admin  ──────────────────────────► admin
 ```
 

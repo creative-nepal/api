@@ -5,7 +5,9 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { eq, sql } from 'drizzle-orm';
 import type { PaginatedResult } from '../../common/dto/pagination-query.dto';
+import { type Database, InjectDatabase, schema } from '../../database';
 import type { Business, Product, Sector } from '../../database/schema';
 import {
   DRUG_SCHEDULES,
@@ -31,6 +33,7 @@ function toNumericText(value: number): string {
 @Injectable()
 export class ProductsService {
   constructor(
+    @InjectDatabase() private readonly db: Database,
     private readonly productsRepository: ProductsRepository,
     private readonly entitlementsService: EntitlementsService,
   ) {}
@@ -74,6 +77,8 @@ export class ProductsService {
       name: dto.name,
       sku: dto.sku ?? null,
       unitType: dto.unitType ?? 'pcs',
+      unitsPerPack: dto.unitsPerPack ?? 1,
+      subUnitLabel: dto.subUnitLabel ?? null,
       priceCents: dto.priceCents,
       stockQty: toNumericText(dto.stockQty ?? 0),
       lowStockThreshold: toNumericText(dto.lowStockThreshold ?? 0),
@@ -95,10 +100,24 @@ export class ProductsService {
       await this.assertSkuAvailable(business.id, dto.sku);
     }
 
+    const repacking =
+      dto.unitsPerPack !== undefined &&
+      dto.unitsPerPack !== existing.unitsPerPack;
+
+    if (repacking) {
+      await this.repack(business.id, existing, dto.unitsPerPack as number);
+    }
+
     const updated = await this.productsRepository.update(business.id, id, {
       ...(dto.name !== undefined && { name: dto.name }),
       ...(dto.sku !== undefined && { sku: dto.sku }),
       ...(dto.unitType !== undefined && { unitType: dto.unitType }),
+      ...(dto.unitsPerPack !== undefined && {
+        unitsPerPack: dto.unitsPerPack,
+      }),
+      ...(dto.subUnitLabel !== undefined && {
+        subUnitLabel: dto.subUnitLabel,
+      }),
       ...(dto.priceCents !== undefined && { priceCents: dto.priceCents }),
       ...(dto.lowStockThreshold !== undefined && {
         lowStockThreshold: toNumericText(dto.lowStockThreshold),
@@ -137,6 +156,58 @@ export class ProductsService {
         `SKU ${sku} already exists for this business`,
       );
     }
+  }
+
+  private async repack(
+    businessId: string,
+    existing: Product,
+    unitsPerPack: number,
+  ): Promise<void> {
+    const ratio = unitsPerPack / existing.unitsPerPack;
+
+    const held = await this.db
+      .select({ qty: schema.productBatches.qty })
+      .from(schema.productBatches)
+      .where(eq(schema.productBatches.productId, existing.id));
+
+    const quantities = [
+      Number(existing.stockQty),
+      ...held.map((row) => Number(row.qty)),
+    ];
+
+    const lossy = quantities.some((quantity) => {
+      const scaled = quantity * ratio;
+      return Math.abs(scaled - Math.round(scaled)) > 1e-6;
+    });
+
+    if (lossy) {
+      throw new BadRequestException({
+        message: 'i18n:errors.product.repackNotExact',
+        unitsPerPack,
+      });
+    }
+
+    await this.db.transaction(async (tx) => {
+      await tx
+        .update(schema.products)
+        .set({
+          stockQty: sql`round(${schema.products.stockQty} * ${ratio}, 3)`,
+          lowStockThreshold: sql`round(${schema.products.lowStockThreshold} * ${ratio}, 3)`,
+        })
+        .where(eq(schema.products.id, existing.id));
+
+      await tx
+        .update(schema.productBranchStock)
+        .set({
+          stockQty: sql`round(${schema.productBranchStock.stockQty} * ${ratio}, 3)`,
+        })
+        .where(eq(schema.productBranchStock.productId, existing.id));
+
+      await tx
+        .update(schema.productBatches)
+        .set({ qty: sql`round(${schema.productBatches.qty} * ${ratio}, 3)` })
+        .where(eq(schema.productBatches.productId, existing.id));
+    });
   }
 
   private validateForSector(

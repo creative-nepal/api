@@ -148,6 +148,7 @@
     "notSeated": "Only a seated reservation can be completed"
   },
   "product": {
-    "notFound": "Product {productId} not found"
+    "notFound": "Product {productId} not found",
+    "repackNotExact": "Changing the pack size to {unitsPerPack} would leave a fractional pack in stock. Sell or write off the loose remainder first."
   }
 }

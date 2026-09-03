@@ -11,6 +11,10 @@ import { fromNodeHeaders } from 'better-auth/node';
 import { auth } from '../../../auth/auth.config';
 import { schema } from '../../../database';
 import { DRUG_SCHEDULES } from '../../../database/schema';
+import {
+  lineTotalForSubUnits,
+  subUnitPriceCents,
+} from '../../products/pack-pricing';
 import type {
   DrugSchedule,
   Product,
@@ -259,8 +263,15 @@ export class MedicalSectorPlugin implements SectorPlugin {
       lines.push({
         product,
         quantity: take,
-        unitPriceCents: product.priceCents,
-        lineTotalCents: Math.round(product.priceCents * take),
+        unitPriceCents: subUnitPriceCents(
+          product.priceCents,
+          product.unitsPerPack,
+        ),
+        lineTotalCents: lineTotalForSubUnits(
+          product.priceCents,
+          product.unitsPerPack,
+          take,
+        ),
         batchId: candidate.id,
       });
 

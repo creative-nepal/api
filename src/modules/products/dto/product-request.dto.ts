@@ -8,6 +8,7 @@ import {
   IsObject,
   IsOptional,
   IsString,
+  Max,
   MaxLength,
   Min,
 } from 'class-validator';
@@ -72,6 +73,18 @@ export class CreateProductDto {
   lowStockThreshold?: number;
 
   @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(10_000)
+  unitsPerPack?: number;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(16)
+  subUnitLabel?: string;
+
+  @IsOptional()
   @IsObject()
   sectorData?: Record<string, unknown>;
 }
@@ -103,6 +116,18 @@ export class UpdateProductDto {
   @IsNumber({ maxDecimalPlaces: 3 })
   @Min(0)
   lowStockThreshold?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(10_000)
+  unitsPerPack?: number;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(16)
+  subUnitLabel?: string;
 
   @IsOptional()
   @IsBoolean()

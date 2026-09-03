@@ -270,13 +270,13 @@
       <table>
         <tr><th>Concept</th><th>What it is</th><th>Scope</th></tr>
         <tr><td><b>Account</b></td><td>The human/owner identity. One login.</td><td>Global</td></tr>
-        <tr><td><b>Business</b></td><td>A mart, clinic, restaurant, etc. owned by an account. This is your <b>tenant</b>.</td><td>Belongs to one account</td></tr>
+        <tr><td><b>Business</b></td><td>A mart, pharmacy, restaurant, etc. owned by an account. This is your <b>tenant</b>.</td><td>Belongs to one account</td></tr>
         <tr><td><b>Membership</b></td><td>Lets an account invite staff to a business with a role (owner/manager/cashier).</td><td>Links account ↔ business</td></tr>
         <tr><td><b>Subscription</b></td><td>A plan + billing cycle attached to one business.</td><td>Belongs to one business</td></tr>
         <tr><td><b>Plan</b></td><td>A catalog entry per sector (e.g. Mart-Pro, Medical-Basic) defining price + feature flags.</td><td>Global catalog</td></tr>
         <tr><td><b>Wallet</b></td><td>Payment method shared across all businesses under the account.</td><td>Belongs to one account</td></tr>
         <tr><td><b>Platform invoice</b></td><td>What the business owes you — consolidated per account, itemized per business/subscription.</td><td>Belongs to one account</td></tr>
-        <tr><td><b>Business invoice</b></td><td>The mart's or clinic's own sales invoice to <i>its</i> customers — sector-specific.</td><td>Belongs to one business</td></tr>
+        <tr><td><b>Business invoice</b></td><td>The mart's or pharmacy's own sales invoice to <i>its</i> customers — sector-specific.</td><td>Belongs to one business</td></tr>
       </table>
       <div class="note"><p>Keep <b>platform billing</b> (what the business owes you) and <b>business billing</b> (what the business's own customers owe it) as clearly separate concepts in code and schema — same billing engine internals, different entities.</p></div>
     </section>

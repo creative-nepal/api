@@ -440,7 +440,15 @@
       "emptyTitle": "No products",
       "emptyBody": "Products added here become sellable at the point of sale.",
       "descriptionBatch": "Stock is tracked per batch; the figure here is the live, unexpired total.",
-      "descriptionPlain": "Everything this business sells."
+      "descriptionPlain": "Everything this business sells.",
+      "unitsPerPack": "Units per pack",
+      "unitsPerPackHint": "How many sellable units are in one pack — 10 tablets in a strip. 1 means the pack is the unit.",
+      "subUnitLabel": "Unit name",
+      "subUnitLabelHint": "What one unit is called on the bill: tab, cap, ml.",
+      "packStock": "{packs} x {unit} + {loose}",
+      "perUnit": "per {unit}",
+      "loose": "Loose",
+      "pack": "Pack"
     },
     "invoices": {
       "title": "Invoices",

@@ -45,7 +45,7 @@ template (upstream, this repo set)
 clone: "MediBill"                          clone: "RestroNep"
  SECTORS_ENABLED=medical                    SECTORS_ENABLED=restaurant
  BRAND_* + CMS content + plan seed          ...
- tenants: pharmacy A, clinic B              tenants: cafe X, hotel Y
+ tenants: pharmacy A, pharmacy B            tenants: cafe X, hotel Y
  git remote upstream = template             git remote upstream = template
 ```
 

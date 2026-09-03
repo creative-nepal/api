@@ -3,6 +3,10 @@ import {
   ConflictException,
   Injectable,
 } from '@nestjs/common';
+import {
+  lineTotalForSubUnits,
+  subUnitPriceCents,
+} from '../../products/pack-pricing';
 import type { Sector } from '../../../database/schema';
 import { ProductsRepository } from '../../products/products.repository';
 import type { CheckoutItemDto } from '../dto/order-request.dto';
@@ -59,8 +63,15 @@ export class MartSectorPlugin implements SectorPlugin {
       {
         product,
         quantity: item.quantity,
-        unitPriceCents: product.priceCents,
-        lineTotalCents: Math.round(product.priceCents * item.quantity),
+        unitPriceCents: subUnitPriceCents(
+          product.priceCents,
+          product.unitsPerPack,
+        ),
+        lineTotalCents: lineTotalForSubUnits(
+          product.priceCents,
+          product.unitsPerPack,
+          item.quantity,
+        ),
         batchId: null,
       },
     ];

@@ -19,6 +19,9 @@ interface DemoProduct {
   priceCents: number;
   costPriceCents: number;
   stockQty: string;
+  unitType?: string;
+  unitsPerPack?: number;
+  subUnitLabel?: string;
   sectorData?: Record<string, unknown>;
 }
 
@@ -52,7 +55,10 @@ const DEMO_PRODUCTS: Record<SectorKey, DemoProduct[]> = {
       sku: 'PARA-500',
       priceCents: 2_000,
       costPriceCents: 1_300,
-      stockQty: '250',
+      stockQty: '2500',
+      unitType: 'strip',
+      unitsPerPack: 10,
+      subUnitLabel: 'tab',
       sectorData: {
         genericName: 'Paracetamol 500mg',
         manufacturer: 'Deurali-Janta',
@@ -64,7 +70,10 @@ const DEMO_PRODUCTS: Record<SectorKey, DemoProduct[]> = {
       sku: 'CETA-500',
       priceCents: 1_800,
       costPriceCents: 1_150,
-      stockQty: '180',
+      stockQty: '1800',
+      unitType: 'strip',
+      unitsPerPack: 10,
+      subUnitLabel: 'tab',
       sectorData: {
         genericName: 'Paracetamol 500mg',
         manufacturer: 'Nepal Pharmaceuticals',
@@ -76,7 +85,10 @@ const DEMO_PRODUCTS: Record<SectorKey, DemoProduct[]> = {
       sku: 'AMOX-250',
       priceCents: 12_000,
       costPriceCents: 8_500,
-      stockQty: '120',
+      stockQty: '1200',
+      unitType: 'strip',
+      unitsPerPack: 10,
+      subUnitLabel: 'cap',
       sectorData: {
         genericName: 'Amoxicillin 250mg',
         manufacturer: 'Lomus Pharmaceuticals',
@@ -257,7 +269,9 @@ async function seedSector(sector: SectorKey, ownerUserId: string) {
         businessId,
         name: product.name,
         sku: product.sku,
-        unitType: 'pcs',
+        unitType: product.unitType ?? 'pcs',
+        unitsPerPack: product.unitsPerPack ?? 1,
+        subUnitLabel: product.subUnitLabel ?? null,
         priceCents: product.priceCents,
         costPriceCents: product.costPriceCents,
         stockQty: product.stockQty,

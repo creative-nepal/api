@@ -232,6 +232,8 @@ export const products = pgTable(
     name: text('name').notNull(),
     sku: text('sku'),
     unitType: text('unit_type').default('pcs').notNull(),
+    unitsPerPack: integer('units_per_pack').default(1).notNull(),
+    subUnitLabel: text('sub_unit_label'),
     priceCents: integer('price_cents').notNull(),
     costPriceCents: integer('cost_price_cents').default(0).notNull(),
     stockQty: numeric('stock_qty', { precision: 14, scale: 3 })
