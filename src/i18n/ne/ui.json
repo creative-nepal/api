@@ -606,7 +606,8 @@
       "customers": "ग्राहकहरू",
       "claims": "दाबी",
       "availability": "उपलब्धता",
-      "stockTakes": "स्टक गणना"
+      "stockTakes": "स्टक गणना",
+      "reservations": "बुकिङ"
     },
     "services": {
       "title": "सेवाहरू",
@@ -743,6 +744,32 @@
       "progress": "{total} मध्ये {counted} गणना भयो",
       "varianceLines": "{count} मा फरक",
       "uncounted": "गणना बाँकी"
+    },
+    "reservations": {
+      "title": "बुकिङ",
+      "description": "यो शाखाका टेबल बुकिङ।",
+      "book": "बुकिङ लिनुहोस्",
+      "bookTitle": "बुकिङ लिनुहोस्",
+      "guestName": "पाहुनाको नाम",
+      "guestPhone": "फोन",
+      "partySize": "जना",
+      "reservedFor": "मिति र समय",
+      "durationMinutes": "कति बेरसम्म (मिनेट)",
+      "table": "टेबल",
+      "noTable": "टेबल तोकिएको छैन",
+      "note": "टिप्पणी",
+      "empty": "कुनै बुकिङ छैन।",
+      "emptyHint": "यो शाखाका बुकिङ यहाँ देखिनेछन्।",
+      "seat": "बसाल्नुहोस्",
+      "complete": "सम्पन्न",
+      "noShow": "आएनन्",
+      "cancel": "रद्द",
+      "booked": "बुकिङ सुरक्षित भयो",
+      "seated": "टेबलमा बसालियो",
+      "closed": "बुकिङ बन्द भयो",
+      "cancelConfirm": "यो बुकिङ रद्द गर्ने?",
+      "noShowConfirm": "यो बुकिङलाई आएनन् भनी चिन्ह लगाउने?",
+      "guests": "{count} जना"
     }
   }
 }

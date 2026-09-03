@@ -2,6 +2,7 @@ import type { Type } from '@nestjs/common';
 import { KitchenModule } from './modules/kitchen/kitchen.module';
 import { MenuModule } from './modules/menu/menu.module';
 import { ProductsModule } from '../../modules/products/products.module';
+import { ReservationsModule } from './modules/reservations/reservations.module';
 import { PurchasingModule } from '../../modules/purchasing/purchasing.module';
 import { RestaurantAnalyticsModule } from './modules/analytics/restaurant-analytics.module';
 import { StockAdjustmentsModule } from '../../modules/stock-adjustments/stock-adjustments.module';
@@ -16,6 +17,7 @@ export const restaurantModules: Type<unknown>[] = [
   StockTakesModule,
   PurchasingModule,
   TablesModule,
+  ReservationsModule,
   MenuModule,
   TableSessionsModule,
   KitchenModule,

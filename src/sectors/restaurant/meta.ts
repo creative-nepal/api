@@ -32,6 +32,12 @@ const navItems: WorkspaceNavItem[] = [
     titleKey: 'ui.web.nav.stockTakes',
     permission: { stocktake: ['count'] },
   },
+  {
+    key: 'reservations',
+    href: '/reservations',
+    titleKey: 'ui.web.nav.reservations',
+    permission: { reservation: ['view'] },
+  },
 ];
 
 export const restaurantMeta: SectorMeta = {

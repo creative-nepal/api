@@ -11,9 +11,25 @@ import {
   uniqueIndex,
 } from 'drizzle-orm/pg-core';
 import { user } from './auth';
-import { branches, businesses, orderItems, orders, products } from './billing';
+import {
+  branches,
+  businesses,
+  customers,
+  orderItems,
+  orders,
+  products,
+} from './billing';
 
 export const TABLE_STATUSES = ['empty', 'occupied', 'billed'] as const;
+
+export const RESERVATION_STATUSES = [
+  'booked',
+  'seated',
+  'completed',
+  'no_show',
+  'cancelled',
+] as const;
+export type ReservationStatus = (typeof RESERVATION_STATUSES)[number];
 export type TableStatus = (typeof TABLE_STATUSES)[number];
 
 export const ORDER_SOURCES = ['staff', 'qr'] as const;
@@ -276,6 +292,70 @@ export const kitchenTicketItemsRelations = relations(
   }),
 );
 
+export const reservations = pgTable(
+  'reservations',
+  {
+    id: text('id').primaryKey(),
+    businessId: text('business_id')
+      .notNull()
+      .references(() => businesses.id, { onDelete: 'cascade' }),
+    branchId: text('branch_id')
+      .notNull()
+      .references(() => branches.id, { onDelete: 'restrict' }),
+    tableId: text('table_id').references(() => restaurantTables.id, {
+      onDelete: 'set null',
+    }),
+    customerId: text('customer_id').references(() => customers.id, {
+      onDelete: 'set null',
+    }),
+    guestName: text('guest_name').notNull(),
+    guestPhone: text('guest_phone'),
+    partySize: integer('party_size').notNull(),
+    reservedFor: timestamp('reserved_for', { withTimezone: true }).notNull(),
+    durationMinutes: integer('duration_minutes').default(90).notNull(),
+    status: text('status').default('booked').notNull(),
+    note: text('note'),
+    createdByUserId: text('created_by_user_id').references(() => user.id, {
+      onDelete: 'set null',
+    }),
+    seatedAt: timestamp('seated_at', { withTimezone: true }),
+    closedAt: timestamp('closed_at', { withTimezone: true }),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    index('reservations_businessId_reservedFor_idx').on(
+      table.businessId,
+      table.reservedFor,
+    ),
+    index('reservations_businessId_status_idx').on(
+      table.businessId,
+      table.status,
+    ),
+    index('reservations_businessId_tableId_reservedFor_idx').on(
+      table.businessId,
+      table.tableId,
+      table.reservedFor,
+    ),
+  ],
+);
+
+export const reservationsRelations = relations(reservations, ({ one }) => ({
+  table: one(restaurantTables, {
+    fields: [reservations.tableId],
+    references: [restaurantTables.id],
+  }),
+  customer: one(customers, {
+    fields: [reservations.customerId],
+    references: [customers.id],
+  }),
+}));
+
 export type RestaurantTable = typeof restaurantTables.$inferSelect;
 export type NewRestaurantTable = typeof restaurantTables.$inferInsert;
 export type MenuItem = typeof menuItems.$inferSelect;
@@ -288,3 +368,5 @@ export type KitchenTicketItem = typeof kitchenTicketItems.$inferSelect;
 export type NewKitchenTicketItem = typeof kitchenTicketItems.$inferInsert;
 export type MenuItemIngredient = typeof menuItemIngredients.$inferSelect;
 export type NewMenuItemIngredient = typeof menuItemIngredients.$inferInsert;
+export type Reservation = typeof reservations.$inferSelect;
+export type NewReservation = typeof reservations.$inferInsert;

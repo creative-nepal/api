@@ -606,7 +606,8 @@
       "customers": "Customers",
       "claims": "Claims",
       "availability": "Availability",
-      "stockTakes": "Stock takes"
+      "stockTakes": "Stock takes",
+      "reservations": "Reservations"
     },
     "services": {
       "title": "Services",
@@ -743,6 +744,32 @@
       "progress": "{counted} of {total} counted",
       "varianceLines": "{count} with a variance",
       "uncounted": "Not counted"
+    },
+    "reservations": {
+      "title": "Reservations",
+      "description": "Table bookings for this branch.",
+      "book": "Take a booking",
+      "bookTitle": "Take a booking",
+      "guestName": "Guest name",
+      "guestPhone": "Phone",
+      "partySize": "Party size",
+      "reservedFor": "Date and time",
+      "durationMinutes": "Hold for (minutes)",
+      "table": "Table",
+      "noTable": "No table yet",
+      "note": "Note",
+      "empty": "No reservations.",
+      "emptyHint": "Bookings taken for this branch will show up here.",
+      "seat": "Seat",
+      "complete": "Complete",
+      "noShow": "No show",
+      "cancel": "Cancel",
+      "booked": "Booking saved",
+      "seated": "Seated",
+      "closed": "Reservation closed",
+      "cancelConfirm": "Cancel this booking?",
+      "noShowConfirm": "Mark this booking as a no show?",
+      "guests": "{count} guests"
     }
   }
 }

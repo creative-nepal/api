@@ -134,6 +134,13 @@
       "when": 1788422453335,
       "tag": "0018_stock_takes",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1788423158582,
+      "tag": "0019_reservations",
+      "breakpoints": true
     }
   ]
 }

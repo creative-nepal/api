@@ -135,5 +135,15 @@
     "lineNotFound": "One of the counted lines does not belong to this stock take",
     "duplicateLine": "A line was counted more than once in the same request",
     "uncountedLines": "{uncounted} line(s) still have no count; count or cancel them before completing"
+  },
+  "reservation": {
+    "notFound": "Reservation {reservationId} not found",
+    "notActive": "This reservation is already closed",
+    "notBooked": "Only a booked reservation can be seated",
+    "tableRequired": "Pick a table before seating this reservation",
+    "badTime": "The reservation time could not be read",
+    "tableTooSmall": "Table {tableNo} seats {seats}; the party is larger",
+    "tableTaken": "Table {tableNo} is already held by {guestName} at that time",
+    "notSeated": "Only a seated reservation can be completed"
   }
 }
