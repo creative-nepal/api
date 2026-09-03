@@ -95,7 +95,7 @@ export class JobSchedulesService {
     }
 
     if (this.scheduler.doesExist('cron', row.name)) {
-      this.scheduler.getCronJob(row.name).stop();
+      void this.scheduler.getCronJob(row.name).stop();
       this.scheduler.deleteCronJob(row.name);
     }
 

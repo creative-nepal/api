@@ -4,7 +4,12 @@ import { auth } from '../../src/auth/auth.config';
 import { parseEnabledSectorKeys } from '../../src/sectors/catalog';
 import { getDb } from '../../src/database/client';
 import { member, organization, user } from '../../src/database/schema/auth';
-import { businesses, plans, products, subscriptions } from '../../src/database/schema/billing';
+import {
+  businesses,
+  plans,
+  products,
+  subscriptions,
+} from '../../src/database/schema/billing';
 import { serviceItems } from '../../src/database/schema/services';
 import type { SectorKey } from '../../src/database/schema/sector-keys';
 

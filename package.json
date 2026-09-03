@@ -11,7 +11,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "dotenv -e .env -- nest start",
     "start:prod": "dotenv -e .env -- node dist/main",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.{ts,tsx}\" --fix",
+    "lint": "eslint \"{src,scripts,test}/**/*.{ts,tsx}\" --fix",
     "check-types": "tsc --noEmit",
     "auth:generate": "bunx @better-auth/cli generate --config src/auth/auth.config.ts --output src/database/schema/auth.ts -y",
     "db:generate": "drizzle-kit generate",
@@ -125,7 +125,7 @@
     "node": ">=18"
   },
   "lint-staged": {
-    "src/**/*.ts": [
+    "{src,scripts,test}/**/*.ts": [
       "bunx prettier --write",
       "bunx eslint --fix --no-warn-ignored"
     ]
