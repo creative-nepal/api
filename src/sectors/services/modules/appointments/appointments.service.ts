@@ -15,6 +15,7 @@ import { AppointmentsRepository } from './appointments.repository';
 import type {
   CreateAppointmentDto,
   ListAppointmentsQueryDto,
+  RecordDepositDto,
 } from './dto/appointments.dto';
 
 const TERMINAL_STATUSES = new Set(['completed', 'no_show', 'canceled']);
@@ -133,7 +134,49 @@ export class AppointmentsService {
       durationMinutes: dto.durationMinutes ?? item.durationMinutes,
       status: 'booked',
       note: dto.note ?? null,
+      depositRequiredCents: item.depositCents,
     });
+  }
+
+  async recordDeposit(
+    businessId: string,
+    appointmentId: string,
+    dto: RecordDepositDto,
+  ): Promise<ServiceAppointment> {
+    const appointment = await this.getById(businessId, appointmentId);
+
+    if (appointment.status !== 'booked') {
+      throw new ConflictException('i18n:errors.services.depositNotBooked');
+    }
+
+    const outstanding =
+      appointment.depositRequiredCents - appointment.depositPaidCents;
+
+    if (dto.amountCents > outstanding) {
+      throw new BadRequestException({
+        message: 'i18n:errors.services.depositTooLarge',
+        outstanding,
+      });
+    }
+
+    const updated = await this.appointmentsRepository.recordDeposit(
+      businessId,
+      appointmentId,
+      {
+        depositPaidCents: appointment.depositPaidCents + dto.amountCents,
+        depositMethod: dto.method,
+        depositReference: dto.reference ?? null,
+      },
+    );
+
+    if (!updated) {
+      throw new NotFoundException({
+        message: 'i18n:errors.services.appointmentNotFound',
+        appointmentId,
+      });
+    }
+
+    return updated;
   }
 
   async setStatus(
@@ -155,6 +198,15 @@ export class AppointmentsService {
     }
 
     return this.db.transaction(async (tx) => {
+      if (status === 'no_show' && appointment.depositPaidCents > 0) {
+        await this.appointmentsRepository.forfeitDeposit(
+          tx,
+          businessId,
+          appointmentId,
+          appointment.depositPaidCents,
+        );
+      }
+
       const updated = await this.appointmentsRepository.updateStatus(
         tx,
         businessId,

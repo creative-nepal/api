@@ -352,6 +352,7 @@ export interface MedicalProductData {
   genericName?: string;
   manufacturer?: string;
   schedule?: DrugSchedule;
+  rackLocation?: string;
   [key: string]: unknown;
 }
 export type ClaimAuditEntry = typeof claimAuditLog.$inferSelect;

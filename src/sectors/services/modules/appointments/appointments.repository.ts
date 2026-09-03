@@ -133,6 +133,46 @@ export class AppointmentsRepository {
     return row;
   }
 
+  async recordDeposit(
+    businessId: string,
+    appointmentId: string,
+    patch: {
+      depositPaidCents: number;
+      depositMethod: string;
+      depositReference: string | null;
+    },
+  ): Promise<ServiceAppointment | undefined> {
+    const [row] = await this.db
+      .update(schema.serviceAppointments)
+      .set({ ...patch, depositPaidAt: new Date() })
+      .where(
+        and(
+          eq(schema.serviceAppointments.businessId, businessId),
+          eq(schema.serviceAppointments.id, appointmentId),
+        ),
+      )
+      .returning();
+
+    return row;
+  }
+
+  async forfeitDeposit(
+    executor: DatabaseExecutor,
+    businessId: string,
+    appointmentId: string,
+    amountCents: number,
+  ): Promise<void> {
+    await executor
+      .update(schema.serviceAppointments)
+      .set({ depositForfeitedCents: amountCents })
+      .where(
+        and(
+          eq(schema.serviceAppointments.businessId, businessId),
+          eq(schema.serviceAppointments.id, appointmentId),
+        ),
+      );
+  }
+
   async consumeSession(
     executor: DatabaseExecutor,
     businessId: string,

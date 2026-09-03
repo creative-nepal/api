@@ -223,6 +223,9 @@ export class ProductsRepository {
       const match = or(
         ilike(schema.products.name, term),
         ilike(schema.products.sku, term),
+        sql`${schema.products.sectorData} ->> 'genericName' ilike ${term}`,
+        sql`${schema.products.sectorData} ->> 'rackLocation' ilike ${term}`,
+        sql`${schema.products.sectorData} ->> 'barcode' ilike ${term}`,
       );
       if (match) {
         conditions.push(match);

@@ -56,7 +56,9 @@
     "appointmentNotFound": "अपोइन्टमेन्ट {appointmentId} फेला परेन",
     "appointmentFinal": "यो अपोइन्टमेन्ट पहिले नै {status} छ र परिवर्तन गर्न मिल्दैन",
     "appointmentReopen": "अपोइन्टमेन्ट पुनः बुक अवस्थामा फर्काउन मिल्दैन",
-    "appointmentQuotaExceeded": "हालको योजनाले महिनामा बढीमा {limit} अपोइन्टमेन्ट अनुमति दिन्छ"
+    "appointmentQuotaExceeded": "हालको योजनाले महिनामा बढीमा {limit} अपोइन्टमेन्ट अनुमति दिन्छ",
+    "depositNotBooked": "खुला बुकिङमा मात्र धरौटी लिन सकिन्छ",
+    "depositTooLarge": "यो बाँकी धरौटी {outstanding} भन्दा बढी हो"
   },
   "branch": {
     "notFound": "शाखा {branchId} फेला परेन",

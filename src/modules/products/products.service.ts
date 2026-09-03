@@ -235,6 +235,22 @@ export class ProductsService {
     }
 
     if (sector === 'medical') {
+      const rackLocation = dto.sectorData?.rackLocation;
+
+      if (rackLocation !== undefined && typeof rackLocation !== 'string') {
+        throw new BadRequestException(
+          'sectorData.rackLocation must be a string',
+        );
+      }
+
+      const genericName = dto.sectorData?.genericName;
+
+      if (genericName !== undefined && typeof genericName !== 'string') {
+        throw new BadRequestException(
+          'sectorData.genericName must be a string',
+        );
+      }
+
       const schedule = dto.sectorData?.schedule;
 
       if (

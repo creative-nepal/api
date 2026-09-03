@@ -32,6 +32,7 @@ import {
   CreateAppointmentDto,
   CreateTimeOffDto,
   ListAppointmentsQueryDto,
+  RecordDepositDto,
   SetAvailabilityDto,
   UpdateAppointmentStatusDto,
 } from './dto/appointments.dto';
@@ -106,6 +107,20 @@ export class AppointmentsController {
     @Param('appointmentId') appointmentId: string,
   ): Promise<ServiceAppointment> {
     return this.appointmentsService.getById(business.id, appointmentId);
+  }
+
+  @Post(':appointmentId/deposit')
+  @RequirePermission({ appointment: ['book'] })
+  async recordDeposit(
+    @CurrentBusiness() business: Business,
+    @Param('appointmentId') appointmentId: string,
+    @Body() dto: RecordDepositDto,
+  ): Promise<ServiceAppointment> {
+    return this.appointmentsService.recordDeposit(
+      business.id,
+      appointmentId,
+      dto,
+    );
   }
 
   @Patch(':appointmentId/status')

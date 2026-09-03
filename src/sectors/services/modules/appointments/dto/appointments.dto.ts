@@ -16,6 +16,8 @@ import { ListQueryDto } from '../../../../../common/dto/list-query.dto';
 import {
   APPOINTMENT_STATUSES,
   type AppointmentStatus,
+  BUSINESS_PAYMENT_METHODS,
+  type BusinessPaymentMethod,
 } from '../../../../../database/schema';
 
 export class CreateAppointmentDto {
@@ -66,4 +68,19 @@ export class CreateTimeOffDto {
   @IsDateString() startsAt!: string;
   @IsDateString() endsAt!: string;
   @IsOptional() @IsString() @MaxLength(255) reason?: string;
+}
+
+export class RecordDepositDto {
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  amountCents!: number;
+
+  @IsIn(BUSINESS_PAYMENT_METHODS)
+  method!: BusinessPaymentMethod;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(128)
+  reference?: string;
 }

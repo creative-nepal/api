@@ -28,6 +28,10 @@ export class CreateServiceItemDto {
 
   @IsOptional() @IsBoolean() isVatable?: boolean;
 
+  @IsOptional() @Type(() => Number) @IsInt() @Min(0) depositCents?: number;
+
+  @IsOptional() @Type(() => Number) @IsInt() @Min(0) noShowFeeCents?: number;
+
   @IsOptional()
   @Type(() => Number)
   @IsInt()
@@ -49,6 +53,10 @@ export class UpdateServiceItemDto {
 
   @IsOptional() @IsBoolean() isVatable?: boolean;
   @IsOptional() @IsBoolean() isActive?: boolean;
+
+  @IsOptional() @Type(() => Number) @IsInt() @Min(0) depositCents?: number;
+
+  @IsOptional() @Type(() => Number) @IsInt() @Min(0) noShowFeeCents?: number;
 }
 
 export class ListServiceItemsQueryDto extends ListQueryDto {

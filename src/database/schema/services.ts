@@ -40,6 +40,8 @@ export const serviceItems = pgTable(
     priceCents: integer('price_cents').notNull(),
     durationMinutes: integer('duration_minutes').default(30).notNull(),
     isVatable: boolean('is_vatable').default(true).notNull(),
+    depositCents: integer('deposit_cents').default(0).notNull(),
+    noShowFeeCents: integer('no_show_fee_cents').default(0).notNull(),
     sessionsPerPackage: integer('sessions_per_package'),
     isActive: boolean('is_active').default(true).notNull(),
     createdAt: timestamp('created_at', { withTimezone: true })
@@ -186,6 +188,16 @@ export const serviceAppointments = pgTable(
     orderId: text('order_id'),
     completedAt: timestamp('completed_at', { withTimezone: true }),
     reminderSentAt: timestamp('reminder_sent_at', { withTimezone: true }),
+    depositRequiredCents: integer('deposit_required_cents')
+      .default(0)
+      .notNull(),
+    depositPaidCents: integer('deposit_paid_cents').default(0).notNull(),
+    depositMethod: text('deposit_method'),
+    depositReference: text('deposit_reference'),
+    depositPaidAt: timestamp('deposit_paid_at', { withTimezone: true }),
+    depositForfeitedCents: integer('deposit_forfeited_cents')
+      .default(0)
+      .notNull(),
     createdAt: timestamp('created_at', { withTimezone: true })
       .defaultNow()
       .notNull(),

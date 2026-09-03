@@ -83,6 +83,8 @@ export class ServicesService {
       priceCents: dto.priceCents,
       durationMinutes: dto.durationMinutes ?? 30,
       isVatable: dto.isVatable ?? true,
+      depositCents: dto.depositCents ?? 0,
+      noShowFeeCents: dto.noShowFeeCents ?? 0,
       sessionsPerPackage: dto.sessionsPerPackage ?? null,
       isActive: true,
     });

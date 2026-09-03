@@ -56,7 +56,9 @@
     "appointmentNotFound": "Appointment {appointmentId} not found",
     "appointmentFinal": "This appointment is already {status} and cannot be changed",
     "appointmentReopen": "An appointment cannot be moved back to booked",
-    "appointmentQuotaExceeded": "The current plan allows at most {limit} appointments per month"
+    "appointmentQuotaExceeded": "The current plan allows at most {limit} appointments per month",
+    "depositNotBooked": "A deposit can only be taken on a booking that is still open",
+    "depositTooLarge": "That is more than the {outstanding} deposit still owed"
   },
   "branch": {
     "notFound": "Branch {branchId} not found",
