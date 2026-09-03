@@ -15,7 +15,8 @@
   "stock": {
     "insufficient": "उत्पादन {productId} उपलब्ध छैन वा {quantity} परिमाणका लागि पर्याप्त मौज्दात छैन",
     "insufficientUnexpired": "उत्पादन {productId} को म्याद नसकिएको मौज्दात अपुग: {shortfall} कम",
-    "batchRequired": "batchId आवश्यक छ — औषधिको मौज्दात ब्याच अनुसार राखिन्छ"
+    "batchRequired": "batchId आवश्यक छ — औषधिको मौज्दात ब्याच अनुसार राखिन्छ",
+    "batchNotFound": "ब्याच {batchId} फेला परेन"
   },
   "invoice": {
     "notFound": "बीजक {invoiceId} फेला परेन",
@@ -145,5 +146,8 @@
     "tableTooSmall": "टेबल {tableNo} मा {seats} जना अट्छन्; समूह ठूलो छ",
     "tableTaken": "त्यो समयमा टेबल {tableNo} {guestName} का लागि छ",
     "notSeated": "टेबलमा बसालिएको बुकिङ मात्र सम्पन्न गर्न सकिन्छ"
+  },
+  "product": {
+    "notFound": "सामान {productId} फेला परेन"
   }
 }

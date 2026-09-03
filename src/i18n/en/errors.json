@@ -15,7 +15,8 @@
   "stock": {
     "insufficient": "Product {productId} is unavailable or has insufficient stock for quantity {quantity}",
     "insufficientUnexpired": "Insufficient unexpired stock for product {productId}: {shortfall} short",
-    "batchRequired": "batchId is required — medical stock is tracked per batch"
+    "batchRequired": "batchId is required — medical stock is tracked per batch",
+    "batchNotFound": "Batch {batchId} not found"
   },
   "invoice": {
     "notFound": "Invoice {invoiceId} not found",
@@ -145,5 +146,8 @@
     "tableTooSmall": "Table {tableNo} seats {seats}; the party is larger",
     "tableTaken": "Table {tableNo} is already held by {guestName} at that time",
     "notSeated": "Only a seated reservation can be completed"
+  },
+  "product": {
+    "notFound": "Product {productId} not found"
   }
 }

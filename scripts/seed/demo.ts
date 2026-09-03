@@ -19,6 +19,7 @@ interface DemoProduct {
   priceCents: number;
   costPriceCents: number;
   stockQty: string;
+  sectorData?: Record<string, unknown>;
 }
 
 const DEMO_PRODUCTS: Record<SectorKey, DemoProduct[]> = {
@@ -52,6 +53,23 @@ const DEMO_PRODUCTS: Record<SectorKey, DemoProduct[]> = {
       priceCents: 2_000,
       costPriceCents: 1_300,
       stockQty: '250',
+      sectorData: {
+        genericName: 'Paracetamol 500mg',
+        manufacturer: 'Deurali-Janta',
+        schedule: 'otc',
+      },
+    },
+    {
+      name: 'Cetamol 500mg (10 tabs)',
+      sku: 'CETA-500',
+      priceCents: 1_800,
+      costPriceCents: 1_150,
+      stockQty: '180',
+      sectorData: {
+        genericName: 'Paracetamol 500mg',
+        manufacturer: 'Nepal Pharmaceuticals',
+        schedule: 'otc',
+      },
     },
     {
       name: 'Amoxicillin 250mg (10 caps)',
@@ -59,6 +77,11 @@ const DEMO_PRODUCTS: Record<SectorKey, DemoProduct[]> = {
       priceCents: 12_000,
       costPriceCents: 8_500,
       stockQty: '120',
+      sectorData: {
+        genericName: 'Amoxicillin 250mg',
+        manufacturer: 'Lomus Pharmaceuticals',
+        schedule: 'prescription',
+      },
     },
     {
       name: 'ORS Sachet',
@@ -238,6 +261,7 @@ async function seedSector(sector: SectorKey, ownerUserId: string) {
         priceCents: product.priceCents,
         costPriceCents: product.costPriceCents,
         stockQty: product.stockQty,
+        sectorData: product.sectorData ?? {},
         isActive: true,
       })),
     );

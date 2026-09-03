@@ -39,6 +39,7 @@ export const STOCK_ADJUSTMENT_REASONS = [
   'customer_return',
   'debit_note',
   'recipe_depletion',
+  'recalled',
 ] as const;
 export type StockAdjustmentReason = (typeof STOCK_ADJUSTMENT_REASONS)[number];
 

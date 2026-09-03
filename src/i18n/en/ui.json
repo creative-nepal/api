@@ -424,7 +424,15 @@
       "discountHint": "Up to {max}% for this business",
       "completeSale": "Complete sale",
       "processing": "Processing...",
-      "checkoutFailed": "Checkout failed"
+      "checkoutFailed": "Checkout failed",
+      "substitutes": "Alternatives",
+      "substitutesTitle": "Alternatives for {product}",
+      "noSubstitutes": "No other brand of this generic is on the catalogue.",
+      "noGenericName": "This product has no generic name recorded, so alternatives cannot be matched.",
+      "manufacturer": "Manufacturer",
+      "inStock": "In stock",
+      "expiresFrom": "Expires from",
+      "addToCart": "Add to sale"
     },
     "products": {
       "title": "Products",
@@ -454,7 +462,22 @@
       "daysLeft": "Days left",
       "cost": "Cost",
       "expired": "Expired",
-      "days": "{count} days"
+      "days": "{count} days",
+      "recall": "Recall",
+      "recallTitle": "Recall batch {batch}",
+      "recallHint": "Everyone who bought from this batch, and what is left on the shelf.",
+      "remaining": "Left on shelf",
+      "dispensed": "Already dispensed",
+      "soldTo": "Sold to",
+      "walkIn": "Walk-in",
+      "soldAt": "Sold",
+      "quantity": "Qty",
+      "invoice": "Invoice",
+      "quarantine": "Quarantine remaining stock",
+      "quarantineConfirm": "Write off the {remaining} left on the shelf and stop this batch being dispensed? This cannot be undone.",
+      "quarantined": "Batch quarantined and written off",
+      "noDispenses": "Nothing from this batch has been dispensed.",
+      "recallNote": "Recall reference"
     },
     "purchasing": {
       "title": "Purchasing",

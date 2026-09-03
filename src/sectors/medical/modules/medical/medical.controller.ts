@@ -5,6 +5,7 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Get,
+  Post,
   Query,
   Res,
   UseGuards,
@@ -14,7 +15,9 @@ import { IsIn, IsOptional, IsString } from 'class-validator';
 import { CurrentUser, type CurrentUserType } from '../../../../auth';
 import type { Response } from 'express';
 import {
+  BranchScopeGuard,
   BusinessAccessGuard,
+  CurrentBranch,
   CurrentBusiness,
   RequirePermission,
   RequirePermissionGuard,
@@ -24,6 +27,7 @@ import {
 import { PaginationQueryDto } from '../../../../common/dto/pagination-query.dto';
 import type { PaginatedResult } from '../../../../common/dto/pagination-query.dto';
 import type {
+  Branch,
   Business,
   ControlledSubstanceEntry,
   InsuranceClaim,
@@ -32,6 +36,11 @@ import { BatchReportService } from './batch-report.service';
 import { ClaimsService } from './claims.service';
 import { TransitionClaimDto } from './dto/claims.dto';
 import { MedicalService } from './medical.service';
+import { type RecallReport, RecallService } from './recall.service';
+import {
+  type SubstituteResult,
+  SubstitutesService,
+} from './substitutes.service';
 
 class BatchReportQueryDto {
   @IsOptional()
@@ -44,7 +53,12 @@ class BatchReportQueryDto {
 }
 
 @Controller({ path: 'businesses/:businessId/medical', version: '1' })
-@UseGuards(BusinessAccessGuard, RequireSectorGuard, RequirePermissionGuard)
+@UseGuards(
+  BusinessAccessGuard,
+  RequireSectorGuard,
+  RequirePermissionGuard,
+  BranchScopeGuard,
+)
 @RequireSector('medical')
 @UseInterceptors(ClassSerializerInterceptor)
 export class MedicalController {
@@ -52,7 +66,45 @@ export class MedicalController {
     private readonly medicalService: MedicalService,
     private readonly batchReportService: BatchReportService,
     private readonly claims: ClaimsService,
+    private readonly substitutes: SubstitutesService,
+    private readonly recall: RecallService,
   ) {}
+
+  @Get('products/:productId/substitutes')
+  @RequirePermission({ order: ['create'] })
+  async substitutesFor(
+    @CurrentBusiness() business: Business,
+    @Param('productId') productId: string,
+  ): Promise<SubstituteResult> {
+    return this.substitutes.findFor(business.id, productId);
+  }
+
+  @Get('batches/:batchId/recall')
+  @RequirePermission({ recall: ['view'] })
+  async recallReport(
+    @CurrentBusiness() business: Business,
+    @Param('batchId') batchId: string,
+  ): Promise<RecallReport> {
+    return this.recall.report(business.id, batchId);
+  }
+
+  @Post('batches/:batchId/recall')
+  @RequirePermission({ recall: ['quarantine'] })
+  async quarantineBatch(
+    @CurrentBusiness() business: Business,
+    @CurrentBranch() branch: Branch,
+    @Param('batchId') batchId: string,
+    @Body() body: { note?: string },
+    @CurrentUser() currentUser: CurrentUserType,
+  ): Promise<RecallReport> {
+    return this.recall.quarantine(
+      business,
+      branch.id,
+      batchId,
+      currentUser.id,
+      body?.note,
+    );
+  }
 
   @Get('controlled-register')
   @RequirePermission({ dispense: ['controlled'] })

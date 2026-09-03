@@ -424,7 +424,15 @@
       "discountHint": "यो व्यवसायका लागि बढीमा {max}%",
       "completeSale": "बिक्री पूरा गर्नुहोस्",
       "processing": "प्रक्रियामा...",
-      "checkoutFailed": "बिक्री असफल भयो"
+      "checkoutFailed": "बिक्री असफल भयो",
+      "substitutes": "विकल्प",
+      "substitutesTitle": "{product} का विकल्प",
+      "noSubstitutes": "यो जेनेरिकको अर्को ब्रान्ड सूचीमा छैन।",
+      "noGenericName": "यो सामानको जेनेरिक नाम राखिएको छैन, त्यसैले विकल्प मिलाउन सकिँदैन।",
+      "manufacturer": "उत्पादक",
+      "inStock": "मौज्दात",
+      "expiresFrom": "म्याद सुरु",
+      "addToCart": "बिक्रीमा थप्नुहोस्"
     },
     "products": {
       "title": "सामानहरू",
@@ -454,7 +462,22 @@
       "daysLeft": "बाँकी दिन",
       "cost": "लागत",
       "expired": "म्याद सकिएको",
-      "days": "{count} दिन"
+      "days": "{count} दिन",
+      "recall": "फिर्ता",
+      "recallTitle": "ब्याच {batch} फिर्ता",
+      "recallHint": "यो ब्याचबाट किन्नेहरू, र शेल्फमा बाँकी रहेको परिमाण।",
+      "remaining": "शेल्फमा बाँकी",
+      "dispensed": "वितरण भइसकेको",
+      "soldTo": "बिक्री गरिएको",
+      "walkIn": "आगन्तुक",
+      "soldAt": "बिक्री मिति",
+      "quantity": "परिमाण",
+      "invoice": "बिल",
+      "quarantine": "बाँकी मौज्दात रोक्नुहोस्",
+      "quarantineConfirm": "शेल्फमा बाँकी {remaining} राइट-अफ गरी यो ब्याच वितरण हुन नदिने? यो फिर्ता हुँदैन।",
+      "quarantined": "ब्याच रोकियो र राइट-अफ भयो",
+      "noDispenses": "यो ब्याचबाट केही पनि वितरण भएको छैन।",
+      "recallNote": "फिर्ता सन्दर्भ"
     },
     "purchasing": {
       "title": "खरिद",
