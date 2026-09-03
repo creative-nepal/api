@@ -6,6 +6,7 @@ import {
   SUBSCRIPTION_STATUSES,
 } from '../../database/schema';
 import type { PaginatedResult } from '../../common/dto/pagination-query.dto';
+import type { SectorTheme } from '../../sectors/theme';
 import { enabledSectorMeta } from '../../sectors';
 import {
   type CountByKey,
@@ -37,6 +38,7 @@ export interface SectorDescriptor {
   nameKey: string;
   roleNames: string[];
   planFeatureKeys: string[];
+  theme: SectorTheme;
 }
 
 function tally(
@@ -68,6 +70,7 @@ export class PlatformService {
       nameKey: sector.nameKey,
       roleNames: sector.roleNames,
       planFeatureKeys: sector.planFeatureKeys,
+      theme: sector.theme,
     }));
   }
 

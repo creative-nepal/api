@@ -180,7 +180,10 @@
       "defaultBranch": "पूर्वनिर्धारित",
       "serviceCharge": "सेवा शुल्क",
       "maxDiscount": "अधिकतम छुट",
-      "discountsOff": "बन्द"
+      "discountsOff": "बन्द",
+      "brandColour": "ब्रान्ड रङ",
+      "sectorDefault": "क्षेत्रको पूर्वनिर्धारित",
+      "customised": "ग्राहकले परिवर्तन गरेको"
     },
     "plans": {
       "title": "योजनाहरू",

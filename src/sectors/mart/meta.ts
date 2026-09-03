@@ -1,5 +1,6 @@
 import type { WorkspaceNavItem } from '../nav';
 import type { SectorMeta } from '../sector-definition';
+import type { SectorTheme } from '../theme';
 
 const navItems: WorkspaceNavItem[] = [
   {
@@ -22,10 +23,17 @@ const navItems: WorkspaceNavItem[] = [
   },
 ];
 
+const theme: SectorTheme = {
+  primary: 'oklch(0.62 0.15 65)',
+  primaryForeground: 'oklch(0.98 0.01 65)',
+  radius: '0.5rem',
+};
+
 export const martMeta: SectorMeta = {
   key: 'mart',
   nameKey: 'common.sector.mart',
   roleNames: [],
   navItems,
+  theme,
   planFeatureKeys: ['maxStaff', 'maxProducts', 'maxInvoicesPerPeriod'],
 };

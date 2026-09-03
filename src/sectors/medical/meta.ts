@@ -1,5 +1,6 @@
 import type { WorkspaceNavItem } from '../nav';
 import type { SectorMeta } from '../sector-definition';
+import type { SectorTheme } from '../theme';
 
 const navItems: WorkspaceNavItem[] = [
   {
@@ -34,11 +35,18 @@ const navItems: WorkspaceNavItem[] = [
   },
 ];
 
+const theme: SectorTheme = {
+  primary: 'oklch(0.55 0.13 160)',
+  primaryForeground: 'oklch(0.98 0.01 160)',
+  radius: '0.375rem',
+};
+
 export const medicalMeta: SectorMeta = {
   key: 'medical',
   nameKey: 'common.sector.medical',
   roleNames: ['pharmacist'],
   navItems,
+  theme,
   planFeatureKeys: [
     'maxStaff',
     'maxProducts',

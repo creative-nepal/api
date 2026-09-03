@@ -4,6 +4,7 @@ import { RolesService } from '../roles/roles.service';
 import {
   type EffectivePermissions,
   navForSector,
+  themeForSector,
   type WorkspaceNavItemView,
 } from './workspace-access';
 
@@ -37,7 +38,7 @@ export class WorkspaceService {
       business,
       branding: {
         displayName: business.displayName ?? business.legalName,
-        theme: business.theme ?? {},
+        theme: themeForSector(business.sector, business.theme ?? {}),
       },
       membership: { role: membership.role },
       permissions,

@@ -180,7 +180,10 @@
       "defaultBranch": "Default",
       "serviceCharge": "Service charge",
       "maxDiscount": "Maximum discount",
-      "discountsOff": "Off"
+      "discountsOff": "Off",
+      "brandColour": "Brand colour",
+      "sectorDefault": "Sector default",
+      "customised": "Customised by the tenant"
     },
     "plans": {
       "title": "Plans",

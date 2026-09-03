@@ -5,6 +5,7 @@ import {
 } from '../../auth/access-control';
 import type { SectorKey } from '../../database/schema/sector-keys';
 import { SECTOR_CATALOG } from '../../sectors/catalog';
+import { mergeSectorTheme } from '../../sectors/theme';
 import { KERNEL_NAV_ITEMS, type WorkspaceNavItem } from '../../sectors/nav';
 
 export type EffectivePermissions = Record<string, string[]>;
@@ -48,6 +49,19 @@ export function isAllowed(
   return Object.entries(required).every(([resource, actions]) =>
     (actions ?? []).every((action) => granted[resource]?.includes(action)),
   );
+}
+
+export function themeForSector(
+  sector: string,
+  businessTheme: Record<string, unknown>,
+): Record<string, unknown> {
+  const sectorTheme = SECTOR_CATALOG[sector as SectorKey]?.theme;
+
+  if (!sectorTheme) {
+    return businessTheme;
+  }
+
+  return mergeSectorTheme(sectorTheme, businessTheme);
 }
 
 export function navForSector(

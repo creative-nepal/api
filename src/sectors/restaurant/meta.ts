@@ -1,5 +1,6 @@
 import type { WorkspaceNavItem } from '../nav';
 import type { SectorMeta } from '../sector-definition';
+import type { SectorTheme } from '../theme';
 
 const navItems: WorkspaceNavItem[] = [
   {
@@ -40,10 +41,17 @@ const navItems: WorkspaceNavItem[] = [
   },
 ];
 
+const theme: SectorTheme = {
+  primary: 'oklch(0.55 0.19 25)',
+  primaryForeground: 'oklch(0.98 0.01 25)',
+  radius: '0.75rem',
+};
+
 export const restaurantMeta: SectorMeta = {
   key: 'restaurant',
   nameKey: 'common.sector.restaurant',
   roleNames: ['waiter', 'chef'],
   navItems,
+  theme,
   planFeatureKeys: ['maxStaff', 'maxProducts', 'maxInvoicesPerPeriod'],
 };
