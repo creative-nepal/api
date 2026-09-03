@@ -69,7 +69,7 @@ src/
   modules/     one folder per domain: controller -> service -> repository
     content/   the CMS (public controller + permission-gated admin controller)
   common/      exception filter, logging interceptor
-docs/          system design, feature specs, plans
+docs/          system design, feature specs, competitor research, plans
 ```
 
 ## Linting
@@ -86,6 +86,25 @@ docker run --env-file .env -p 3333:3333 creative-nepal-api
 ```
 
 CI publishes to GHCR on pushes to `main` (`.github/workflows/docker-publish.yml`).
+
+## Sector features and where they came from
+
+The four sectors are `mart`, `medical` (pharmacy retail), `restaurant` and `services`, enabled per
+deployment with `SECTORS_ENABLED`. Beyond the kernel — invoicing, purchasing, tenancy, CMS — each
+sector's feature set was built against what products already sold into that vertical actually
+ship, read from their own documentation:
+
+| Sector | Reference products | What that produced here |
+| --- | --- | --- |
+| all four | [mis.ac](https://mis.ac/articles/blog/pos-software-nepal.php), [Vyapar](https://vyaparapp.in/pos-software/retail), IMS | payments by method (cash/eSewa/Khalti/Fonepay/card), split tender, till open-close with cash variance |
+| `restaurant` | [Petpooja](https://www.petpooja.com/poss), [Foodmandu](https://foodmandu.com/), Bhoj, Pathao Food | delivery channels with per-aggregator commission and channel-level gross/net reporting |
+| `medical` | [Marg ERP](https://margcompusoft.com/retail/chemist_software.html) | substitute-by-salt, rack location, one search box over salt/rack/barcode, loose unit sales from a strip |
+| `services` | [Zenoti](https://www.zenoti.com/salon-management-software), [Fresha](https://www.fresha.com/for-business) | appointment deposits, no-show forfeiture, reminder job |
+
+**[`docs/competitor-research.md`](docs/competitor-research.md)** records the full comparison —
+what each product advertises, what we matched, what we deliberately left out and why, and the
+three bugs the exercise uncovered. [`docs/gap-analysis.md`](docs/gap-analysis.md) is the earlier
+round against Nepali billing software generally.
 
 ## Notes for contributors
 
