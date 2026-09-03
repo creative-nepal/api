@@ -366,8 +366,7 @@
       "navigationFailed": "नेभिगेसन सुरक्षित गर्न सकिएन",
       "translations": "अनुवादहरू",
       "pricingSectorHint": "कुन क्षेत्रका योजना देखाउने।",
-      "uploadImage": "तस्बिर अपलोड गर्नुहोस्",
-      "replaceImage": "तस्बिर बदल्नुहोस्"
+      "uploadImage": "तस्बिर अपलोड गर्नुहोस्"
     },
     "notifications": {
       "title": "सतर्कता",
@@ -414,7 +413,8 @@
       "noBusiness": "कुनै व्यवसाय छानिएको छैन",
       "attachPrescription": "प्रिस्क्रिप्सन संलग्न गर्नुहोस्",
       "prescriptionAttached": "प्रिस्क्रिप्सन संलग्न भयो",
-      "prescriptionUploaded": "प्रिस्क्रिप्सन अपलोड भयो"
+      "prescriptionUploaded": "प्रिस्क्रिप्सन अपलोड भयो",
+      "prescriptionHint": "JPEG, PNG, WebP वा PDF, बढीमा १० MB"
     },
     "products": {
       "title": "सामानहरू",
@@ -542,7 +542,6 @@
       "primaryColour": "मुख्य रङ",
       "logo": "लोगो",
       "uploadLogo": "लोगो अपलोड गर्नुहोस्",
-      "replaceLogo": "लोगो बदल्नुहोस्",
       "brandingSaved": "ब्रान्डिङ सुरक्षित भयो"
     },
     "staff": {

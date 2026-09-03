@@ -366,8 +366,7 @@
       "navigationFailed": "Failed to save navigation",
       "translations": "Translations",
       "pricingSectorHint": "Which sector’s plans to list.",
-      "uploadImage": "Upload image",
-      "replaceImage": "Replace image"
+      "uploadImage": "Upload image"
     },
     "notifications": {
       "title": "Alerts",
@@ -414,7 +413,8 @@
       "noBusiness": "No business selected",
       "attachPrescription": "Attach prescription",
       "prescriptionAttached": "Prescription attached",
-      "prescriptionUploaded": "Prescription uploaded"
+      "prescriptionUploaded": "Prescription uploaded",
+      "prescriptionHint": "JPEG, PNG, WebP or PDF, up to 10 MB"
     },
     "products": {
       "title": "Products",
@@ -542,7 +542,6 @@
       "primaryColour": "Primary colour",
       "logo": "Logo",
       "uploadLogo": "Upload logo",
-      "replaceLogo": "Replace logo",
       "brandingSaved": "Branding saved"
     },
     "staff": {
