@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
-import { auth } from '../auth/auth.config';
-import { getDb } from './client';
-import { user } from './schema/auth';
+import { auth } from '../../src/auth/auth.config';
+import { getDb } from '../../src/database/client';
+import { user } from '../../src/database/schema/auth';
 
 async function seedAdmin() {
   const email = process.env.SEED_ADMIN_EMAIL;

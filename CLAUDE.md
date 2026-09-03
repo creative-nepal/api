@@ -32,8 +32,15 @@ bun run db:push          # dev-loop schema sync
 bun run db:migrate       # versioned prod migrations
 bun run db:studio        # Drizzle Studio
 bun run auth:generate    # regenerate Better Auth's Drizzle schema
+bun run db:seed:admin    # create/promote the platform admin
+bun run db:seed:plans    # plans for the enabled sectors
 bun run db:seed:content  # bootstrap CMS pages + navigation
+bun run db:seed:demo     # one demo business per enabled sector
 ```
+
+Seeds live in `scripts/seed/`, not `src/`. They are operational entrypoints that nothing
+imports, so keeping them under `src/` shipped dead code into `dist/`; `tsconfig.build.json`
+excludes `scripts` while `tsconfig.json` still type-checks it.
 
 ## Linting: ESLint + Prettier, not Biome
 

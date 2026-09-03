@@ -108,7 +108,7 @@ domains with no code change. Every origin the frontends are served from must be 
 cd api
 bun install
 bun run db:migrate
-bun run db:seed:admin      # needs SEED_ADMIN_EMAIL / SEED_ADMIN_PASSWORD
+bun run db:seed:admin      # needs SEED_ADMIN_EMAIL / SEED_ADMIN_PASSWORD (scripts/seed/)
 bun run db:seed:plans      # seeds only the enabled sectors' plans
 bun run db:seed:content    # CMS pages, titled with BRAND_NAME
 bun run db:seed:demo       # optional: one demo business per enabled sector

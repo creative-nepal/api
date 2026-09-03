@@ -1,12 +1,12 @@
 import { randomUUID } from 'node:crypto';
 import { and, eq } from 'drizzle-orm';
-import { auth } from '../auth/auth.config';
-import { parseEnabledSectorKeys } from '../sectors/catalog';
-import { getDb } from './client';
-import { member, organization, user } from './schema/auth';
-import { businesses, plans, products, subscriptions } from './schema/billing';
-import { serviceItems } from './schema/services';
-import type { SectorKey } from './schema/sector-keys';
+import { auth } from '../../src/auth/auth.config';
+import { parseEnabledSectorKeys } from '../../src/sectors/catalog';
+import { getDb } from '../../src/database/client';
+import { member, organization, user } from '../../src/database/schema/auth';
+import { businesses, plans, products, subscriptions } from '../../src/database/schema/billing';
+import { serviceItems } from '../../src/database/schema/services';
+import type { SectorKey } from '../../src/database/schema/sector-keys';
 
 interface DemoProduct {
   name: string;

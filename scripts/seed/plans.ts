@@ -1,8 +1,8 @@
 import { randomUUID } from 'node:crypto';
 import { and, eq } from 'drizzle-orm';
-import { parseEnabledSectorKeys } from '../sectors/catalog';
-import { getDb } from './client';
-import { type NewPlan, plans } from './schema/billing';
+import { parseEnabledSectorKeys } from '../../src/sectors/catalog';
+import { getDb } from '../../src/database/client';
+import { type NewPlan, plans } from '../../src/database/schema/billing';
 
 const SEED_PLANS: Array<Omit<NewPlan, 'id'>> = [
   {

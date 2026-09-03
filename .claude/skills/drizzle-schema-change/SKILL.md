@@ -56,6 +56,8 @@ drizzle-kit loads the schema and must never pull in Nest through it.
 - Dropping or renaming a column is a frontend contract change — grep `../web/src` and
   `../admin/src` for the field name before committing.
 - `bunx drizzle-kit ...`, never `npx`.
+- Seed scripts live in `scripts/seed/`, outside `src/`, because nothing imports them and the
+  build must not ship them. They import the schema through `../../src/database/schema/...`.
 
 ## Adding a NOT NULL column to a populated table
 

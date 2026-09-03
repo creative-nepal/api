@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { eq } from 'drizzle-orm';
-import { brandName } from '../email/brand';
-import { getDb } from './client';
+import { brandName } from '../../src/email/brand';
+import { getDb } from '../../src/database/client';
 import {
   type ContentBlock,
   type ContentFooterGroup,
@@ -11,7 +11,7 @@ import {
   contentNavigation,
   contentPages,
   contentPageTranslations,
-} from './schema/content';
+} from '../../src/database/schema/content';
 
 interface SeedTranslation {
   locale: ContentLocale;
