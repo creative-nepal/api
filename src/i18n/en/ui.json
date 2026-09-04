@@ -464,7 +464,9 @@
       "credit": "Credit",
       "creditNoteFailed": "Could not issue credit note",
       "emptyTitle": "No invoices",
-      "emptyBody": "Invoices appear here as sales are completed."
+      "emptyBody": "Invoices appear here as sales are completed.",
+      "registerExcel": "Register (Excel)",
+      "registerCsv": "Register (CSV)"
     },
     "batches": {
       "title": "Batches",
@@ -991,7 +993,9 @@
       "templateHint": "Export first to get a file with the right columns.",
       "stockNote": "Stock is only set on new items; existing stock is left alone.",
       "balanceNote": "Balances are not imported; they come from the ledger.",
-      "nothingToImport": "No valid rows to import."
+      "nothingToImport": "No valid rows to import.",
+      "exportInvoices": "Export invoices",
+      "exportSold": "Export items sold"
     }
   }
 }
