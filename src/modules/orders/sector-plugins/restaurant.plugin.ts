@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 import { schema } from '../../../database';
 import type {
   MenuItem,
@@ -78,10 +78,32 @@ export class RestaurantSectorPlugin implements SectorPlugin {
         note: item.note ?? null,
         quantity: item.quantity,
         unitPriceCents,
+        unitCostCents: await this.recipeCostCents(context, menuItem.id),
         lineTotalCents: Math.round(unitPriceCents * item.quantity),
         batchId: null,
       },
     ];
+  }
+
+  private async recipeCostCents(
+    context: CheckoutContext,
+    menuItemId: string,
+  ): Promise<number> {
+    const [row] = await context.executor
+      .select({
+        costCents: sql<string>`COALESCE(SUM(
+          ${schema.menuItemIngredients.quantity} *
+          (${schema.products.costPriceCents}::numeric / GREATEST(${schema.products.unitsPerPack}, 1))
+        ), 0)`,
+      })
+      .from(schema.menuItemIngredients)
+      .innerJoin(
+        schema.products,
+        eq(schema.products.id, schema.menuItemIngredients.productId),
+      )
+      .where(eq(schema.menuItemIngredients.menuItemId, menuItemId));
+
+    return Math.round(Number(row?.costCents ?? 0));
   }
 
   async beforeCheckout(): Promise<void> {}

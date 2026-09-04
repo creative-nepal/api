@@ -275,6 +275,10 @@ export class MedicalSectorPlugin implements SectorPlugin {
           product.unitsPerPack,
           take,
         ),
+        unitCostCents: subUnitPriceCents(
+          candidate.costPriceCents,
+          product.unitsPerPack,
+        ),
         batchId: candidate.id,
       });
 

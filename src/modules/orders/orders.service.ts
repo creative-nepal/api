@@ -37,6 +37,7 @@ import { and, eq } from 'drizzle-orm';
 import { CashService } from '../cash/cash.service';
 import { CustomersService } from '../customers/customers.service';
 import { LoyaltyService } from '../loyalty/loyalty.service';
+import { unitCostFor } from './unit-cost';
 import { ReferralsService } from '../referrals/referrals.service';
 import { SectorPluginRegistry } from './sector-plugins/registry';
 import type {
@@ -237,6 +238,7 @@ export class OrdersService {
           batchId: line.batchId,
           quantity: line.quantity.toFixed(QUANTITY_SCALE),
           unitPriceCents: line.unitPriceCents,
+          unitCostCents: line.unitCostCents ?? unitCostFor(line),
           discountCents: line.discountCents ?? 0,
           lineTotalCents: line.lineTotalCents,
         })),

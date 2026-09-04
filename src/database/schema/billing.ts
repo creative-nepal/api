@@ -459,6 +459,7 @@ export const orderItems = pgTable(
     batchId: text('batch_id'),
     quantity: numeric('quantity', { precision: 14, scale: 3 }).notNull(),
     unitPriceCents: integer('unit_price_cents').notNull(),
+    unitCostCents: integer('unit_cost_cents').default(0).notNull(),
     discountCents: integer('discount_cents').default(0).notNull(),
     lineTotalCents: integer('line_total_cents').notNull(),
     createdAt: timestamp('created_at', { withTimezone: true })
