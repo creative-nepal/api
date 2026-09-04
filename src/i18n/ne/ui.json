@@ -77,7 +77,8 @@
     "allBranches": "सबै शाखा",
     "address": "ठेगाना",
     "phone": "फोन",
-    "method": "माध्यम"
+    "method": "माध्यम",
+    "contact": "सम्पर्क"
   },
   "error": {
     "serverTitle": "केही गडबड भयो",
@@ -1146,7 +1147,53 @@
       "discount": "छुट",
       "serviceCharge": "सेवा शुल्क",
       "vat": "भ्याट",
-      "creditNotes": "क्रेडिट नोट"
+      "creditNotes": "क्रेडिट नोट",
+      "lastDays": "पछिल्लो {days} दिन",
+      "cost": "लागत",
+      "profit": "नाफा",
+      "margin": "मार्जिन",
+      "uncosted": "{count} लाइनको लागत दर्ता छैन, त्यसैले नाफा बढी देखिन्छ",
+      "noSalesHint": "यो अवधिमा बिक्री भएपछि यहाँ देखिनेछ।",
+      "profitDescription": "किनेको वा बनाएको लागत काटेपछि हरेक वस्तुले कमाएको रकम।",
+      "receivablesDescription": "ग्राहकले तिर्न बाँकी रकम, उधारो बिक्रीको मितिअनुसार।",
+      "payablesDescription": "आपूर्तिकर्तालाई तिर्न बाँकी रकम, बिलको भुक्तानी मितिअनुसार।",
+      "stockMovementDescription": "एउटा वस्तुको स्टकमा भएको हरेक आवत–जावत।",
+      "receivablesHint": "भुक्तानीले सबैभन्दा पुरानो उधारो पहिले घटाउँछ।",
+      "payablesHint": "भुक्तानी मिति नभएको बिल बिल मितिबाट गनिन्छ।",
+      "receivablesEmpty": "कसैले तिर्न बाँकी छैन",
+      "payablesEmpty": "तपाईंले तिर्न बाँकी छैन",
+      "agingEmptyHint": "उधारो बिक्री र तिर्न बाँकी बिल यहाँ देखिन्छ।",
+      "bucket0to30": "०-३० दिन",
+      "bucket31to60": "३१-६० दिन",
+      "bucket61to90": "६१-९० दिन",
+      "bucketOver90": "९० दिनभन्दा बढी",
+      "outstanding": "बाँकी",
+      "oldest": "सबैभन्दा पुरानो",
+      "days": "{days} दिन",
+      "chooseProduct": "वस्तु छान्नुहोस्",
+      "stockMovementHint": "वस्तु छान्नुहोस् — त्यसको हरेक खरिद, बिक्री, खेर र समायोजन देखिनेछ।",
+      "noMovement": "यो अवधिमा केही चलेको छैन",
+      "opening": "सुरुको",
+      "stockIn": "भित्रिएको",
+      "stockOut": "बाहिरिएको",
+      "closing": "अन्तिम",
+      "source": "स्रोत",
+      "reference": "सन्दर्भ",
+      "change": "आवत / जावत",
+      "balance": "बाँकी",
+      "tab": {
+        "live": "आज",
+        "profit": "नाफा",
+        "receivables": "लिन बाँकी",
+        "payables": "तिर्न बाँकी",
+        "stockMovement": "स्टक चाल"
+      },
+      "movement": {
+        "purchase": "खरिद",
+        "sale": "बिक्री",
+        "wastage": "खेर",
+        "adjustment": "समायोजन"
+      }
     }
   }
 }

@@ -11,6 +11,7 @@ export const MOVEMENT_SOURCES = [
 export type MovementSource = (typeof MOVEMENT_SOURCES)[number];
 
 export interface StockMovement {
+  id: string;
   at: string;
   source: MovementSource;
   reference: string | null;
@@ -84,6 +85,7 @@ export class StockMovementService {
       running = Number((running + entry.quantity).toFixed(3));
 
       return {
+        id: entry.id,
         at: entry.at.toISOString(),
         source: entry.source,
         reference: entry.reference,
@@ -123,6 +125,7 @@ export class StockMovementService {
     productId: string,
   ): Promise<
     Array<{
+      id: string;
       at: Date;
       source: MovementSource;
       reference: string | null;
@@ -133,6 +136,7 @@ export class StockMovementService {
     const [purchases, sales, wastage, adjustments] = await Promise.all([
       this.db
         .select({
+          id: schema.purchaseBillItems.id,
           at: schema.purchaseBills.createdAt,
           reference: schema.purchaseBills.billNumber,
           quantity: schema.purchaseBillItems.quantity,
@@ -150,6 +154,7 @@ export class StockMovementService {
         ),
       this.db
         .select({
+          id: schema.orderItems.id,
           at: schema.orders.createdAt,
           reference: schema.orders.id,
           quantity: schema.orderItems.quantity,
@@ -168,6 +173,7 @@ export class StockMovementService {
         ),
       this.db
         .select({
+          id: schema.wastageRecords.id,
           at: schema.wastageRecords.createdAt,
           reference: schema.wastageRecords.reason,
           quantity: schema.wastageRecords.quantity,
@@ -181,6 +187,7 @@ export class StockMovementService {
         ),
       this.db
         .select({
+          id: schema.stockAdjustments.id,
           at: schema.stockAdjustments.createdAt,
           reference: schema.stockAdjustments.reason,
           note: schema.stockAdjustments.note,
@@ -197,6 +204,7 @@ export class StockMovementService {
 
     return [
       ...purchases.map((row) => ({
+        id: row.id,
         at: row.at,
         source: 'purchase' as const,
         reference: row.reference,
@@ -204,6 +212,7 @@ export class StockMovementService {
         quantity: Number(row.quantity),
       })),
       ...sales.map((row) => ({
+        id: row.id,
         at: row.at,
         source: 'sale' as const,
         reference: row.reference,
@@ -211,6 +220,7 @@ export class StockMovementService {
         quantity: -Number(row.quantity),
       })),
       ...wastage.map((row) => ({
+        id: row.id,
         at: row.at,
         source: 'wastage' as const,
         reference: row.reference,
@@ -218,6 +228,7 @@ export class StockMovementService {
         quantity: -Number(row.quantity),
       })),
       ...adjustments.map((row) => ({
+        id: row.id,
         at: row.at,
         source: 'adjustment' as const,
         reference: row.reference,

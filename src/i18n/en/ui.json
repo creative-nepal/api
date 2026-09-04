@@ -77,7 +77,8 @@
     "allBranches": "All branches",
     "address": "Address",
     "phone": "Phone",
-    "method": "Method"
+    "method": "Method",
+    "contact": "Contact"
   },
   "error": {
     "serverTitle": "Something went wrong",
@@ -1146,7 +1147,53 @@
       "discount": "Discount",
       "serviceCharge": "Service charge",
       "vat": "VAT",
-      "creditNotes": "Credit notes"
+      "creditNotes": "Credit notes",
+      "lastDays": "Last {days} days",
+      "cost": "Cost",
+      "profit": "Profit",
+      "margin": "Margin",
+      "uncosted": "{count} line(s) have no recorded cost, so their profit reads high",
+      "noSalesHint": "Sell something in this period and it will appear here.",
+      "profitDescription": "What each item earned after the cost it was bought or made for.",
+      "receivablesDescription": "Money customers owe you, aged from the date of each credit sale.",
+      "payablesDescription": "Money you owe suppliers, aged from each bill’s due date.",
+      "stockMovementDescription": "Every movement in and out of stock for one item.",
+      "receivablesHint": "A payment clears the oldest debt first.",
+      "payablesHint": "A bill with no due date is aged from its bill date.",
+      "receivablesEmpty": "Nobody owes you anything",
+      "payablesEmpty": "You owe nothing",
+      "agingEmptyHint": "Credit sales and unpaid supplier bills show up here.",
+      "bucket0to30": "0-30 days",
+      "bucket31to60": "31-60 days",
+      "bucket61to90": "61-90 days",
+      "bucketOver90": "Over 90 days",
+      "outstanding": "Outstanding",
+      "oldest": "Oldest",
+      "days": "{days} d",
+      "chooseProduct": "Choose an item",
+      "stockMovementHint": "Pick an item to see every purchase, sale, wastage and adjustment against it.",
+      "noMovement": "Nothing moved in this period",
+      "opening": "Opening",
+      "stockIn": "In",
+      "stockOut": "Out",
+      "closing": "Closing",
+      "source": "Source",
+      "reference": "Reference",
+      "change": "In / out",
+      "balance": "Balance",
+      "tab": {
+        "live": "Today",
+        "profit": "Profit",
+        "receivables": "Receivables",
+        "payables": "Payables",
+        "stockMovement": "Stock movement"
+      },
+      "movement": {
+        "purchase": "Purchase",
+        "sale": "Sale",
+        "wastage": "Wastage",
+        "adjustment": "Adjustment"
+      }
     }
   }
 }
