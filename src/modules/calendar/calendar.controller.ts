@@ -23,6 +23,7 @@ import type { PaginatedResult } from '../../common/dto/pagination-query.dto';
 import type { Business, CalendarEvent } from '../../database/schema';
 import { CalendarService, type CalendarEntry } from './calendar.service';
 import {
+  BikramSambatMonthQueryDto,
   CalendarFeedQueryDto,
   CreateCalendarEventDto,
   ListCalendarEventsQueryDto,
@@ -50,6 +51,12 @@ export class CalendarController {
       request.access?.allowedBranchIds ?? null,
       query,
     );
+  }
+
+  @Get('bs-month')
+  @RequirePermission({ calendar: ['view'] })
+  month(@Query() query: BikramSambatMonthQueryDto) {
+    return this.calendarService.month(query.year, query.month);
   }
 
   @Get('events')

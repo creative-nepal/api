@@ -31,6 +31,12 @@ import type {
   ListCalendarEventsQueryDto,
   UpdateCalendarEventDto,
 } from './dto/calendar.dto';
+import {
+  bikramSambatMonth,
+  type BikramSambatMonth,
+  toDualDate,
+  type DualDate,
+} from '../../common/dates/nepali';
 import { expandOccurrences } from './recurrence';
 
 export interface CalendarEntry {
@@ -41,6 +47,7 @@ export interface CalendarEntry {
   title: string;
   startsAt: Date;
   endsAt: Date | null;
+  date: DualDate;
   allDay: boolean;
   branchId: string | null;
   status: string;
@@ -132,6 +139,10 @@ export class CalendarService {
       : entries;
 
     return visible.sort((a, b) => a.startsAt.getTime() - b.startsAt.getTime());
+  }
+
+  month(year: number, month: number): BikramSambatMonth {
+    return bikramSambatMonth(year, month);
   }
 
   async create(
@@ -358,6 +369,7 @@ export class CalendarService {
           kind: row.kind,
           title: row.title,
           startsAt,
+          date: toDualDate(startsAt),
           endsAt:
             length === null ? null : new Date(startsAt.getTime() + length),
           allDay: row.allDay,
@@ -416,6 +428,7 @@ export class CalendarService {
         ? `${row.serviceName} — ${row.customerName}`
         : row.serviceName,
       startsAt: row.scheduledAt,
+      date: toDualDate(row.scheduledAt),
       endsAt: new Date(
         row.scheduledAt.getTime() + row.durationMinutes * 60_000,
       ),
@@ -455,6 +468,7 @@ export class CalendarService {
       kind: 'reservation',
       title: `${row.guestName} · ${row.partySize}`,
       startsAt: row.reservedFor,
+      date: toDualDate(row.reservedFor),
       endsAt: new Date(
         row.reservedFor.getTime() + row.durationMinutes * 60_000,
       ),

@@ -109,6 +109,11 @@ export class CalendarFeedQueryDto {
   @IsOptional() @IsIn(CALENDAR_EVENT_KINDS) kind?: CalendarEventKind;
 }
 
+export class BikramSambatMonthQueryDto {
+  @Type(() => Number) @IsInt() @Min(2000) @Max(2090) year!: number;
+  @Type(() => Number) @IsInt() @Min(1) @Max(12) month!: number;
+}
+
 export class ListCalendarEventsQueryDto extends ListQueryDto {
   @IsOptional() @IsIn(CALENDAR_SCOPES) scope?: CalendarScope;
   @IsOptional() @IsIn(CALENDAR_EVENT_STATUSES) status?: CalendarEventStatus;
