@@ -68,6 +68,7 @@ export class ServicesSectorPlugin implements SectorPlugin {
       {
         product: null,
         serviceItem,
+        note: item.note ?? null,
         quantity: item.quantity,
         unitPriceCents: serviceItem.priceCents,
         lineTotalCents: Math.round(serviceItem.priceCents * item.quantity),

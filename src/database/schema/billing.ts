@@ -93,6 +93,12 @@ export const businesses = pgTable(
     loyaltyPointValueCents: integer('loyalty_point_value_cents')
       .default(0)
       .notNull(),
+    referralRewardPoints: integer('referral_reward_points')
+      .default(0)
+      .notNull(),
+    referralWelcomePoints: integer('referral_welcome_points')
+      .default(0)
+      .notNull(),
     displayName: text('display_name'),
     theme: jsonb('theme').$type<BusinessTheme>().default({}).notNull(),
     fiscalYearStartMonth: integer('fiscal_year_start_month')
@@ -319,6 +325,11 @@ export const customers = pgTable(
     creditLimitCents: integer('credit_limit_cents').default(0).notNull(),
     balanceCents: integer('balance_cents').default(0).notNull(),
     loyaltyPoints: integer('loyalty_points').default(0).notNull(),
+    referralCode: text('referral_code'),
+    referredByCustomerId: text('referred_by_customer_id').references(
+      (): AnyPgColumn => customers.id,
+      { onDelete: 'set null' },
+    ),
     createdAt: timestamp('created_at', { withTimezone: true })
       .defaultNow()
       .notNull(),
@@ -329,6 +340,10 @@ export const customers = pgTable(
   },
   (table) => [
     index('customers_businessId_phone_idx').on(table.businessId, table.phone),
+    uniqueIndex('customers_businessId_referralCode_uidx').on(
+      table.businessId,
+      table.referralCode,
+    ),
   ],
 );
 
@@ -434,6 +449,7 @@ export const orderItems = pgTable(
     }),
     menuItemId: text('menu_item_id'),
     serviceItemId: text('service_item_id'),
+    note: text('note'),
     modifiers: jsonb('modifiers')
       .$type<Array<{ name: string; label: string; priceDeltaCents: number }>>()
       .default([])

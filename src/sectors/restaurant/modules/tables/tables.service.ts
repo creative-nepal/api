@@ -8,6 +8,7 @@ import {
 import type { PaginatedResult } from '../../../../common/dto/pagination-query.dto';
 import { type Database, InjectDatabase } from '../../../../database';
 import type { Business, RestaurantTable } from '../../../../database/schema';
+import { TableAreasService } from '../table-areas/table-areas.service';
 import type { CreateTableDto, UpdateTableDto } from './dto/table.dto';
 import { type ListTablesFilters, TablesRepository } from './tables.repository';
 
@@ -16,6 +17,7 @@ export class TablesService {
   constructor(
     @InjectDatabase() private readonly db: Database,
     private readonly tablesRepository: TablesRepository,
+    private readonly tableAreasService: TableAreasService,
   ) {}
 
   async getById(businessId: string, id: string): Promise<RestaurantTable> {
@@ -55,6 +57,14 @@ export class TablesService {
       throw new ConflictException(`Table ${dto.tableNo} already exists`);
     }
 
+    if (dto.areaId) {
+      await this.tableAreasService.assertBelongsToBranch(
+        business.id,
+        branchId,
+        dto.areaId,
+      );
+    }
+
     return this.tablesRepository.insert({
       id: randomUUID(),
       businessId: business.id,
@@ -62,6 +72,7 @@ export class TablesService {
       tableNo: dto.tableNo,
       seats: dto.seats ?? 4,
       status: 'empty',
+      areaId: dto.areaId ?? null,
     });
   }
 
@@ -71,7 +82,15 @@ export class TablesService {
     dto: UpdateTableDto,
   ): Promise<RestaurantTable> {
     this.assertRestaurant(business);
-    await this.getById(business.id, id);
+    const table = await this.getById(business.id, id);
+
+    if (dto.areaId) {
+      await this.tableAreasService.assertBelongsToBranch(
+        business.id,
+        table.branchId,
+        dto.areaId,
+      );
+    }
 
     if (dto.tableNo) {
       const clash = await this.tablesRepository.findByTableNo(

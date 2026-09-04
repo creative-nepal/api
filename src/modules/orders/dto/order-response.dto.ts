@@ -9,6 +9,7 @@ export class OrderItemResponseDto {
   @Expose() productId: string | null;
   @Expose() menuItemId: string | null;
   @Expose() productName: string;
+  @Expose() note: string | null;
   @Expose() modifiers: Array<{
     name: string;
     label: string;
@@ -26,6 +27,7 @@ export class OrderItemResponseDto {
     this.productId = item.productId;
     this.menuItemId = item.menuItemId;
     this.productName = item.productName;
+    this.note = item.note;
     this.modifiers = item.modifiers;
     this.invoiceId = item.invoiceId;
     this.batchId = item.batchId;

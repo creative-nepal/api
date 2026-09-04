@@ -1,0 +1,3 @@
+ALTER TABLE "businesses" ADD COLUMN "referral_reward_points" integer DEFAULT 0 NOT NULL;--> statement-breakpoint
+ALTER TABLE "businesses" ADD COLUMN "referral_welcome_points" integer DEFAULT 0 NOT NULL;--> statement-breakpoint
+ALTER TABLE "customers" ADD CONSTRAINT "customers_referred_by_customer_id_customers_id_fk" FOREIGN KEY ("referred_by_customer_id") REFERENCES "public"."customers"("id") ON DELETE set null ON UPDATE no action;

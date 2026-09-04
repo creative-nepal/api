@@ -15,6 +15,8 @@ import { BusinessesModule } from './modules/businesses/businesses.module';
 import { ContentModule } from './modules/content/content.module';
 import { AccessContextModule } from './common/access/access-context.module';
 import { CalendarModule } from './modules/calendar/calendar.module';
+import { LiveSalesModule } from './modules/live-sales/live-sales.module';
+import { ReferralsModule } from './modules/referrals/referrals.module';
 import { CashModule } from './modules/cash/cash.module';
 import { ExpensesModule } from './modules/expenses/expenses.module';
 import { LoyaltyModule } from './modules/loyalty/loyalty.module';
@@ -56,6 +58,8 @@ import { enabledSectorModules } from './sectors';
     ContentModule,
     AccessContextModule,
     CalendarModule,
+    LiveSalesModule,
+    ReferralsModule,
     CashModule,
     ExpensesModule,
     LoyaltyModule,

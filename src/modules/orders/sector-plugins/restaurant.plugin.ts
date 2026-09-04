@@ -75,6 +75,7 @@ export class RestaurantSectorPlugin implements SectorPlugin {
         product: null,
         menuItem,
         modifiers,
+        note: item.note ?? null,
         quantity: item.quantity,
         unitPriceCents,
         lineTotalCents: Math.round(unitPriceCents * item.quantity),

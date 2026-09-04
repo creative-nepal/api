@@ -11,9 +11,19 @@ import type {
   OrderItem,
 } from '../../../../database/schema';
 import { InvoicesService } from '../../../../modules/invoices/invoices.service';
+import { apportion } from '../../../../modules/orders/discounts';
+import { computeVatCents } from '../../../../modules/invoices/vat';
 import { TableSessionsService } from '../table-sessions/table-sessions.service';
 import { TablesService } from '../tables/tables.service';
 import type { BillTableDto } from './dto/bill-table.dto';
+
+interface BillPortion {
+  lines: OrderItem[];
+  subtotalCents: number;
+  discountCents: number;
+  serviceChargeCents: number;
+  vatCents: number;
+}
 
 @Injectable()
 export class TableBillingService {
@@ -40,49 +50,37 @@ export class TableBillingService {
       );
     }
 
-    const splits = this.resolveSplits(unbilled, dto);
+    const portions = this.resolvePortions(unbilled, dto, business);
 
     return this.db.transaction(async (tx) => {
       const invoices: BusinessInvoice[] = [];
 
-      for (const lines of splits) {
-        const subtotalCents = lines.reduce(
-          (total, line) => total + line.lineTotalCents,
-          0,
-        );
-
-        const discountCents = lines.reduce(
-          (total, line) => total + line.discountCents,
-          0,
-        );
-
-        const serviceChargeCents = Math.round(
-          ((subtotalCents - discountCents) * business.serviceChargePercent) /
-            100,
-        );
-
+      for (const portion of portions) {
         const invoice = await this.invoicesService.issue(tx, {
           business,
           branchId: table.branchId,
           orderId: null,
-          subtotalCents,
-          discountCents,
-          serviceChargeCents,
+          subtotalCents: portion.subtotalCents,
+          discountCents: portion.discountCents,
+          serviceChargeCents: portion.serviceChargeCents,
+          vatCentsOverride: portion.vatCents,
           actorUserId,
         });
 
-        await tx
-          .update(schema.orderItems)
-          .set({ invoiceId: invoice.id })
-          .where(
-            and(
-              eq(schema.orderItems.businessId, business.id),
-              inArray(
-                schema.orderItems.id,
-                lines.map((line) => line.id),
+        if (portion.lines.length > 0) {
+          await tx
+            .update(schema.orderItems)
+            .set({ invoiceId: invoice.id })
+            .where(
+              and(
+                eq(schema.orderItems.businessId, business.id),
+                inArray(
+                  schema.orderItems.id,
+                  portion.lines.map((line) => line.id),
+                ),
               ),
-            ),
-          );
+            );
+        }
 
         invoices.push(invoice);
       }
@@ -147,17 +145,14 @@ export class TableBillingService {
     return rows.map((row) => row.item);
   }
 
-  private resolveSplits(
-    unbilled: OrderItem[],
-    dto: BillTableDto,
-  ): OrderItem[][] {
+  private itemGroups(unbilled: OrderItem[], dto: BillTableDto): OrderItem[][] {
     if (!dto.splits || dto.splits.length === 0) {
       return [unbilled];
     }
 
     const byId = new Map(unbilled.map((line) => [line.id, line]));
     const seen = new Set<string>();
-    const splits: OrderItem[][] = [];
+    const groups: OrderItem[][] = [];
 
     for (const split of dto.splits) {
       const lines: OrderItem[] = [];
@@ -181,7 +176,7 @@ export class TableBillingService {
         lines.push(line);
       }
 
-      splits.push(lines);
+      groups.push(lines);
     }
 
     if (seen.size !== unbilled.length) {
@@ -191,6 +186,101 @@ export class TableBillingService {
       );
     }
 
-    return splits;
+    return groups;
+  }
+
+  private shareWeights(unbilled: OrderItem[], dto: BillTableDto): number[] {
+    if (dto.mode === 'equal') {
+      if (!dto.ways) {
+        throw new BadRequestException(
+          'An equal split needs "ways" — how many people are paying',
+        );
+      }
+
+      return Array.from({ length: dto.ways }, () => 1);
+    }
+
+    if (!dto.percentages || dto.percentages.length === 0) {
+      throw new BadRequestException(
+        'A percentage split needs "percentages" — one per person',
+      );
+    }
+
+    const total = dto.percentages.reduce((sum, share) => sum + share, 0);
+
+    if (Math.round(total * 100) !== 10000) {
+      throw new BadRequestException(
+        `Split percentages must add up to 100, not ${total}`,
+      );
+    }
+
+    return dto.percentages.map((share) => Math.round(share * 100));
+  }
+
+  private resolvePortions(
+    unbilled: OrderItem[],
+    dto: BillTableDto,
+    business: Business,
+  ): BillPortion[] {
+    const mode = dto.mode ?? 'items';
+
+    const groups =
+      mode === 'items' ? this.itemGroups(unbilled, dto) : [unbilled];
+
+    const weights =
+      mode === 'items'
+        ? groups.map((lines) =>
+            lines.reduce(
+              (sum, line) => sum + line.lineTotalCents - line.discountCents,
+              0,
+            ),
+          )
+        : this.shareWeights(unbilled, dto);
+
+    const subtotal = unbilled.reduce(
+      (sum, line) => sum + line.lineTotalCents,
+      0,
+    );
+
+    const discount = unbilled.reduce(
+      (sum, line) => sum + line.discountCents,
+      0,
+    );
+
+    const serviceCharge = Math.round(
+      ((subtotal - discount) * business.serviceChargePercent) / 100,
+    );
+
+    const vat = computeVatCents(
+      subtotal - discount + serviceCharge,
+      business.vatRegistered,
+    );
+
+    const charges = apportion(serviceCharge, weights);
+    const vats = apportion(vat, weights);
+
+    if (mode === 'items') {
+      return groups.map((lines, index) => ({
+        lines,
+        subtotalCents: lines.reduce(
+          (sum, line) => sum + line.lineTotalCents,
+          0,
+        ),
+        discountCents: lines.reduce((sum, line) => sum + line.discountCents, 0),
+        serviceChargeCents: charges[index],
+        vatCents: vats[index],
+      }));
+    }
+
+    const subtotals = apportion(subtotal, weights);
+    const discounts = apportion(discount, weights);
+
+    return weights.map((_, index) => ({
+      lines: index === 0 ? unbilled : [],
+      subtotalCents: subtotals[index],
+      discountCents: discounts[index],
+      serviceChargeCents: charges[index],
+      vatCents: vats[index],
+    }));
   }
 }

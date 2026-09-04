@@ -56,6 +56,11 @@ export class CheckoutItemDto {
   modifiers?: Array<{ name: string; label: string }>;
 
   @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  note?: string;
+
+  @IsOptional()
   @Type(() => Number)
   @IsInt()
   @Min(0)

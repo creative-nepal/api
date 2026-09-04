@@ -16,6 +16,7 @@ export interface ListTablesFilters {
   limit: number;
   offset: number;
   status?: string;
+  areaId?: string;
 }
 
 @Injectable()
@@ -108,6 +109,10 @@ export class TablesRepository {
 
     if (filters.status) {
       conditions.push(eq(schema.restaurantTables.status, filters.status));
+    }
+
+    if (filters.areaId) {
+      conditions.push(eq(schema.restaurantTables.areaId, filters.areaId));
     }
 
     return and(...conditions);

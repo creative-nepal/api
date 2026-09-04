@@ -7,6 +7,7 @@ import { BatchesCoreModule } from '../batches/batches-core.module';
 import { CustomersCoreModule } from '../customers/customers-core.module';
 import { InvoicesModule } from '../invoices/invoices.module';
 import { ProductsCoreModule } from '../products/products-core.module';
+import { ReferralsCoreModule } from '../referrals/referrals-core.module';
 import { OrdersController } from './orders.controller';
 import { OrdersRepository } from './orders.repository';
 import { OrdersService } from './orders.service';
@@ -25,6 +26,7 @@ import { SectorPluginRegistry } from './sector-plugins/registry';
     CustomersCoreModule,
     CashCoreModule,
     LoyaltyCoreModule,
+    ReferralsCoreModule,
   ],
   controllers: [OrdersController],
   providers: [

@@ -19,6 +19,7 @@ export interface CheckoutLine {
   menuItem?: MenuItem | null;
   serviceItem?: ServiceItem | null;
   modifiers?: SelectedModifier[];
+  note?: string | null;
   quantity: number;
   unitPriceCents: number;
   lineTotalCents: number;

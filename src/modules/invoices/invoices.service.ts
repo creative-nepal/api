@@ -30,6 +30,7 @@ export interface IssueInvoiceParams {
   subtotalCents: number;
   discountCents?: number;
   serviceChargeCents?: number;
+  vatCentsOverride?: number;
   customerId?: string | null;
   customerName?: string | null;
   customerPan?: string | null;
@@ -72,10 +73,9 @@ export class InvoicesService {
 
     const netCents = params.subtotalCents - discountCents;
 
-    const vatCents = computeVatCents(
-      netCents + serviceChargeCents,
-      business.vatRegistered,
-    );
+    const vatCents =
+      params.vatCentsOverride ??
+      computeVatCents(netCents + serviceChargeCents, business.vatRegistered);
 
     const invoice = await this.invoicesRepository.insertInvoice(executor, {
       id: randomUUID(),

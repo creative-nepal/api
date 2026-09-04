@@ -28,6 +28,11 @@ export class CreateTableDto {
   @Min(1)
   @Max(64)
   seats?: number;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  areaId?: string;
 }
 
 export class UpdateTableDto {
@@ -50,12 +55,21 @@ export class UpdateTableDto {
   @IsOptional()
   @IsString()
   assignedWaiterId?: string;
+
+  @IsOptional()
+  @IsString()
+  areaId?: string | null;
 }
 
 export class ListTablesQueryDto extends PaginationQueryDto {
   @IsOptional()
   @IsIn(TABLE_STATUSES)
   status?: TableStatus;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  areaId?: string;
 }
 
 export class TableResponseDto {
@@ -65,6 +79,7 @@ export class TableResponseDto {
   seats: number;
   status: string;
   assignedWaiterId: string | null;
+  areaId: string | null;
 
   constructor(table: RestaurantTable) {
     this.id = table.id;
@@ -73,5 +88,6 @@ export class TableResponseDto {
     this.seats = table.seats;
     this.status = table.status;
     this.assignedWaiterId = table.assignedWaiterId;
+    this.areaId = table.areaId;
   }
 }

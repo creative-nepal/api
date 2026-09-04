@@ -264,6 +264,7 @@ export class MedicalSectorPlugin implements SectorPlugin {
 
       lines.push({
         product,
+        note: item.note ?? null,
         quantity: take,
         unitPriceCents: subUnitPriceCents(
           product.priceCents,

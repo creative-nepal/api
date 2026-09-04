@@ -37,6 +37,7 @@ import { and, eq } from 'drizzle-orm';
 import { CashService } from '../cash/cash.service';
 import { CustomersService } from '../customers/customers.service';
 import { LoyaltyService } from '../loyalty/loyalty.service';
+import { ReferralsService } from '../referrals/referrals.service';
 import { SectorPluginRegistry } from './sector-plugins/registry';
 import type {
   CheckoutContext,
@@ -93,6 +94,7 @@ export class OrdersService {
     private readonly customers: CustomersService,
     private readonly cash: CashService,
     private readonly loyalty: LoyaltyService,
+    private readonly referrals: ReferralsService,
   ) {}
 
   async getById(businessId: string, id: string): Promise<OrderDetail> {
@@ -231,6 +233,7 @@ export class OrdersService {
             line.serviceItem?.name ??
             'Unknown',
           modifiers: line.modifiers ?? [],
+          note: line.note ?? null,
           batchId: line.batchId,
           quantity: line.quantity.toFixed(QUANTITY_SCALE),
           unitPriceCents: line.unitPriceCents,
@@ -277,6 +280,7 @@ export class OrdersService {
 
       if (invoice && customer) {
         await this.loyalty.awardForInvoice(tx, business, customer.id, invoice);
+        await this.referrals.awardForInvoice(tx, business, customer, invoice);
       }
 
       if (invoice && dto.payments?.length) {

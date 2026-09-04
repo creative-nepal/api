@@ -9,7 +9,9 @@ import { RestaurantAnalyticsModule } from './modules/analytics/restaurant-analyt
 import { StockAdjustmentsModule } from '../../modules/stock-adjustments/stock-adjustments.module';
 import { StockTakesModule } from '../../modules/stock-takes/stock-takes.module';
 import { WastageModule } from '../../modules/wastage/wastage.module';
+import { TableAreasModule } from './modules/table-areas/table-areas.module';
 import { TableBillingModule } from './modules/table-billing/table-billing.module';
+import { TableMovesModule } from './modules/table-moves/table-moves.module';
 import { TableSessionsModule } from './modules/table-sessions/table-sessions.module';
 import { TablesModule } from './modules/tables/tables.module';
 
@@ -20,11 +22,13 @@ export const restaurantModules: Type<unknown>[] = [
   WastageModule,
   PurchasingModule,
   TablesModule,
+  TableAreasModule,
   ReservationsModule,
   ChannelsModule,
   MenuModule,
   TableSessionsModule,
   KitchenModule,
   TableBillingModule,
+  TableMovesModule,
   RestaurantAnalyticsModule,
 ];

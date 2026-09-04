@@ -14,6 +14,8 @@ export class BusinessResponseDto {
   @Expose() maxDiscountPercent: number;
   @Expose() loyaltyPointsPerHundred: number;
   @Expose() loyaltyPointValueCents: number;
+  @Expose() referralRewardPoints: number;
+  @Expose() referralWelcomePoints: number;
   @Expose() fiscalYearStartMonth: number;
   @Expose() displayName: string | null;
   @Expose() theme: Record<string, unknown>;
@@ -35,6 +37,8 @@ export class BusinessResponseDto {
     this.maxDiscountPercent = business.maxDiscountPercent;
     this.loyaltyPointsPerHundred = business.loyaltyPointsPerHundred;
     this.loyaltyPointValueCents = business.loyaltyPointValueCents;
+    this.referralRewardPoints = business.referralRewardPoints;
+    this.referralWelcomePoints = business.referralWelcomePoints;
     this.fiscalYearStartMonth = business.fiscalYearStartMonth;
     this.status = business.status;
     this.createdAt = business.createdAt;

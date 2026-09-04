@@ -62,6 +62,8 @@ export class BusinessesService {
         | 'maxDiscountPercent'
         | 'loyaltyPointsPerHundred'
         | 'loyaltyPointValueCents'
+        | 'referralRewardPoints'
+        | 'referralWelcomePoints'
         | 'displayName'
       >
     > & { theme?: Record<string, unknown> },

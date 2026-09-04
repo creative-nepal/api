@@ -64,6 +64,7 @@ export class MartSectorPlugin implements SectorPlugin {
     return [
       {
         product,
+        note: item.note ?? null,
         quantity: item.quantity,
         unitPriceCents: subUnitPriceCents(
           product.priceCents,

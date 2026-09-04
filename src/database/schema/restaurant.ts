@@ -76,6 +76,7 @@ export const restaurantTables = pgTable(
       .notNull()
       .references(() => branches.id, { onDelete: 'restrict' }),
     tableNo: text('table_no').notNull(),
+    areaId: text('area_id'),
     seats: integer('seats').default(4).notNull(),
     status: text('status').default('empty').notNull(),
     assignedWaiterId: text('assigned_waiter_id').references(() => user.id, {
@@ -296,6 +297,31 @@ export const kitchenTicketItemsRelations = relations(
   }),
 );
 
+export const tableAreas = pgTable(
+  'table_areas',
+  {
+    id: text('id').primaryKey(),
+    businessId: text('business_id')
+      .notNull()
+      .references(() => businesses.id, { onDelete: 'cascade' }),
+    branchId: text('branch_id')
+      .notNull()
+      .references(() => branches.id, { onDelete: 'cascade' }),
+    name: text('name').notNull(),
+    sortOrder: integer('sort_order').default(0).notNull(),
+    isActive: boolean('is_active').default(true).notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    uniqueIndex('table_areas_branchId_name_uidx').on(
+      table.branchId,
+      table.name,
+    ),
+  ],
+);
+
 export const reservations = pgTable(
   'reservations',
   {
@@ -407,3 +433,5 @@ export type Reservation = typeof reservations.$inferSelect;
 export type NewReservation = typeof reservations.$inferInsert;
 export type SalesChannel = typeof salesChannels.$inferSelect;
 export type NewSalesChannel = typeof salesChannels.$inferInsert;
+export type TableArea = typeof tableAreas.$inferSelect;
+export type NewTableArea = typeof tableAreas.$inferInsert;

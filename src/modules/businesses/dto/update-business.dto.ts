@@ -67,6 +67,20 @@ export class UpdateBusinessDto {
   loyaltyPointValueCents?: number;
 
   @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  @Max(100_000)
+  referralRewardPoints?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  @Max(100_000)
+  referralWelcomePoints?: number;
+
+  @IsOptional()
   @IsString()
   @MaxLength(255)
   displayName?: string;

@@ -10,7 +10,13 @@ import {
 import { user } from './auth';
 import { businesses, businessInvoices, customers, orders } from './billing';
 
-export const LOYALTY_ENTRY_TYPES = ['earned', 'redeemed', 'adjusted'] as const;
+export const LOYALTY_ENTRY_TYPES = [
+  'earned',
+  'redeemed',
+  'adjusted',
+  'referral_earned',
+  'referral_welcome',
+] as const;
 export type LoyaltyEntryType = (typeof LOYALTY_ENTRY_TYPES)[number];
 
 export const loyaltyLedger = pgTable(

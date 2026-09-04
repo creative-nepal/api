@@ -195,5 +195,14 @@
     "branchRequired": "A branch entry needs a branch",
     "branchNotAllowed": "Only a branch entry may name a branch",
     "endsBeforeStart": "The end is before the start"
+  },
+  "referral": {
+    "codeUnavailable": "Could not allocate a referral code; please try again",
+    "malformedCode": "That referral code is not in the right format",
+    "alreadyAttributed": "This customer was already referred by someone",
+    "unknownCode": "No customer holds that referral code",
+    "selfReferral": "A customer cannot refer themselves",
+    "circular": "Those two customers have already referred each other",
+    "notANewCustomer": "A referral can only be claimed before the first purchase"
   }
 }
