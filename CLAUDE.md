@@ -239,3 +239,34 @@ bunx skills update                      # update everything installed here
 - `code-review` and `diagnosing-bugs` (mattpocock/skills, 451K / 509K installs) — a two-axis
   diff review and a debugging loop. Claude Code already ships a built-in `/code-review`, so this
   one is listed scoped as `<repo>:code-review` — pick that one for files in this repo.
+
+## The access context is resolved once, not per guard
+
+`BusinessAccessGuard` resolves everything the guard stack needs — business,
+membership, the organisation's dynamic role definitions, the caller's branch
+assignments, their per-branch roles, and the default branch — and attaches it to
+the request as `request.access`. `RequirePermissionGuard` is then **synchronous
+and does no I/O**; `BranchScopeGuard` reads the assignment from the same object.
+
+This is why the stack costs 4 queries rather than 11. The old shape called
+`auth.api.hasPermission`, which re-authenticates from raw headers and so read
+session, user and member a second and third time per request. Do not reintroduce
+a guard that queries: add what it needs to `AccessContextService.resolve`.
+
+- **Permission decisions use `common/access/authorize.ts`, not Better Auth.**
+  It mirrors `hasPermissionFn` exactly, including that a comma-separated role
+  list is an **OR** — one role must satisfy the whole request on its own.
+  Permissions are *not* unioned across roles. `composePermissions` in
+  `modules/roles/permissions.ts` does union, and is only for the workspace's UI
+  map, where each nav item asks about one permission at a time.
+- **A per-branch role replaces the organisation role for that branch**, from
+  `branch_roles`. It can demote as well as promote.
+- **Branch assignment is opt-in scoping**: a member with no assignment reaches
+  every branch, which is what keeps single-branch businesses working. Assign one
+  and they are restricted to it.
+- `AccessContextService` caches the organisation's role rows and a per-business
+  "does it use branch scoping or branch roles" shape. Both are invalidated
+  explicitly by `RolesService`, `MembersService` and `BranchRolesService` on
+  write, so a revocation is immediate within an instance. The 10s TTL is only a
+  backstop across several instances — **any new write path that changes roles or
+  branch assignment must call the matching `invalidate*`**.
