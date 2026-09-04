@@ -645,7 +645,8 @@
       "stockTakes": "स्टक गणना",
       "reservations": "बुकिङ",
       "cash": "गल्ला",
-      "channels": "डेलिभरी"
+      "channels": "डेलिभरी",
+      "wastage": "खेर"
     },
     "services": {
       "title": "सेवाहरू",

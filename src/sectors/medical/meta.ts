@@ -33,6 +33,12 @@ const navItems: WorkspaceNavItem[] = [
     titleKey: 'ui.web.nav.stockTakes',
     permission: { stocktake: ['count'] },
   },
+  {
+    key: 'wastage',
+    href: '/wastage',
+    titleKey: 'ui.web.nav.wastage',
+    permission: { wastage: ['view'] },
+  },
 ];
 
 const theme: SectorTheme = {

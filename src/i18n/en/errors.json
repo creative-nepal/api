@@ -163,5 +163,15 @@
   "channel": {
     "notFound": "Delivery channel {channelId} not found",
     "duplicate": "A channel called {name} already exists"
+  },
+  "wastage": {
+    "oneTarget": "Record wastage against either a stock item or a menu item, not both",
+    "menuItemNotAllowed": "Menu item wastage only applies to a restaurant",
+    "noRecipe": "{menuItemId} has no recipe, so its ingredients cannot be deducted",
+    "menuItemNotFound": "Menu item {menuItemId} not found"
+  },
+  "menu": {
+    "modifierRequired": "Choose a {modifier} for {item}",
+    "modifierTooMany": "At most {max} option(s) may be chosen for {modifier}"
   }
 }

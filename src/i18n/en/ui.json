@@ -645,7 +645,8 @@
       "stockTakes": "Stock takes",
       "reservations": "Reservations",
       "cash": "Till",
-      "channels": "Delivery"
+      "channels": "Delivery",
+      "wastage": "Wastage"
     },
     "services": {
       "title": "Services",

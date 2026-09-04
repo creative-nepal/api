@@ -39,6 +39,7 @@ describe('navForSector', () => {
       'stock-takes',
       'reservations',
       'channels',
+      'wastage',
       'purchasing',
       'customers',
       'cash',
@@ -55,9 +56,10 @@ describe('navForSector', () => {
     expect(keys).toEqual(['pos', 'customers', 'cash', 'invoices']);
   });
 
-  it('gives a chef only the kitchen board', () => {
+  it('gives a chef the kitchen board and wastage, nothing else', () => {
     expect(navForSector('restaurant', permissionsForRole('chef'))).toEqual([
       { key: 'kitchen', href: '/kitchen', titleKey: 'ui.web.nav.kitchen' },
+      { key: 'wastage', href: '/wastage', titleKey: 'ui.web.nav.wastage' },
     ]);
   });
 

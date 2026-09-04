@@ -176,6 +176,13 @@
       "when": 1788437310774,
       "tag": "0024_appointment_deposits",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1788495830436,
+      "tag": "0025_wastage",
+      "breakpoints": true
     }
   ]
 }

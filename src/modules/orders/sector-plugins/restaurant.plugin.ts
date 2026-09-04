@@ -87,10 +87,45 @@ export class RestaurantSectorPlugin implements SectorPlugin {
 
   async afterCheckout(): Promise<void> {}
 
+  private assertSelectionCounts(
+    menuItem: MenuItem,
+    selections: Array<{ name: string; label: string }>,
+  ): void {
+    const chosen = new Map<string, number>();
+
+    for (const selection of selections) {
+      chosen.set(selection.name, (chosen.get(selection.name) ?? 0) + 1);
+    }
+
+    for (const modifier of menuItem.modifiers) {
+      const count = chosen.get(modifier.name) ?? 0;
+
+      if (modifier.required && count === 0) {
+        throw new BadRequestException({
+          message: 'i18n:errors.menu.modifierRequired',
+          item: menuItem.name,
+          modifier: modifier.name,
+        });
+      }
+
+      const limit = modifier.maxSelections ?? Number.POSITIVE_INFINITY;
+
+      if (count > limit) {
+        throw new BadRequestException({
+          message: 'i18n:errors.menu.modifierTooMany',
+          modifier: modifier.name,
+          max: limit,
+        });
+      }
+    }
+  }
+
   private resolveModifiers(
     menuItem: MenuItem,
     selections: Array<{ name: string; label: string }>,
   ): SelectedModifier[] {
+    this.assertSelectionCounts(menuItem, selections);
+
     return selections.map((selection) => {
       const modifier = menuItem.modifiers.find(
         (candidate) => candidate.name === selection.name,

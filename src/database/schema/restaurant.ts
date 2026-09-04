@@ -53,6 +53,10 @@ export interface MenuModifierOption {
 export interface MenuModifier {
   name: string;
   options: MenuModifierOption[];
+  /** A variant such as half/full must be chosen; an add-on need not be. */
+  required?: boolean;
+  /** Variants are single-select; add-ons may allow several. */
+  maxSelections?: number;
 }
 
 export interface SelectedModifier {

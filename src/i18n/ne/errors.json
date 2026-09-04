@@ -163,5 +163,15 @@
   "channel": {
     "notFound": "डेलिभरी च्यानल {channelId} फेला परेन",
     "duplicate": "{name} नामको च्यानल पहिले नै छ"
+  },
+  "wastage": {
+    "oneTarget": "मौज्दात सामान वा मेनु आइटम मध्ये एउटामा मात्र खेर लेख्नुहोस्, दुवैमा होइन",
+    "menuItemNotAllowed": "मेनु आइटमको खेर रेस्टुरेन्टमा मात्र लागू हुन्छ",
+    "noRecipe": "{menuItemId} को रेसिपी नभएकाले सामग्री घटाउन सकिँदैन",
+    "menuItemNotFound": "मेनु आइटम {menuItemId} फेला परेन"
+  },
+  "menu": {
+    "modifierRequired": "{item} का लागि {modifier} छान्नुहोस्",
+    "modifierTooMany": "{modifier} का लागि बढीमा {max} विकल्प छान्न सकिन्छ"
   }
 }

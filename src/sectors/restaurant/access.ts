@@ -25,7 +25,11 @@ export function createRestaurantRoles(ac: AppAccessControl) {
       table: ['manage'],
       kot: ['view'],
       reservation: ['view', 'book', 'seat'],
+      wastage: ['view', 'record'],
     }),
-    chef: ac.newRole({ kot: ['view', 'update'] }),
+    chef: ac.newRole({
+      kot: ['view', 'update'],
+      wastage: ['view', 'record'],
+    }),
   };
 }

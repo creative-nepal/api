@@ -45,6 +45,12 @@ const navItems: WorkspaceNavItem[] = [
     titleKey: 'ui.web.nav.channels',
     permission: { order: ['create'] },
   },
+  {
+    key: 'wastage',
+    href: '/wastage',
+    titleKey: 'ui.web.nav.wastage',
+    permission: { wastage: ['view'] },
+  },
 ];
 
 const theme: SectorTheme = {
