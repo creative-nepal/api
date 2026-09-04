@@ -622,7 +622,16 @@
       "revoke": "Revoke",
       "pendingTitle": "Pending invitations",
       "removeTitle": "Remove this member?",
-      "removeBody": "{email} will lose access to this business immediately."
+      "removeBody": "{email} will lose access to this business immediately.",
+      "branches": "Branches",
+      "allBranches": "All branches",
+      "assignBranches": "Branches",
+      "assignTitle": "Which branches can {name} work at?",
+      "assignHint": "Leave every branch unticked to allow all of them. Ticking any restricts them to those.",
+      "branchesUpdated": "Branch access updated",
+      "restricted": "{count} branch(es)",
+      "members": "Team",
+      "searchStaff": "Search by name or email"
     },
     "nav": {
       "pos": "Point of sale",
