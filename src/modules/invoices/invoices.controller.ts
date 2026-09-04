@@ -28,6 +28,9 @@ import {
 } from './dto/invoice-request.dto';
 import { InvoiceResponseDto } from './dto/invoice-response.dto';
 import { InvoicesService } from './invoices.service';
+import { ExportQueryDto, sendReport } from '../../common/reporting';
+import type { DownloadResponse } from '../../common/reporting/spreadsheet';
+import { InvoicesExportService } from './invoices-export.service';
 import { RegistersService } from './registers.service';
 
 @Controller({ path: 'businesses/:businessId/invoices', version: '1' })
@@ -37,6 +40,7 @@ export class InvoicesController {
   constructor(
     private readonly invoicesService: InvoicesService,
     private readonly registersService: RegistersService,
+    private readonly exportService: InvoicesExportService,
   ) {}
 
   @Get()
@@ -54,6 +58,24 @@ export class InvoicesController {
       ...result,
       data: result.data.map((invoice) => new InvoiceResponseDto(invoice)),
     };
+  }
+
+  @Get('export')
+  @RequirePermission({ invoice: ['print'] })
+  async export(
+    @CurrentBusiness() business: Business,
+    @Query() query: ExportQueryDto,
+    @Res() response: DownloadResponse,
+  ): Promise<void> {
+    sendReport(
+      response,
+      await this.exportService.export(
+        business,
+        query.format ?? 'xlsx',
+        query,
+        query.limit ?? 5_000,
+      ),
+    );
   }
 
   @Get('registers')
