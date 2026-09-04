@@ -186,5 +186,14 @@
     "notFound": "यो संस्थामा सदस्य {memberId} फेला परेन",
     "unknownBranch": "शाखा {branchId} यो व्यवसायको होइन",
     "branchNotAllowed": "तपाईं {branch} मा तोकिनुभएको छैन"
+  },
+  "calendar": {
+    "notFound": "क्यालेन्डर प्रविष्टि {eventId} फेला परेन",
+    "personal": "त्यो अर्को व्यक्तिको व्यक्तिगत प्रविष्टि हो",
+    "badWindow": "मिति दायरा पढ्न सकिएन",
+    "windowTooWide": "एकपटकमा बढीमा {days} दिन माग्नुहोस्",
+    "branchRequired": "शाखा प्रविष्टिलाई शाखा चाहिन्छ",
+    "branchNotAllowed": "शाखा प्रविष्टिले मात्र शाखा तोक्न सक्छ",
+    "endsBeforeStart": "अन्त्य सुरुभन्दा अगाडि छ"
   }
 }

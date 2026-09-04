@@ -186,5 +186,14 @@
     "notFound": "Member {memberId} not found in this organisation",
     "unknownBranch": "Branch {branchId} does not belong to this business",
     "branchNotAllowed": "You are not assigned to {branch}"
+  },
+  "calendar": {
+    "notFound": "Calendar entry {eventId} not found",
+    "personal": "That is someone else's personal entry",
+    "badWindow": "The date range could not be read",
+    "windowTooWide": "Ask for at most {days} days at a time",
+    "branchRequired": "A branch entry needs a branch",
+    "branchNotAllowed": "Only a branch entry may name a branch",
+    "endsBeforeStart": "The end is before the start"
   }
 }

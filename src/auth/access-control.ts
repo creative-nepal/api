@@ -42,6 +42,7 @@ const kernelStatements = {
   cash: ['view', 'open', 'close', 'move', 'take-payment'],
   wastage: ['view', 'record'],
   expense: ['view', 'record'],
+  calendar: ['view', 'manage'],
 } as const;
 
 export const statement = {
@@ -71,6 +72,7 @@ export const ownerRole = ac.newRole({
   cash: ['view', 'open', 'close', 'move', 'take-payment'],
   wastage: ['view', 'record'],
   expense: ['view', 'record'],
+  calendar: ['view', 'manage'],
   ...martOwnerGrants,
   ...medicalOwnerGrants,
   ...restaurantOwnerGrants,
@@ -85,6 +87,7 @@ export const managerRole = ac.newRole({
   cash: ['view', 'open', 'close', 'move', 'take-payment'],
   wastage: ['view', 'record'],
   expense: ['view', 'record'],
+  calendar: ['view', 'manage'],
   ...martManagerGrants,
   ...medicalManagerGrants,
   ...restaurantManagerGrants,
@@ -95,6 +98,7 @@ export const cashierRole = ac.newRole({
   order: ['create'],
   invoice: ['issue', 'print'],
   cash: ['view', 'open', 'close', 'move', 'take-payment'],
+  calendar: ['view'],
 });
 
 const sectorRoles = {

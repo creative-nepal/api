@@ -15,6 +15,12 @@ export const KERNEL_NAV_ITEMS: WorkspaceNavItem[] = [
     permission: { product: ['update'] },
   },
   {
+    key: 'calendar',
+    href: '/calendar',
+    titleKey: 'ui.web.nav.calendar',
+    permission: { calendar: ['view'] },
+  },
+  {
     key: 'customers',
     href: '/customers',
     titleKey: 'ui.web.nav.customers',
