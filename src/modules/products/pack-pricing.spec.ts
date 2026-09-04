@@ -28,7 +28,6 @@ describe('lineTotalForSubUnits', () => {
   });
 
   it('does not accumulate the per-unit rounding error', () => {
-    // 667 x 3 would be 2001; pricing from the pack keeps it honest.
     expect(lineTotalForSubUnits(2000, 3, 3)).not.toBe(
       subUnitPriceCents(2000, 3) * 3,
     );

@@ -155,11 +155,6 @@ export class CustomersService {
     return { data: rows, total: total?.value ?? 0, limit, offset };
   }
 
-  /**
-   * Puts a sale on the customer's account. The limit is checked against the
-   * balance the update itself produces, inside one statement, so two tills
-   * cannot both squeeze a sale past the same remaining credit.
-   */
   async chargeSale(
     executor: DatabaseExecutor,
     businessId: string,

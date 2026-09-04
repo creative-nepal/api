@@ -43,7 +43,7 @@ export class NotificationDigestJob {
         and(
           eq(schema.businesses.status, 'active'),
           inArray(schema.member.role, DIGEST_ROLES),
-          // No settings row yet means the default, which is opted in.
+
           or(
             isNull(schema.businessSettings.businessId),
             eq(schema.businessSettings.digestEnabled, true),

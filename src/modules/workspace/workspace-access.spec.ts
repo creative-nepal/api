@@ -119,8 +119,6 @@ describe('themeForSector', () => {
   });
 
   it('does not ship an accent, which would break dark-mode hovers', () => {
-    // --accent is the hover background: light in light mode, dark in dark
-    // mode. A single value forced on both makes one of them unreadable.
     expect(themeForSector('medical', {})).not.toHaveProperty('accent');
   });
 });

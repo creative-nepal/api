@@ -31,7 +31,6 @@ describe('file rules', () => {
 
   describe('content types', () => {
     it('refuses svg where a customer supplies the file', () => {
-      // svg can carry script; only an owner's own logo may be one.
       expect(ALLOWED_TYPES['product-image']).not.toContain('image/svg+xml');
       expect(ALLOWED_TYPES['content-image']).not.toContain('image/svg+xml');
       expect(ALLOWED_TYPES.prescription).not.toContain('image/svg+xml');

@@ -134,7 +134,6 @@ export class RolesService {
     return { statements: this.statements(), roles: [...views.values()] };
   }
 
-  /** A role must exist in this organisation's catalogue to be assignable. */
   async assertAssignable(organizationId: string, role: string): Promise<void> {
     if (RESERVED_ROLES.has(role)) {
       throw new BadRequestException({

@@ -22,11 +22,6 @@ function parse(raw: string | null): PermissionMap {
   }
 }
 
-/**
- * Effective permissions for a role name, or a comma-separated list of them.
- * Pure so the guard can use it without pulling a service into DI, and so it
- * cannot drift from what the workspace shows the user.
- */
 export function composePermissions(
   memberRole: string,
   stored: StoredRoleRow[],

@@ -33,8 +33,6 @@ describe('authorizes', () => {
     });
 
     it('denies a request that only the union of both roles could satisfy', () => {
-      // cashier has order:create but not kot:update; chef the reverse.
-      // Unioning would allow this; Better Auth does not, so neither do we.
       expect(
         authorizes('cashier,chef', [], {
           order: ['create'],

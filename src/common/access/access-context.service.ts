@@ -5,14 +5,6 @@ import type { Business } from '../../database/schema';
 import type { StoredRoleRow } from '../../modules/roles/permissions';
 import { TtlCache } from './ttl-cache';
 
-/**
- * Short on purpose. Writes invalidate explicitly, so within one instance a
- * revoked permission takes effect immediately and this is only a backstop.
- * Across several instances it bounds how long another one may still honour a
- * permission that has just been revoked — a deployment that cannot accept
- * even that window needs shared invalidation (Redis pub/sub), not a lower
- * number here.
- */
 const TTL_MS = 10_000;
 
 export interface BusinessAccessShape {
@@ -23,21 +15,13 @@ export interface BusinessAccessShape {
 
 export interface ResolvedAccess {
   orgRoles: StoredRoleRow[];
-  /** null means unrestricted. */
+
   allowedBranchIds: string[] | null;
   branchRoles: Map<string, string>;
-  /** Used when a request carries no X-Branch-Id, matching BranchScopeGuard. */
+
   defaultBranchId: string | null;
 }
 
-/**
- * Everything the guard stack needs about a caller, resolved once per request.
- *
- * The two caches exist because these reads sit on the hot path of every
- * business-scoped request while their contents change only when an owner
- * edits a role or a branch assignment. Both are invalidated explicitly on
- * those writes, so the TTL is a backstop rather than the mechanism.
- */
 @Injectable()
 export class AccessContextService {
   private readonly orgRoleCache = new TtlCache<StoredRoleRow[]>(TTL_MS);

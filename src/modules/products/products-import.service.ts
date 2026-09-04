@@ -71,10 +71,6 @@ export class ProductsImportService {
         .map((product) => [product.sku as string, product]),
     );
 
-    // A row with no SKU has no key, so re-importing an export would duplicate
-    // every product that lacks one. Name is the fallback: two products with
-    // the same name in one catalogue is already a data problem, and a silent
-    // duplicate is the worse outcome.
     const names = dto.rows.map((row) => row.name.trim());
 
     const byName = new Map(
@@ -92,8 +88,6 @@ export class ProductsImportService {
       ).map((product) => [product.name, product]),
     );
 
-    // A SKU repeated inside one file would otherwise create then update the
-    // same product, and the file's own last row would silently win.
     const seen = new Set<string>();
 
     let created = 0;
@@ -172,8 +166,6 @@ export class ProductsImportService {
     }
 
     if (!dryRun && created > 0) {
-      // Checked after the fact rather than per row: the limit is on the
-      // catalogue as a whole, and failing halfway would leave a partial import.
       const total = await this.db.$count(
         schema.products,
         eq(schema.products.businessId, business.id),
@@ -244,11 +236,6 @@ export class ProductsImportService {
     };
   }
 
-  /**
-   * Stock is deliberately not updated on an existing product: an import is a
-   * catalogue, and overwriting a counted quantity with a stale spreadsheet
-   * figure would silently undo a stock take. Use a stock take for that.
-   */
   private sectorDataFor(
     row: ProductImportRowDto,
     current: Record<string, unknown>,

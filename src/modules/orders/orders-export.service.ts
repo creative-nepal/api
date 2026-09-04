@@ -41,10 +41,6 @@ const COLUMNS: ReportColumn<SoldItemRow>[] = [
 export class OrdersExportService {
   constructor(@InjectDatabase() private readonly db: Database) {}
 
-  /**
-   * One row per line, not per order — "how much of what sold" is the question
-   * a shop actually asks, and an order-level export cannot answer it.
-   */
   async export(
     business: Business,
     format: ExportFormat,

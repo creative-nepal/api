@@ -130,14 +130,6 @@ export class RecipesService {
     return this.get(businessId, menuItemId);
   }
 
-  /**
-   * Consumes the ingredients for every reciped line on an order.
-   *
-   * Stock is allowed to go negative: the kitchen has already been told to
-   * cook, and refusing here would strand a placed order mid-service. An item
-   * that genuinely cannot be made should be marked unavailable on the menu.
-   * The shortfall is reported so the caller can raise it.
-   */
   async depleteForOrder(
     executor: DatabaseExecutor,
     businessId: string,

@@ -18,7 +18,6 @@ export class AppConfigService {
     return this.nodeEnv === 'test';
   }
 
-  /** Explicit `LOG_LEVEL` wins; otherwise debug locally, info in prod, silent under Jest. */
   get logLevel(): string {
     const explicit = this.configService.get('LOG_LEVEL', { infer: true });
     if (explicit) {
@@ -32,7 +31,6 @@ export class AppConfigService {
     return this.isProduction ? 'info' : 'debug';
   }
 
-  /** Human-readable `pino-pretty` output outside production/test; structured JSON otherwise. */
   get logPretty(): boolean {
     return !this.isProduction && !this.isTest;
   }

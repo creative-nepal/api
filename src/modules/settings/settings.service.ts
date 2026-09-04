@@ -8,7 +8,6 @@ import type { UpdateSettingsDto } from './dto/settings.dto';
 export class SettingsService {
   constructor(@InjectDatabase() private readonly db: Database) {}
 
-  /** Settings are created on first read, so a business always has a row. */
   async get(businessId: string): Promise<BusinessSettings> {
     const [existing] = await this.db
       .select()

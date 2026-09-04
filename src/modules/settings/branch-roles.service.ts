@@ -21,7 +21,6 @@ export class BranchRolesService {
     private readonly accessContext: AccessContextService,
   ) {}
 
-  /** True when this business uses per-branch roles at all. */
   async businessUsesBranchRoles(businessId: string): Promise<boolean> {
     const [row] = await this.db
       .select({ id: schema.branchRoles.id })

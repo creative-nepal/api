@@ -15,11 +15,9 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-/** One request stays well inside a request timeout; the client sends batches. */
 export const MAX_IMPORT_ROWS = 500;
 
 export class ProductImportRowDto {
-  /** Echoed back untouched so the client can map a failure to its row. */
   @Type(() => Number)
   @IsInt()
   @Min(1)
@@ -70,6 +68,5 @@ export class ImportProductsDto {
   @Type(() => ProductImportRowDto)
   rows!: ProductImportRowDto[];
 
-  /** Validate and report without writing anything. */
   @IsOptional() @IsBoolean() dryRun?: boolean;
 }

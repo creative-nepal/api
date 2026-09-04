@@ -68,12 +68,14 @@ export class StorageService implements OnModuleInit {
       return;
     }
 
-    try {
-      await this.client.send(new HeadBucketCommand({ Bucket: this.bucket }));
+    const exists = await this.client
+      .send(new HeadBucketCommand({ Bucket: this.bucket }))
+      .then(() => true)
+      .catch(() => false);
+
+    if (exists) {
       await this.applyPublicReadPolicy();
       return;
-    } catch {
-      // Absent, or the store is unreachable — the create below tells us which.
     }
 
     try {
@@ -84,8 +86,6 @@ export class StorageService implements OnModuleInit {
       );
       await this.applyPublicReadPolicy();
     } catch (cause) {
-      // Selling must not stop because object storage is down. Uploads fail
-      // loudly at the point of use; everything else keeps working.
       this.logger.error(
         { err: cause, bucket: this.bucket },
         'Object storage is unreachable — uploads will fail until it recovers',
@@ -101,12 +101,6 @@ export class StorageService implements OnModuleInit {
     return this.client;
   }
 
-  /**
-   * Anything under `public/` is world-readable; everything else needs a signed
-   * URL. A logo or a CMS image is rendered to anonymous visitors and must have
-   * a stable address — a presigned URL would expire and leave a broken image
-   * on a published page.
-   */
   private async applyPublicReadPolicy(): Promise<void> {
     if (!this.client) {
       return;
@@ -144,7 +138,6 @@ export class StorageService implements OnModuleInit {
     return key.startsWith(PUBLIC_PREFIX);
   }
 
-  /** Stable, unsigned URL. Only valid for keys under the public prefix. */
   publicUrl(key: string): string {
     return `${this.endpoint.replace(/\/$/, '')}/${this.bucket}/${key}`;
   }

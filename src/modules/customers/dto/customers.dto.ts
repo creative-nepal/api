@@ -37,6 +37,6 @@ export class RecordPaymentDto {
 
 export class ListCustomersQueryDto extends ListQueryDto {
   @IsOptional() @IsString() search?: string;
-  /** Only customers who currently owe money. */
+
   @IsOptional() @IsString() owing?: string;
 }

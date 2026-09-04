@@ -43,12 +43,6 @@ function statementsFor(
   return merged;
 }
 
-/**
- * Mirrors Better Auth's hasPermissionFn: a comma-separated role list is an
- * OR, and one role must satisfy the *whole* request on its own. Permissions
- * are deliberately not unioned across roles — holding `cashier,chef` does not
- * combine into a role that can do both halves of a two-resource requirement.
- */
 export function authorizes(
   memberRole: string,
   stored: StoredRoleRow[],

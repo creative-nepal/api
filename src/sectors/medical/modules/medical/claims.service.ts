@@ -11,11 +11,6 @@ import type {
   InsuranceClaimStatus,
 } from '../../../../database/schema';
 
-/**
- * A claim moves forward only. Reopening a settled claim would let an
- * already-reconciled amount change after the fact, so it is refused; a
- * correction is a new claim against the same order.
- */
 const ALLOWED: Record<string, InsuranceClaimStatus[]> = {
   draft: ['submitted'],
   submitted: ['approved', 'rejected'],

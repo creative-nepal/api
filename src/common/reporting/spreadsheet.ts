@@ -121,7 +121,6 @@ export interface DownloadResponse {
   send(body: Buffer): unknown;
 }
 
-/** The four lines every export endpoint would otherwise repeat. */
 export function sendReport(
   response: DownloadResponse,
   report: ReportExport,

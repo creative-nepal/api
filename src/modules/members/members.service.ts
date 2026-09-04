@@ -21,7 +21,7 @@ export interface MemberView {
   name: string;
   email: string;
   joinedAt: Date;
-  /** Empty means every branch — a restriction is opt-in. */
+
   branchIds: string[];
   allBranches: boolean;
 }
@@ -79,11 +79,6 @@ export class MembersService {
     };
   }
 
-  /**
-   * Branch ids a user may act on, or null when they are unrestricted.
-   * Restriction is opt-in: a member with no assignment reaches every branch,
-   * which keeps single-branch businesses and existing staff working.
-   */
   async allowedBranchIds(
     businessId: string,
     userId: string,

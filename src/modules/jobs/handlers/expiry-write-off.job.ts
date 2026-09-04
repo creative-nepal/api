@@ -5,12 +5,6 @@ import { type Database, InjectDatabase, schema } from '../../../database';
 import { NotificationsService } from '../../notifications/notifications.service';
 import type { JobDetail } from '../job-runner.service';
 
-/**
- * Writes off batches whose expiry date has passed. Expired stock is not
- * sellable, so leaving it on hand overstates both inventory and its value;
- * the ledger entry is what makes the loss auditable rather than a silent
- * adjustment.
- */
 @Injectable()
 export class ExpiryWriteOffJob {
   static readonly NAME = 'expiry-write-off';

@@ -114,7 +114,7 @@ export const staffAvailability = pgTable(
     staffUserId: text('staff_user_id')
       .notNull()
       .references(() => user.id, { onDelete: 'cascade' }),
-    /** 0 = Sunday, matching Postgres `extract(dow)`. */
+
     dayOfWeek: integer('day_of_week').notNull(),
     startMinute: integer('start_minute').notNull(),
     endMinute: integer('end_minute').notNull(),

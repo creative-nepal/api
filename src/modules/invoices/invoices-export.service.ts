@@ -64,8 +64,6 @@ export class InvoicesExportService {
       eq(schema.businessInvoices.businessId, business.id),
     ];
 
-    // Optional on purpose: the invoice series is per branch, so an owner
-    // reconciling the whole business wants every branch in one file.
     if (filters.branchId) {
       conditions.push(eq(schema.businessInvoices.branchId, filters.branchId));
     }
@@ -95,8 +93,7 @@ export class InvoicesExportService {
     const invoices = await this.db
       .select({
         invoice: schema.businessInvoices,
-        // One invoice can be settled with several tenders, so they are
-        // collapsed into one cell rather than duplicating the invoice row.
+
         paidVia: sql<string | null>`(
           select string_agg(distinct ${schema.invoicePayments.method}, ', ')
           from ${schema.invoicePayments}

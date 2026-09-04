@@ -104,7 +104,6 @@ export class MembersRepository {
     return row;
   }
 
-  /** Branch ids each of these users is explicitly assigned to. */
   async branchesForUsers(
     businessId: string,
     userIds: string[],

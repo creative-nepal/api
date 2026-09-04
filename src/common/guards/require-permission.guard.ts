@@ -46,11 +46,6 @@ export class RequirePermissionGuard implements CanActivate {
     return true;
   }
 
-  /**
-   * A per-branch role replaces the organisation role for that branch. The
-   * branch comes from the same header BranchScopeGuard reads, so the decision
-   * matches the branch the request will actually act on.
-   */
   private effectiveRole(request: BusinessScopedRequest): string {
     const access = request.access;
     const membershipRole = request.membership?.role ?? '';

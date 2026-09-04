@@ -166,11 +166,6 @@ export class FilesService {
     return this.storage.presignDownload(file.storageKey);
   }
 
-  /**
-   * A public file returns its permanent address; a private one a short-lived
-   * signed URL. `expiresInSeconds` is null for the former, which is how a
-   * caller knows the URL is safe to persist in a CMS block or a theme.
-   */
   async downloadUrl(
     businessId: string | null,
     fileId: string,

@@ -106,12 +106,6 @@ export class AvailabilityService {
     return row;
   }
 
-  /**
-   * Refuses a booking that the staff member cannot actually take: outside
-   * their working hours, during booked time off, or overlapping an
-   * appointment they already have. Without this the module happily
-   * double-booked the same person.
-   */
   async assertBookable(
     businessId: string,
     staffUserId: string,
@@ -123,7 +117,6 @@ export class AvailabilityService {
 
     const windows = await this.listFor(businessId, staffUserId);
 
-    // No declared hours means availability is simply not managed for them.
     if (windows.length > 0) {
       const dayOfWeek = scheduledAt.getDay();
       const startMinute =

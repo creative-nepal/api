@@ -38,7 +38,6 @@ describe('expectedCashCents', () => {
   });
 
   it('ignores non-cash tender, which never reaches the drawer', () => {
-    // eSewa and card settle to the bank, so they must not move expected cash.
     const withCardSales = expectedCashCents({ ...base, cashSalesCents: 0 });
     expect(withCardSales).toBe(500_000);
   });

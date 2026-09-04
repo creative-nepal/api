@@ -16,7 +16,6 @@ export class ListMembersQueryDto extends ListQueryDto {
 }
 
 export class SetMemberBranchesDto {
-  /** An empty list clears every restriction, giving access to all branches. */
   @IsArray()
   @IsString({ each: true })
   branchIds!: string[];

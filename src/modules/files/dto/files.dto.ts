@@ -33,7 +33,6 @@ export class CreateUploadDto {
   @Max(MAX_VIDEO_BYTES)
   sizeBytes!: number;
 
-  /** Defaults per purpose; only set this to override that choice. */
   @IsOptional() @IsIn(FILE_VISIBILITIES) visibility?: FileVisibility;
 }
 

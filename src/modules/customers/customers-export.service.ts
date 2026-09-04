@@ -79,11 +79,6 @@ export class CustomersExportService {
     });
   }
 
-  /**
-   * Matched on phone, which is how a shop identifies a khata customer. A
-   * balance is never imported: it is the sum of a ledger, and setting it from
-   * a spreadsheet would leave the ledger disagreeing with the total.
-   */
   async import(
     business: Business,
     dto: ImportCustomersDto,
@@ -114,8 +109,6 @@ export class CustomersExportService {
         .map((customer) => [customer.phone as string, customer]),
     );
 
-    // Same reasoning as products: without a phone there is no key, and
-    // re-importing an export would otherwise duplicate every walk-in.
     const names = dto.rows.map((row) => row.name.trim());
 
     const byName = new Map(
