@@ -1060,7 +1060,9 @@
       "grid": "Month",
       "list": "List",
       "saturday": "Saturday",
-      "noPanchang": "Tithi and festival names are not included; mark your own closures as a holiday entry."
+      "noPanchang": "Tithi and festival names are not included; mark your own closures as a holiday entry.",
+      "todayButton": "Today",
+      "monthSubtitle": "{english} · {range}"
     }
   }
 }
