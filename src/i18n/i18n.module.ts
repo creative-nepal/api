@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { Module } from '@nestjs/common';
 import {
@@ -15,15 +16,21 @@ import { I18nController } from './i18n.controller';
 
 const isDevelopment = (process.env.NODE_ENV ?? 'development') === 'development';
 
+const sourceCatalogues = join(process.cwd(), 'src', 'i18n', '/');
+const compiledCatalogues = join(__dirname, '/');
+
+const cataloguePath =
+  isDevelopment && existsSync(sourceCatalogues)
+    ? sourceCatalogues
+    : compiledCatalogues;
+
 @Module({
   imports: [
     NestI18nModule.forRoot({
       fallbackLanguage: FALLBACK_LANGUAGE,
       loaderOptions: {
-        path: isDevelopment
-          ? join(process.cwd(), 'src', 'i18n', '/')
-          : join(__dirname, '/'),
-        watch: isDevelopment,
+        path: cataloguePath,
+        watch: cataloguePath === sourceCatalogues,
       },
       typesOutputPath: undefined,
       resolvers: [
