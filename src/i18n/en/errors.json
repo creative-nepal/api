@@ -180,5 +180,10 @@
     "insufficientPoints": "That customer does not have enough points",
     "orderNotFound": "Order {orderId} not found",
     "feedbackExists": "Feedback has already been left for this order"
+  },
+  "member": {
+    "notFound": "Member {memberId} not found in this organisation",
+    "unknownBranch": "Branch {branchId} does not belong to this business",
+    "branchNotAllowed": "You are not assigned to {branch}"
   }
 }

@@ -180,5 +180,10 @@
     "insufficientPoints": "त्यो ग्राहकसँग पर्याप्त अंक छैन",
     "orderNotFound": "अर्डर {orderId} फेला परेन",
     "feedbackExists": "यो अर्डरको प्रतिक्रिया पहिले नै दिइएको छ"
+  },
+  "member": {
+    "notFound": "यो संस्थामा सदस्य {memberId} फेला परेन",
+    "unknownBranch": "शाखा {branchId} यो व्यवसायको होइन",
+    "branchNotAllowed": "तपाईं {branch} मा तोकिनुभएको छैन"
   }
 }

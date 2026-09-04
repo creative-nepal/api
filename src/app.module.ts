@@ -16,6 +16,7 @@ import { ContentModule } from './modules/content/content.module';
 import { CashModule } from './modules/cash/cash.module';
 import { ExpensesModule } from './modules/expenses/expenses.module';
 import { LoyaltyModule } from './modules/loyalty/loyalty.module';
+import { MembersModule } from './modules/members/members.module';
 import { CustomersModule } from './modules/customers/customers.module';
 import { EntitlementsModule } from './modules/entitlements/entitlements.module';
 import { FilesModule } from './modules/files/files.module';
@@ -53,6 +54,7 @@ import { enabledSectorModules } from './sectors';
     CashModule,
     ExpensesModule,
     LoyaltyModule,
+    MembersModule,
     CustomersModule,
     PlatformModule,
     PlatformBillingModule,
