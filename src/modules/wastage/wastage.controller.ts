@@ -5,6 +5,7 @@ import {
   Get,
   Post,
   Query,
+  Res,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -26,6 +27,8 @@ import {
   RecordWastageDto,
   WastageReportQueryDto,
 } from './dto/wastage.dto';
+import { ExportQueryDto, sendReport } from '../../common/reporting';
+import type { DownloadResponse } from '../../common/reporting/spreadsheet';
 import { WastageService, type WastageReport } from './wastage.service';
 
 @Controller({ path: 'businesses/:businessId/wastage', version: '1' })
@@ -47,6 +50,23 @@ export class WastageController {
     @Query() query: ListWastageQueryDto,
   ): Promise<PaginatedResult<WastageRecord>> {
     return this.wastageService.list(business.id, query);
+  }
+
+  @Get('export')
+  @RequirePermission({ wastage: ['view'] })
+  async export(
+    @CurrentBusiness() business: Business,
+    @Query() query: ExportQueryDto,
+    @Res() response: DownloadResponse,
+  ): Promise<void> {
+    sendReport(
+      response,
+      await this.wastageService.export(
+        business,
+        query.format ?? 'xlsx',
+        query.limit ?? 5_000,
+      ),
+    );
   }
 
   @Get('report')

@@ -3,7 +3,15 @@ import { Injectable } from '@nestjs/common';
 import { and, count, desc, eq, gte, type SQL, sql } from 'drizzle-orm';
 import type { PaginatedResult } from '../../common/dto/pagination-query.dto';
 import { type Database, InjectDatabase, schema } from '../../database';
-import type { Expense } from '../../database/schema';
+import type { Business, Expense } from '../../database/schema';
+import {
+  buildReport,
+  MAX_EXPORT_ROWS,
+  type ExportFormat,
+  type ReportColumn,
+  type ReportExport,
+  toRupees,
+} from '../../common/reporting';
 import { CashRepository } from '../cash/cash.repository';
 import type { CreateExpenseDto, ListExpensesQueryDto } from './dto/expense.dto';
 
@@ -94,6 +102,64 @@ export class ExpensesService {
       }
 
       return row;
+    });
+  }
+
+  async export(
+    business: Business,
+    branchId: string,
+    format: ExportFormat,
+    limit: number,
+  ): Promise<ReportExport> {
+    const records = await this.db
+      .select()
+      .from(schema.expenses)
+      .where(
+        and(
+          eq(schema.expenses.businessId, business.id),
+          eq(schema.expenses.branchId, branchId),
+        ),
+      )
+      .orderBy(desc(schema.expenses.incurredAt))
+      .limit(Math.min(limit, MAX_EXPORT_ROWS));
+
+    interface Row {
+      date: string;
+      category: string;
+      description: string;
+      paidVia: string;
+      reference: string;
+      amount: number;
+    }
+
+    const columns: ReportColumn<Row>[] = [
+      { header: 'Date', key: 'date', width: 12 },
+      { header: 'Category', key: 'category', width: 14 },
+      { header: 'Description', key: 'description', width: 34 },
+      { header: 'Paid via', key: 'paidVia', width: 14 },
+      { header: 'Reference', key: 'reference', width: 18 },
+      { header: 'Amount', key: 'amount', width: 12 },
+    ];
+
+    const rows = records.map<Row>((record) => ({
+      date: record.incurredAt.toISOString().slice(0, 10),
+      category: record.category,
+      description: record.description,
+      paidVia: record.paidVia,
+      reference: record.reference ?? '',
+      amount: toRupees(record.amountCents),
+    }));
+
+    return buildReport(format, `expenses-${business.id.slice(0, 8)}`, {
+      sheetName: 'Expenses',
+      title: `${business.legalName} — expenses`,
+      subtitle: [
+        `${rows.length} entry(s)`,
+        new Date().toISOString().slice(0, 10),
+      ],
+      columns,
+      rows,
+      totalColumns: ['amount'],
     });
   }
 

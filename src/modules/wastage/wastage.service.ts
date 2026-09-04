@@ -8,6 +8,14 @@ import { and, count, desc, eq, gte, type SQL, sql } from 'drizzle-orm';
 import type { PaginatedResult } from '../../common/dto/pagination-query.dto';
 import { type Database, InjectDatabase, schema } from '../../database';
 import type { Business, WastageRecord } from '../../database/schema';
+import {
+  buildReport,
+  MAX_EXPORT_ROWS,
+  type ExportFormat,
+  type ReportColumn,
+  type ReportExport,
+  toRupees,
+} from '../../common/reporting';
 import { StockAdjustmentsService } from '../stock-adjustments/stock-adjustments.service';
 import type { ListWastageQueryDto, RecordWastageDto } from './dto/wastage.dto';
 
@@ -72,6 +80,58 @@ export class WastageService {
       limit: query.limit,
       offset: query.offset,
     };
+  }
+
+  async export(
+    business: Business,
+    format: ExportFormat,
+    limit: number,
+  ): Promise<ReportExport> {
+    const records = await this.db
+      .select()
+      .from(schema.wastageRecords)
+      .where(eq(schema.wastageRecords.businessId, business.id))
+      .orderBy(desc(schema.wastageRecords.createdAt))
+      .limit(Math.min(limit, MAX_EXPORT_ROWS));
+
+    interface Row {
+      date: string;
+      item: string;
+      quantity: number;
+      reason: string;
+      cost: number;
+      note: string;
+    }
+
+    const columns: ReportColumn<Row>[] = [
+      { header: 'Date', key: 'date', width: 12 },
+      { header: 'Item', key: 'item', width: 30 },
+      { header: 'Quantity', key: 'quantity', width: 12 },
+      { header: 'Reason', key: 'reason', width: 18 },
+      { header: 'Cost', key: 'cost', width: 12 },
+      { header: 'Note', key: 'note', width: 32 },
+    ];
+
+    const rows = records.map<Row>((record) => ({
+      date: record.createdAt.toISOString().slice(0, 10),
+      item: record.itemName,
+      quantity: Number(record.quantity),
+      reason: record.reason,
+      cost: toRupees(record.costCents),
+      note: record.note ?? '',
+    }));
+
+    return buildReport(format, `wastage-${business.id.slice(0, 8)}`, {
+      sheetName: 'Wastage',
+      title: `${business.legalName} — wastage`,
+      subtitle: [
+        `${rows.length} entry(s)`,
+        new Date().toISOString().slice(0, 10),
+      ],
+      columns,
+      rows,
+      totalColumns: ['cost'],
+    });
   }
 
   async record(

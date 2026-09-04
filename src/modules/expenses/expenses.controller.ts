@@ -5,6 +5,7 @@ import {
   Get,
   Post,
   Query,
+  Res,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -24,6 +25,8 @@ import {
   ExpenseReportQueryDto,
   ListExpensesQueryDto,
 } from './dto/expense.dto';
+import { ExportQueryDto, sendReport } from '../../common/reporting';
+import type { DownloadResponse } from '../../common/reporting/spreadsheet';
 import { ExpensesService, type ExpenseReport } from './expenses.service';
 
 @Controller({ path: 'businesses/:businessId/expenses', version: '1' })
@@ -40,6 +43,25 @@ export class ExpensesController {
     @Query() query: ListExpensesQueryDto,
   ): Promise<PaginatedResult<Expense>> {
     return this.expensesService.list(business.id, branch.id, query);
+  }
+
+  @Get('export')
+  @RequirePermission({ expense: ['view'] })
+  async export(
+    @CurrentBusiness() business: Business,
+    @CurrentBranch() branch: Branch,
+    @Query() query: ExportQueryDto,
+    @Res() response: DownloadResponse,
+  ): Promise<void> {
+    sendReport(
+      response,
+      await this.expensesService.export(
+        business,
+        branch.id,
+        query.format ?? 'xlsx',
+        query.limit ?? 5_000,
+      ),
+    );
   }
 
   @Get('report')

@@ -114,3 +114,24 @@ export async function buildReport<TRow>(
     body: await buildXlsx(options),
   };
 }
+
+export interface DownloadResponse {
+  status(code: number): DownloadResponse;
+  setHeader(name: string, value: string): DownloadResponse;
+  send(body: Buffer): unknown;
+}
+
+/** The four lines every export endpoint would otherwise repeat. */
+export function sendReport(
+  response: DownloadResponse,
+  report: ReportExport,
+): void {
+  response
+    .status(200)
+    .setHeader('Content-Type', report.contentType)
+    .setHeader(
+      'Content-Disposition',
+      `attachment; filename="${report.filename.replace(/"/g, '')}"`,
+    )
+    .send(report.body);
+}

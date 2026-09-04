@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   Query,
+  Res,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -25,13 +26,52 @@ import {
   UpdateProductDto,
 } from './dto/product-request.dto';
 import { ProductResponseDto } from './dto/product-response.dto';
+import { ExportQueryDto, sendReport } from '../../common/reporting';
+import type { DownloadResponse } from '../../common/reporting/spreadsheet';
+import { ImportProductsDto } from './dto/product-import.dto';
+import { ProductsExportService } from './products-export.service';
+import {
+  type ImportSummary,
+  ProductsImportService,
+} from './products-import.service';
 import { ProductsService } from './products.service';
 
 @Controller({ path: 'businesses/:businessId/products', version: '1' })
 @UseGuards(BusinessAccessGuard, RequirePermissionGuard)
 @UseInterceptors(ClassSerializerInterceptor)
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) {}
+  constructor(
+    private readonly productsService: ProductsService,
+    private readonly exportService: ProductsExportService,
+    private readonly importService: ProductsImportService,
+  ) {}
+
+  @Get('export')
+  @RequirePermission({ product: ['create'] })
+  async export(
+    @CurrentBusiness() business: Business,
+    @Query() query: ExportQueryDto,
+    @Res() response: DownloadResponse,
+  ): Promise<void> {
+    sendReport(
+      response,
+      await this.exportService.export(
+        business,
+        query.format ?? 'xlsx',
+        query.search,
+        query.limit ?? 5_000,
+      ),
+    );
+  }
+
+  @Post('import')
+  @RequirePermission({ product: ['create'] })
+  async import(
+    @CurrentBusiness() business: Business,
+    @Body() dto: ImportProductsDto,
+  ): Promise<ImportSummary> {
+    return this.importService.import(business, dto);
+  }
 
   @Get()
   async list(

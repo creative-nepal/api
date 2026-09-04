@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  Res,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -27,6 +28,11 @@ import type {
   CustomerLedgerEntry,
 } from '../../database/schema';
 import { CustomersService } from './customers.service';
+import { ExportQueryDto, sendReport } from '../../common/reporting';
+import type { DownloadResponse } from '../../common/reporting/spreadsheet';
+import type { ImportSummary } from '../products/products-import.service';
+import { CustomersExportService } from './customers-export.service';
+import { ImportCustomersDto } from './dto/customer-import.dto';
 import {
   CreateCustomerDto,
   ListCustomersQueryDto,
@@ -38,7 +44,36 @@ import {
 @UseGuards(BusinessAccessGuard, RequirePermissionGuard)
 @UseInterceptors(ClassSerializerInterceptor)
 export class CustomersController {
-  constructor(private readonly customers: CustomersService) {}
+  constructor(
+    private readonly customers: CustomersService,
+    private readonly exportService: CustomersExportService,
+  ) {}
+
+  @Get('export')
+  @RequirePermission({ order: ['create'] })
+  async export(
+    @CurrentBusiness() business: Business,
+    @Query() query: ExportQueryDto,
+    @Res() response: DownloadResponse,
+  ): Promise<void> {
+    sendReport(
+      response,
+      await this.exportService.export(
+        business,
+        query.format ?? 'xlsx',
+        query.limit ?? 5_000,
+      ),
+    );
+  }
+
+  @Post('import')
+  @RequirePermission({ business: ['manage'] })
+  async import(
+    @CurrentBusiness() business: Business,
+    @Body() dto: ImportCustomersDto,
+  ): Promise<ImportSummary> {
+    return this.exportService.import(business, dto);
+  }
 
   @Get()
   @RequirePermission({ order: ['create'] })
