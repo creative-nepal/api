@@ -753,7 +753,9 @@
       "writtenOffTitle": "Expired stock written off",
       "writtenOffBody": "{count} batch(es) written off: {items}",
       "appointmentReminderTitle": "Appointment tomorrow",
-      "appointmentReminderBody": "{service} for {customer} at {at}"
+      "appointmentReminderBody": "{service} for {customer} at {at}",
+      "calendarReminderTitle": "Coming up",
+      "calendarReminderBody": "{title} at {at}"
     },
     "menu": {
       "recipeTitle": "Recipe",

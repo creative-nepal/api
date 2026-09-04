@@ -753,7 +753,9 @@
       "writtenOffTitle": "म्याद सकिएको स्टक हटाइयो",
       "writtenOffBody": "{count} ब्याच हटाइयो: {items}",
       "appointmentReminderTitle": "भोलिको अपोइन्टमेन्ट",
-      "appointmentReminderBody": "{at} बजे {customer} का लागि {service}"
+      "appointmentReminderBody": "{at} बजे {customer} का लागि {service}",
+      "calendarReminderTitle": "आउँदै",
+      "calendarReminderBody": "{at} मा {title}"
     },
     "menu": {
       "recipeTitle": "रेसिपी",
