@@ -165,11 +165,72 @@ so a salon can see what it actually recovered instead of the money vanishing.
 
 ---
 
-## 6. Deliberately not built
+## 6. RestroX — the Nepali restaurant management system
+
+**Source:** [restrox.com/np](https://www.restrox.com/np)
+
+Referenced directly at the owner's request. Most of what it advertises was
+already built:
+
+| RestroX module | Our state |
+|---|---|
+| Real-time order management, KOT, KDS | Built |
+| Table & space management, floor, occupancy | Built |
+| QR table assignment, digital QR menus | Built (table sessions) |
+| Dine-in, takeaway, delivery, reservation | Built |
+| IRD approved billing, eSewa/Khalti | Built |
+| Inventory, low stock alerts, receiving | Built |
+| Staff & role management with permissions | Built, and richer — runtime custom roles |
+| **Waste control** | **Missing** |
+| **Expense tracking, cash flow** | **Missing** |
+| **Variants and combos** | Modifiers existed; variants did not |
+| **Loyalty & rewards** | **Missing** |
+| **Customer feedback** | **Missing** |
+| Native mobile apps | Out of scope — the web app is responsive |
+
+### What we built
+
+**Wastage.** Logged against a raw stock item or against a dish; a dish explodes
+through its recipe, so three spilled plates of momo deduct 0.6kg flour and
+0.45kg chicken rather than a notional "3 momos". Valued at ingredient cost, so
+the report answers what the spoilage cost — by reason and by worst item. Stock
+moves through `StockAdjustmentsService` under a new `wastage` reason, keeping
+one ledger. A chef can record it and see the report, and still nothing else.
+
+**Menu variants.** Half plate versus full plate is ubiquitous here. Modifiers
+already priced correctly, but nothing made a group required or single-select,
+so an order could omit the plate size or ask for half *and* full. `MenuModifier`
+gained `required` and `maxSelections` — real variants without a parallel table.
+
+**Expenses.** Purchases from suppliers were covered; rent, gas, repairs and a
+salary paid out of the drawer were not. The integration is the point: a cash
+expense while a till is open writes a matching cash movement, so the drawer
+reconciles. Without it, paying the gas bill from the till reads as an
+unexplained shortage at day close. A bank transfer deliberately does not touch
+the drawer.
+
+**Loyalty.** Points accrue automatically when an invoice is issued to a known
+customer, at an owner-set rate, so it needs no counter workflow. Redemption
+enforces the balance inside the `UPDATE … WHERE` clause — the same shape as the
+credit limit — so a concurrent double-redeem cannot overdraw.
+
+**Feedback.** A rating and comment per order, one per order enforced by a unique
+index rather than check-then-insert.
+
+**Known limit:** points are only awarded to identified customers. A walk-in with
+no customer record earns nothing — inherent to the data model, since there is
+nobody to credit, not an oversight.
+
+---
+
+## 7. Deliberately not built
 
 | Item | Why |
 |---|---|
-| Staff commission tracking (Fresha) | Real feature, not yet scoped |
+| Staff commission tracking (Fresha, RestroX) | Real feature, not yet scoped |
+| Combo meals (RestroX) | Variants cover half/full; a combo is a different build — one price, several items |
+| Refer & earn (RestroX) | Loyalty is the foundation; referral attribution is a separate build |
+| Native mobile apps (RestroX) | The web app is responsive; native is a distribution decision |
 | Loyalty programmes (Zenoti) | Memberships cover the package case; loyalty is a separate build |
 | Aggregator API integration | Pulling orders *from* Foodmandu needs their partner API access — a commercial conversation, not a code one |
 | Accounting / GL, payroll | Non-goals per `system-design.md` §10 |
@@ -177,7 +238,7 @@ so a salon can see what it actually recovered instead of the money vanishing.
 
 ---
 
-## 7. Bugs the research surfaced
+## 8. Bugs the research surfaced
 
 Reading competitor docs forced test paths we had not walked. Three real defects:
 

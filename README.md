@@ -96,8 +96,8 @@ ship, read from their own documentation:
 
 | Sector | Reference products | What that produced here |
 | --- | --- | --- |
-| all four | [mis.ac](https://mis.ac/articles/blog/pos-software-nepal.php), [Vyapar](https://vyaparapp.in/pos-software/retail), IMS | payments by method (cash/eSewa/Khalti/Fonepay/card), split tender, till open-close with cash variance |
-| `restaurant` | [Petpooja](https://www.petpooja.com/poss), [Foodmandu](https://foodmandu.com/), Bhoj, Pathao Food | delivery channels with per-aggregator commission and channel-level gross/net reporting |
+| all four | [mis.ac](https://mis.ac/articles/blog/pos-software-nepal.php), [Vyapar](https://vyaparapp.in/pos-software/retail), [RestroX](https://www.restrox.com/np), IMS | payments by method (cash/eSewa/Khalti/Fonepay/card), split tender, till open-close with cash variance, expenses that draw on the till, loyalty points, customer feedback |
+| `restaurant` | [Petpooja](https://www.petpooja.com/poss), [RestroX](https://www.restrox.com/np), [Foodmandu](https://foodmandu.com/), Bhoj, Pathao Food | delivery channels with per-aggregator commission and gross/net reporting; wastage costed through the recipe; required half/full menu variants |
 | `medical` | [Marg ERP](https://margcompusoft.com/retail/chemist_software.html) | substitute-by-salt, rack location, one search box over salt/rack/barcode, loose unit sales from a strip |
 | `services` | [Zenoti](https://www.zenoti.com/salon-management-software), [Fresha](https://www.fresha.com/for-business) | appointment deposits, no-show forfeiture, reminder job |
 
