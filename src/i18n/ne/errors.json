@@ -173,5 +173,12 @@
   "menu": {
     "modifierRequired": "{item} का लागि {modifier} छान्नुहोस्",
     "modifierTooMany": "{modifier} का लागि बढीमा {max} विकल्प छान्न सकिन्छ"
+  },
+  "loyalty": {
+    "notConfigured": "लोयल्टी रिडिम बन्द छ; पहिले अंकको मूल्य राख्नुहोस्",
+    "zeroAdjustment": "समायोजनले अंक थप्नु वा घटाउनु पर्छ",
+    "insufficientPoints": "त्यो ग्राहकसँग पर्याप्त अंक छैन",
+    "orderNotFound": "अर्डर {orderId} फेला परेन",
+    "feedbackExists": "यो अर्डरको प्रतिक्रिया पहिले नै दिइएको छ"
   }
 }

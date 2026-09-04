@@ -646,7 +646,8 @@
       "reservations": "बुकिङ",
       "cash": "गल्ला",
       "channels": "डेलिभरी",
-      "wastage": "खेर"
+      "wastage": "खेर",
+      "expenses": "खर्च"
     },
     "services": {
       "title": "सेवाहरू",

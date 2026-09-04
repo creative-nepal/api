@@ -173,5 +173,12 @@
   "menu": {
     "modifierRequired": "Choose a {modifier} for {item}",
     "modifierTooMany": "At most {max} option(s) may be chosen for {modifier}"
+  },
+  "loyalty": {
+    "notConfigured": "Loyalty redemption is switched off; set a point value first",
+    "zeroAdjustment": "An adjustment must add or remove points",
+    "insufficientPoints": "That customer does not have enough points",
+    "orderNotFound": "Order {orderId} not found",
+    "feedbackExists": "Feedback has already been left for this order"
   }
 }

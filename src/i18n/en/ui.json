@@ -646,7 +646,8 @@
       "reservations": "Reservations",
       "cash": "Till",
       "channels": "Delivery",
-      "wastage": "Wastage"
+      "wastage": "Wastage",
+      "expenses": "Expenses"
     },
     "services": {
       "title": "Services",

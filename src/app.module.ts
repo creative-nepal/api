@@ -14,6 +14,8 @@ import { BranchesModule } from './modules/branches/branches.module';
 import { BusinessesModule } from './modules/businesses/businesses.module';
 import { ContentModule } from './modules/content/content.module';
 import { CashModule } from './modules/cash/cash.module';
+import { ExpensesModule } from './modules/expenses/expenses.module';
+import { LoyaltyModule } from './modules/loyalty/loyalty.module';
 import { CustomersModule } from './modules/customers/customers.module';
 import { EntitlementsModule } from './modules/entitlements/entitlements.module';
 import { FilesModule } from './modules/files/files.module';
@@ -49,6 +51,8 @@ import { enabledSectorModules } from './sectors';
     PlansModule,
     ContentModule,
     CashModule,
+    ExpensesModule,
+    LoyaltyModule,
     CustomersModule,
     PlatformModule,
     PlatformBillingModule,

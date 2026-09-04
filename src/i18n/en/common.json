@@ -96,5 +96,16 @@
     "card": "Card",
     "bank_transfer": "Bank transfer",
     "credit": "Credit"
+  },
+  "expenseCategory": {
+    "rent": "Rent",
+    "utilities": "Utilities",
+    "salary": "Salary",
+    "gas": "Gas",
+    "repairs": "Repairs",
+    "transport": "Transport",
+    "marketing": "Marketing",
+    "supplies": "Supplies",
+    "other": "Other"
   }
 }

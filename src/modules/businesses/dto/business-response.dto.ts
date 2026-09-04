@@ -12,6 +12,8 @@ export class BusinessResponseDto {
   @Expose() cbmsRequired: boolean;
   @Expose() serviceChargePercent: number;
   @Expose() maxDiscountPercent: number;
+  @Expose() loyaltyPointsPerHundred: number;
+  @Expose() loyaltyPointValueCents: number;
   @Expose() fiscalYearStartMonth: number;
   @Expose() displayName: string | null;
   @Expose() theme: Record<string, unknown>;
@@ -31,6 +33,8 @@ export class BusinessResponseDto {
     this.theme = business.theme ?? {};
     this.serviceChargePercent = business.serviceChargePercent;
     this.maxDiscountPercent = business.maxDiscountPercent;
+    this.loyaltyPointsPerHundred = business.loyaltyPointsPerHundred;
+    this.loyaltyPointValueCents = business.loyaltyPointValueCents;
     this.fiscalYearStartMonth = business.fiscalYearStartMonth;
     this.status = business.status;
     this.createdAt = business.createdAt;

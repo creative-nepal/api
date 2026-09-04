@@ -41,6 +41,7 @@ const kernelStatements = {
   stocktake: ['open', 'count', 'complete'],
   cash: ['view', 'open', 'close', 'move', 'take-payment'],
   wastage: ['view', 'record'],
+  expense: ['view', 'record'],
 } as const;
 
 export const statement = {
@@ -69,6 +70,7 @@ export const ownerRole = ac.newRole({
   stocktake: ['open', 'count', 'complete'],
   cash: ['view', 'open', 'close', 'move', 'take-payment'],
   wastage: ['view', 'record'],
+  expense: ['view', 'record'],
   ...martOwnerGrants,
   ...medicalOwnerGrants,
   ...restaurantOwnerGrants,
@@ -82,6 +84,7 @@ export const managerRole = ac.newRole({
   stocktake: ['open', 'count', 'complete'],
   cash: ['view', 'open', 'close', 'move', 'take-payment'],
   wastage: ['view', 'record'],
+  expense: ['view', 'record'],
   ...martManagerGrants,
   ...medicalManagerGrants,
   ...restaurantManagerGrants,

@@ -87,6 +87,12 @@ export const businesses = pgTable(
       .default(0)
       .notNull(),
     maxDiscountPercent: integer('max_discount_percent').default(0).notNull(),
+    loyaltyPointsPerHundred: integer('loyalty_points_per_hundred')
+      .default(0)
+      .notNull(),
+    loyaltyPointValueCents: integer('loyalty_point_value_cents')
+      .default(0)
+      .notNull(),
     displayName: text('display_name'),
     theme: jsonb('theme').$type<BusinessTheme>().default({}).notNull(),
     fiscalYearStartMonth: integer('fiscal_year_start_month')
@@ -312,6 +318,7 @@ export const customers = pgTable(
     panNumber: text('pan_number'),
     creditLimitCents: integer('credit_limit_cents').default(0).notNull(),
     balanceCents: integer('balance_cents').default(0).notNull(),
+    loyaltyPoints: integer('loyalty_points').default(0).notNull(),
     createdAt: timestamp('created_at', { withTimezone: true })
       .defaultNow()
       .notNull(),

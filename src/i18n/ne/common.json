@@ -96,5 +96,16 @@
     "card": "कार्ड",
     "bank_transfer": "बैंक ट्रान्सफर",
     "credit": "उधारो"
+  },
+  "expenseCategory": {
+    "rent": "भाडा",
+    "utilities": "उपयोगिता",
+    "salary": "तलब",
+    "gas": "ग्यास",
+    "repairs": "मर्मत",
+    "transport": "यातायात",
+    "marketing": "मार्केटिङ",
+    "supplies": "सामग्री",
+    "other": "अन्य"
   }
 }

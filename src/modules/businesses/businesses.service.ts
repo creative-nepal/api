@@ -60,6 +60,8 @@ export class BusinessesService {
         | 'fiscalYearStartMonth'
         | 'serviceChargePercent'
         | 'maxDiscountPercent'
+        | 'loyaltyPointsPerHundred'
+        | 'loyaltyPointValueCents'
         | 'displayName'
       >
     > & { theme?: Record<string, unknown> },

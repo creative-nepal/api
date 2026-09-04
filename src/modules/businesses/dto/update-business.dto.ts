@@ -54,6 +54,19 @@ export class UpdateBusinessDto {
   maxDiscountPercent?: number;
 
   @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  @Max(100)
+  loyaltyPointsPerHundred?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  loyaltyPointValueCents?: number;
+
+  @IsOptional()
   @IsString()
   @MaxLength(255)
   displayName?: string;
