@@ -39,6 +39,12 @@ export const KERNEL_NAV_ITEMS: WorkspaceNavItem[] = [
     permission: { expense: ['view'] },
   },
   {
+    key: 'reports',
+    href: '/reports',
+    titleKey: 'ui.web.nav.reports',
+    permission: { report: ['view'] },
+  },
+  {
     key: 'invoices',
     href: '/invoices',
     titleKey: 'ui.web.nav.invoices',

@@ -28,7 +28,10 @@
     "viewDetails": "विवरण हेर्नुहोस्",
     "loading": "लोड हुँदैछ...",
     "enable": "सक्रिय गर्नुहोस्",
-    "disable": "निष्क्रिय गर्नुहोस्"
+    "disable": "निष्क्रिय गर्नुहोस्",
+    "rename": "नाम बदल्नुहोस्",
+    "restore": "पुनर्स्थापना",
+    "copy": "कपी"
   },
   "field": {
     "name": "नाम",
@@ -73,7 +76,8 @@
     "code": "कोड",
     "allBranches": "सबै शाखा",
     "address": "ठेगाना",
-    "phone": "फोन"
+    "phone": "फोन",
+    "method": "माध्यम"
   },
   "error": {
     "serverTitle": "केही गडबड भयो",
@@ -437,7 +441,8 @@
       "manufacturer": "उत्पादक",
       "inStock": "मौज्दात",
       "expiresFrom": "म्याद सुरु",
-      "addToCart": "बिक्रीमा थप्नुहोस्"
+      "addToCart": "बिक्रीमा थप्नुहोस्",
+      "notePlaceholder": "भान्साका लागि टिप्पणी…"
     },
     "products": {
       "title": "सामानहरू",
@@ -567,7 +572,46 @@
       "startPreparing": "पकाउन सुरु",
       "markReady": "तयार भयो",
       "markServed": "पस्कियो",
-      "billFailed": "यो टेबलको बिल बनाउन सकिएन"
+      "billFailed": "यो टेबलको बिल बनाउन सकिएन",
+      "seatCount": "{count} सिट",
+      "manageAreas": "क्षेत्रहरू",
+      "areasTitle": "टेबल क्षेत्र",
+      "areasDescription": "तल्ला, कोठा वा खण्ड अनुसार टेबल समूह गर्नुहोस्। क्षेत्र शाखा अनुसार हुन्छ।",
+      "areaNamePlaceholder": "छत, बगैँचा, पहिलो तल्ला…",
+      "areaTableCount": "{count} टेबल",
+      "areaArchived": "संग्रहित",
+      "areaUnassigned": "क्षेत्र छैन",
+      "areaExists": "यो शाखामा त्यही नामको क्षेत्र पहिले नै छ",
+      "areaInUse": "क्षेत्र मेट्नु अघि त्यहाँका टेबल सार्नुहोस्",
+      "noAreas": "अहिलेसम्म कुनै क्षेत्र छैन",
+      "noAreasHint": "क्षेत्र नभएका टेबल पनि चल्छन् — क्षेत्रले यो पर्दामा मात्र समूह बनाउँछ।",
+      "billTitle": "टेबल {tableNo} को बिल",
+      "billDescription": "तिर्ने व्यक्तिहरूबीच बिल बाँड्नुहोस्।",
+      "billIssued": "यो बसाइका लागि {count} बिल जारी भयो",
+      "moveTitle": "टेबल {tableNo}",
+      "moveDescription": "खुला अर्डरसँगै किचन टिकट पनि सर्छ, त्यसैले खाना पाहुनासँगै जान्छ।",
+      "moveDone": "{count} अर्डर {tableNo} मा सारियो",
+      "split": {
+        "items": "परिकार अनुसार",
+        "equal": "बराबर",
+        "percentage": "प्रतिशत अनुसार",
+        "itemsHint": "पूरै बसाइका लागि एउटै बिल।",
+        "ways": "मानिसको संख्या",
+        "equalHint": "हरेक व्यक्तिले बिलको बराबर भाग पाउँछ।",
+        "percentages": "प्रतिशत",
+        "percentageTotal": "जम्मा {total}% भयो — १००% हुनुपर्छ"
+      },
+      "move": {
+        "action": "सार्नुहोस्",
+        "receive": "अर्डर ल्याउनुहोस्",
+        "transfer": "स्थानान्तरण",
+        "merge": "गाभ्नुहोस्",
+        "moveTo": "अर्डर यहाँ सार्नुहोस्",
+        "transferHint": "यो टेबल खाली हुन्छ र यसको QR सत्र रद्द हुन्छ।",
+        "mergeFrom": "यी टेबलबाट अर्डर ल्याउनुहोस्",
+        "mergeHint": "छानिएका सबै टेबल खाली भई यहीँ सँगै बिल हुन्छ।",
+        "nothingToMerge": "अरू कुनै टेबलमा खुला अर्डर छैन।"
+      }
     },
     "settings": {
       "title": "सेटिङ",
@@ -618,7 +662,10 @@
       "branchRole": "यो शाखाको भूमिका",
       "branchRoleHint": "यो शाखाका लागि मात्र संस्थाको भूमिकालाई प्रतिस्थापन गर्छ।",
       "sameAsOrg": "संस्था जस्तै",
-      "branchRoleSet": "शाखा भूमिका अद्यावधिक भयो"
+      "branchRoleSet": "शाखा भूमिका अद्यावधिक भयो",
+      "referralRewardPoints": "रेफरल पुरस्कार (अंक)",
+      "referralWelcomePoints": "स्वागत बोनस (अंक)",
+      "referralHint": "रेफर गरिएको ग्राहकको पहिलो किनमेलमा एक पटक मात्र दिइन्छ।"
     },
     "staff": {
       "title": "कर्मचारी",
@@ -680,7 +727,8 @@
       "channels": "डेलिभरी",
       "wastage": "खेर",
       "expenses": "खर्च",
-      "calendar": "क्यालेन्डर"
+      "calendar": "क्यालेन्डर",
+      "reports": "रिपोर्ट"
     },
     "services": {
       "title": "सेवाहरू",
@@ -780,7 +828,20 @@
       "emptyBody": "उधारोमा बेच्न र बाँकी रकम ट्र्याक गर्न ग्राहक थप्नुहोस्।",
       "owingOnly": "बाँकी भएका मात्र",
       "onCredit": "उधारोमा",
-      "settled": "चुक्ता"
+      "settled": "चुक्ता",
+      "referralTitle": "रेफर गर्नुहोस्, कमाउनुहोस्",
+      "referralCode": "रेफरल कोड",
+      "referralShare": "यो कोड बाँड्नुहोस् — साथीले पहिलो किनमेल गर्दा ग्राहकले अंक पाउँछन्।",
+      "referralCopied": "रेफरल कोड कपी भयो",
+      "referredBy": "रेफर गर्ने",
+      "referredCount": "रेफर गरिएका साथी",
+      "referralPointsEarned": "रेफरलबाट कमाएको अंक",
+      "referralClaim": "रेफरल कोड हाल्नुहोस्",
+      "referralClaimHint": "यो ग्राहकले पहिलो किनमेल गर्नु अघि मात्र।",
+      "referralClaimed": "रेफरल दर्ता भयो",
+      "referralReward": "रेफर गर्नेलाई {points} अंक",
+      "referralWelcome": "नयाँ ग्राहकलाई {points} अंक",
+      "referralOff": "रेफरल पुरस्कार बन्द छ। सेटिङमा राख्नुहोस्।"
     },
     "medical": {
       "claimsTitle": "बीमा दाबी",
@@ -1063,6 +1124,29 @@
       "noPanchang": "तिथि र पर्वका नाम समावेश छैनन्; आफ्नो बिदा बिदा प्रविष्टिका रूपमा राख्नुहोस्।",
       "todayButton": "आज",
       "monthSubtitle": "{english} · {range}"
+    },
+    "reports": {
+      "liveSalesTitle": "आजको बिक्री",
+      "liveSalesDescription": "यो शाखाको आजको कारोबार, व्यवसायकै समय क्षेत्रमा।",
+      "live": "प्रत्यक्ष",
+      "today": "आज",
+      "updatedAt": "{time} मा अद्यावधिक",
+      "net": "खुद बिक्री",
+      "invoices": "बिल",
+      "averageTicket": "औसत बिल",
+      "openOrders": "खुला अर्डर",
+      "byHour": "घण्टा अनुसार",
+      "byPaymentMethod": "भुक्तानी माध्यम अनुसार",
+      "topItems": "बढी बिक्री भएका",
+      "count": "संख्या",
+      "revenue": "आम्दानी",
+      "noSales": "आज अझै केही बिक्री भएको छैन।",
+      "noPayments": "अझै कुनै भुक्तानी दर्ता भएको छैन।",
+      "gross": "कुल",
+      "discount": "छुट",
+      "serviceCharge": "सेवा शुल्क",
+      "vat": "भ्याट",
+      "creditNotes": "क्रेडिट नोट"
     }
   }
 }

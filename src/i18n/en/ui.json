@@ -28,7 +28,10 @@
     "viewDetails": "View details",
     "loading": "Loading...",
     "enable": "Enable",
-    "disable": "Disable"
+    "disable": "Disable",
+    "rename": "Rename",
+    "restore": "Restore",
+    "copy": "Copy"
   },
   "field": {
     "name": "Name",
@@ -65,7 +68,7 @@
     "limits": "Limits",
     "page": "Page",
     "compliance": "Compliance",
-    "quantity": "Quantity",
+    "quantity": "Qty",
     "amount": "Amount",
     "date": "Date",
     "product": "Product",
@@ -73,7 +76,8 @@
     "code": "Code",
     "allBranches": "All branches",
     "address": "Address",
-    "phone": "Phone"
+    "phone": "Phone",
+    "method": "Method"
   },
   "error": {
     "serverTitle": "Something went wrong",
@@ -437,7 +441,8 @@
       "manufacturer": "Manufacturer",
       "inStock": "In stock",
       "expiresFrom": "Expires from",
-      "addToCart": "Add to sale"
+      "addToCart": "Add to sale",
+      "notePlaceholder": "Note for the kitchen…"
     },
     "products": {
       "title": "Products",
@@ -567,7 +572,46 @@
       "startPreparing": "Start preparing",
       "markReady": "Mark ready",
       "markServed": "Mark served",
-      "billFailed": "Could not bill this table"
+      "billFailed": "Could not bill this table",
+      "seatCount": "{count} seats",
+      "manageAreas": "Areas",
+      "areasTitle": "Table areas",
+      "areasDescription": "Group tables by floor, room or section. Areas are per branch.",
+      "areaNamePlaceholder": "Rooftop, Garden, First floor…",
+      "areaTableCount": "{count} tables",
+      "areaArchived": "Archived",
+      "areaUnassigned": "No area",
+      "areaExists": "An area with that name already exists in this branch",
+      "areaInUse": "Move the tables out of the area before deleting it",
+      "noAreas": "No areas yet",
+      "noAreasHint": "Tables without an area still work — areas only group them on this screen.",
+      "billTitle": "Bill table {tableNo}",
+      "billDescription": "Split the sitting between the people paying.",
+      "billIssued": "{count} invoices issued for the sitting",
+      "moveTitle": "Table {tableNo}",
+      "moveDescription": "Open orders move with the kitchen tickets, so the food follows the guests.",
+      "moveDone": "{count} orders moved to {tableNo}",
+      "split": {
+        "items": "By item",
+        "equal": "Equally",
+        "percentage": "By percentage",
+        "itemsHint": "One invoice for the whole sitting.",
+        "ways": "Number of people",
+        "equalHint": "Each person gets an equal share of the bill.",
+        "percentages": "Percentages",
+        "percentageTotal": "Adds up to {total}% — must be 100%"
+      },
+      "move": {
+        "action": "Move",
+        "receive": "Receive orders",
+        "transfer": "Transfer",
+        "merge": "Merge",
+        "moveTo": "Move the orders to",
+        "transferHint": "This table is emptied and its QR session revoked.",
+        "mergeFrom": "Bring the orders from",
+        "mergeHint": "Every chosen table is emptied and billed together here.",
+        "nothingToMerge": "No other table has open orders."
+      }
     },
     "settings": {
       "title": "Settings",
@@ -618,7 +662,10 @@
       "branchRole": "Role at this branch",
       "branchRoleHint": "Overrides the organisation role for this branch only.",
       "sameAsOrg": "Same as organisation",
-      "branchRoleSet": "Branch role updated"
+      "branchRoleSet": "Branch role updated",
+      "referralRewardPoints": "Referral reward (points)",
+      "referralWelcomePoints": "Welcome bonus (points)",
+      "referralHint": "Paid once, on the referred customer’s first purchase."
     },
     "staff": {
       "title": "Staff",
@@ -680,7 +727,8 @@
       "channels": "Delivery",
       "wastage": "Wastage",
       "expenses": "Expenses",
-      "calendar": "Calendar"
+      "calendar": "Calendar",
+      "reports": "Reports"
     },
     "services": {
       "title": "Services",
@@ -780,7 +828,20 @@
       "emptyBody": "Add a customer to sell on account and track what they owe.",
       "owingOnly": "Owing only",
       "onCredit": "On account",
-      "settled": "Settled"
+      "settled": "Settled",
+      "referralTitle": "Refer and earn",
+      "referralCode": "Referral code",
+      "referralShare": "Share this code — the customer earns points when a friend makes their first purchase.",
+      "referralCopied": "Referral code copied",
+      "referredBy": "Referred by",
+      "referredCount": "Friends referred",
+      "referralPointsEarned": "Points earned from referrals",
+      "referralClaim": "Claim a referral code",
+      "referralClaimHint": "Only before this customer makes their first purchase.",
+      "referralClaimed": "Referral recorded",
+      "referralReward": "{points} points to the referrer",
+      "referralWelcome": "{points} points to the new customer",
+      "referralOff": "Referral rewards are switched off. Set them in Settings."
     },
     "medical": {
       "claimsTitle": "Insurance claims",
@@ -1063,6 +1124,29 @@
       "noPanchang": "Tithi and festival names are not included; mark your own closures as a holiday entry.",
       "todayButton": "Today",
       "monthSubtitle": "{english} · {range}"
+    },
+    "reports": {
+      "liveSalesTitle": "Sales today",
+      "liveSalesDescription": "The day's takings for this branch, in the business timezone.",
+      "live": "Live",
+      "today": "Today",
+      "updatedAt": "Updated {time}",
+      "net": "Net sales",
+      "invoices": "Invoices",
+      "averageTicket": "Average bill",
+      "openOrders": "Open orders",
+      "byHour": "By hour",
+      "byPaymentMethod": "By payment method",
+      "topItems": "Top items",
+      "count": "Count",
+      "revenue": "Revenue",
+      "noSales": "Nothing sold yet today.",
+      "noPayments": "No payments recorded yet.",
+      "gross": "Gross",
+      "discount": "Discount",
+      "serviceCharge": "Service charge",
+      "vat": "VAT",
+      "creditNotes": "Credit notes"
     }
   }
 }
