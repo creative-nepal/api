@@ -114,6 +114,25 @@ export class CustomersExportService {
         .map((customer) => [customer.phone as string, customer]),
     );
 
+    // Same reasoning as products: without a phone there is no key, and
+    // re-importing an export would otherwise duplicate every walk-in.
+    const names = dto.rows.map((row) => row.name.trim());
+
+    const byName = new Map(
+      (names.length > 0
+        ? await this.db
+            .select()
+            .from(schema.customers)
+            .where(
+              and(
+                eq(schema.customers.businessId, business.id),
+                inArray(schema.customers.name, names),
+              ),
+            )
+        : []
+      ).map((customer) => [customer.name, customer]),
+    );
+
     const seen = new Set<string>();
     let created = 0;
     let updated = 0;
@@ -138,7 +157,7 @@ export class CustomersExportService {
         seen.add(phone);
       }
 
-      const match = phone ? byPhone.get(phone) : undefined;
+      const match = phone ? byPhone.get(phone) : byName.get(row.name.trim());
 
       if (match) {
         updated += 1;

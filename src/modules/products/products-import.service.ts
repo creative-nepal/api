@@ -71,6 +71,27 @@ export class ProductsImportService {
         .map((product) => [product.sku as string, product]),
     );
 
+    // A row with no SKU has no key, so re-importing an export would duplicate
+    // every product that lacks one. Name is the fallback: two products with
+    // the same name in one catalogue is already a data problem, and a silent
+    // duplicate is the worse outcome.
+    const names = dto.rows.map((row) => row.name.trim());
+
+    const byName = new Map(
+      (names.length > 0
+        ? await this.db
+            .select()
+            .from(schema.products)
+            .where(
+              and(
+                eq(schema.products.businessId, business.id),
+                inArray(schema.products.name, names),
+              ),
+            )
+        : []
+      ).map((product) => [product.name, product]),
+    );
+
     // A SKU repeated inside one file would otherwise create then update the
     // same product, and the file's own last row would silently win.
     const seen = new Set<string>();
@@ -99,7 +120,7 @@ export class ProductsImportService {
         seen.add(sku);
       }
 
-      const match = sku ? bySku.get(sku) : undefined;
+      const match = sku ? bySku.get(sku) : byName.get(row.name.trim());
 
       if (match) {
         updated += 1;

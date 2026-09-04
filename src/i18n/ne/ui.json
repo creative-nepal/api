@@ -961,6 +961,37 @@
       "pointValue": "एक अंकको मूल्य",
       "loyaltySettings": "लोयल्टी",
       "loyaltyHint": "ग्राहक चिनिएको हरेक बिक्रीमा अंक जम्मा हुन्छ। शून्यले बन्द गर्छ।"
+    },
+    "data": {
+      "export": "निर्यात",
+      "exportCsv": "CSV मा निर्यात",
+      "exportExcel": "Excel मा निर्यात",
+      "exporting": "तयार गर्दै…",
+      "exportFailed": "निर्यात असफल",
+      "import": "आयात",
+      "importTitle": "स्प्रेडसिटबाट आयात",
+      "importHint": "CSV वा Excel। पहिलो पङ्क्ति स्तम्भको नाम हुनुपर्छ।",
+      "chooseFile": "फाइल छान्नुहोस्",
+      "parsing": "फाइल पढ्दै…",
+      "preview": "पूर्वावलोकन",
+      "rowsFound": "{count} पङ्क्ति भेटियो",
+      "willCreate": "{count} नयाँ",
+      "willUpdate": "{count} अद्यावधिक",
+      "willFail": "{count} मा समस्या",
+      "commit": "{count} पङ्क्ति आयात गर्नुहोस्",
+      "imported": "{created} थपियो, {updated} अद्यावधिक भयो",
+      "importFailed": "आयात असफल",
+      "row": "पङ्क्ति",
+      "outcome": "नतिजा",
+      "problem": "समस्या",
+      "created": "नयाँ",
+      "updated": "अद्यावधिक",
+      "failed": "समस्या",
+      "downloadTemplate": "नमुना डाउनलोड",
+      "templateHint": "सही स्तम्भसहितको फाइल पाउन पहिले निर्यात गर्नुहोस्।",
+      "stockNote": "मौज्दात नयाँ सामानमा मात्र राखिन्छ; भएकोमा परिवर्तन हुँदैन।",
+      "balanceNote": "ब्यालेन्स आयात हुँदैन; त्यो खाताबाट आउँछ।",
+      "nothingToImport": "आयात गर्न मिल्ने पङ्क्ति छैन।"
     }
   }
 }

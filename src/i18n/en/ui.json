@@ -961,6 +961,37 @@
       "pointValue": "Value of one point",
       "loyaltySettings": "Loyalty",
       "loyaltyHint": "Points earned on every billed sale to a known customer. Zero switches it off."
+    },
+    "data": {
+      "export": "Export",
+      "exportCsv": "Export as CSV",
+      "exportExcel": "Export as Excel",
+      "exporting": "Preparing…",
+      "exportFailed": "Export failed",
+      "import": "Import",
+      "importTitle": "Import from a spreadsheet",
+      "importHint": "CSV or Excel. The first row must be the column headers.",
+      "chooseFile": "Choose a file",
+      "parsing": "Reading the file…",
+      "preview": "Preview",
+      "rowsFound": "{count} row(s) found",
+      "willCreate": "{count} new",
+      "willUpdate": "{count} to update",
+      "willFail": "{count} with problems",
+      "commit": "Import {count} row(s)",
+      "imported": "{created} created, {updated} updated",
+      "importFailed": "Import failed",
+      "row": "Row",
+      "outcome": "Outcome",
+      "problem": "Problem",
+      "created": "New",
+      "updated": "Update",
+      "failed": "Problem",
+      "downloadTemplate": "Download a template",
+      "templateHint": "Export first to get a file with the right columns.",
+      "stockNote": "Stock is only set on new items; existing stock is left alone.",
+      "balanceNote": "Balances are not imported; they come from the ledger.",
+      "nothingToImport": "No valid rows to import."
     }
   }
 }
