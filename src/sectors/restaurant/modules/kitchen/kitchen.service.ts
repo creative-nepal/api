@@ -196,6 +196,7 @@ export class KitchenService {
         status: schema.kitchenTicketItems.status,
         name: schema.orderItems.productName,
         quantity: schema.orderItems.quantity,
+        note: schema.orderItems.note,
         modifiers: schema.orderItems.modifiers,
       })
       .from(schema.kitchenTicketItems)
@@ -221,6 +222,7 @@ export class KitchenService {
           orderItemId: line.orderItemId,
           name: line.name,
           quantity: Number(line.quantity),
+          note: line.note,
           modifiers: line.modifiers.map((modifier) => ({
             name: modifier.name,
             label: modifier.label,
