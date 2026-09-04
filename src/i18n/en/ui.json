@@ -1052,7 +1052,11 @@
       "reservation": "Reservation",
       "source": "From",
       "fromAppointments": "Appointments",
-      "fromReservations": "Reservations"
+      "fromReservations": "Reservations",
+      "calendarBs": "Nepali",
+      "calendarAd": "English",
+      "bsMonth": "Nepali month",
+      "adMonth": "English month"
     }
   }
 }

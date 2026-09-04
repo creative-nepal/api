@@ -1052,7 +1052,11 @@
       "reservation": "बुकिङ",
       "source": "स्रोत",
       "fromAppointments": "अपोइन्टमेन्ट",
-      "fromReservations": "बुकिङ"
+      "fromReservations": "बुकिङ",
+      "calendarBs": "नेपाली",
+      "calendarAd": "अंग्रेजी",
+      "bsMonth": "नेपाली महिना",
+      "adMonth": "अंग्रेजी महिना"
     }
   }
 }
