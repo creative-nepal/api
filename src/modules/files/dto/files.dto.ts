@@ -10,9 +10,15 @@ import {
   Min,
 } from 'class-validator';
 import { ListQueryDto } from '../../../common/dto/list-query.dto';
-import { FILE_PURPOSES, type FilePurpose } from '../../../database/schema';
+import { MAX_VIDEO_BYTES } from '../file-rules';
+import {
+  FILE_PURPOSES,
+  FILE_VISIBILITIES,
+  type FilePurpose,
+  type FileVisibility,
+} from '../../../database/schema';
 
-export const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
+export { MAX_UPLOAD_BYTES, MAX_VIDEO_BYTES } from '../file-rules';
 
 export class CreateUploadDto {
   @IsIn(FILE_PURPOSES) purpose!: FilePurpose;
@@ -24,10 +30,14 @@ export class CreateUploadDto {
   @Type(() => Number)
   @IsInt()
   @Min(1)
-  @Max(MAX_UPLOAD_BYTES)
+  @Max(MAX_VIDEO_BYTES)
   sizeBytes!: number;
+
+  /** Defaults per purpose; only set this to override that choice. */
+  @IsOptional() @IsIn(FILE_VISIBILITIES) visibility?: FileVisibility;
 }
 
 export class ListFilesQueryDto extends ListQueryDto {
   @IsOptional() @IsIn(FILE_PURPOSES) purpose?: FilePurpose;
+  @IsOptional() @IsIn(FILE_VISIBILITIES) visibility?: FileVisibility;
 }

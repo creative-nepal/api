@@ -1,5 +1,6 @@
 import {
   CreateBucketCommand,
+  PutBucketPolicyCommand,
   DeleteObjectCommand,
   GetObjectCommand,
   HeadBucketCommand,
@@ -16,6 +17,8 @@ import {
 import { PinoLogger } from 'nestjs-pino';
 import { AppConfigService } from '../config';
 
+export const PUBLIC_PREFIX = 'public/';
+
 const UPLOAD_TTL_SECONDS = 5 * 60;
 const DOWNLOAD_TTL_SECONDS = 10 * 60;
 
@@ -28,6 +31,7 @@ export interface StoredObject {
 export class StorageService implements OnModuleInit {
   private readonly client: S3Client | null;
   private readonly bucket: string;
+  private readonly endpoint: string;
 
   constructor(
     private readonly logger: PinoLogger,
@@ -39,6 +43,7 @@ export class StorageService implements OnModuleInit {
       this.config.storage;
 
     this.bucket = bucket;
+    this.endpoint = endpoint;
 
     this.client =
       accessKey && secretKey
@@ -65,6 +70,7 @@ export class StorageService implements OnModuleInit {
 
     try {
       await this.client.send(new HeadBucketCommand({ Bucket: this.bucket }));
+      await this.applyPublicReadPolicy();
       return;
     } catch {
       // Absent, or the store is unreachable — the create below tells us which.
@@ -76,6 +82,7 @@ export class StorageService implements OnModuleInit {
         { bucket: this.bucket },
         'Created object storage bucket',
       );
+      await this.applyPublicReadPolicy();
     } catch (cause) {
       // Selling must not stop because object storage is down. Uploads fail
       // loudly at the point of use; everything else keeps working.
@@ -92,6 +99,54 @@ export class StorageService implements OnModuleInit {
     }
 
     return this.client;
+  }
+
+  /**
+   * Anything under `public/` is world-readable; everything else needs a signed
+   * URL. A logo or a CMS image is rendered to anonymous visitors and must have
+   * a stable address — a presigned URL would expire and leave a broken image
+   * on a published page.
+   */
+  private async applyPublicReadPolicy(): Promise<void> {
+    if (!this.client) {
+      return;
+    }
+
+    const policy = {
+      Version: '2012-10-17',
+      Statement: [
+        {
+          Sid: 'PublicReadForPublicPrefix',
+          Effect: 'Allow',
+          Principal: '*',
+          Action: ['s3:GetObject'],
+          Resource: [`arn:aws:s3:::${this.bucket}/${PUBLIC_PREFIX}*`],
+        },
+      ],
+    };
+
+    try {
+      await this.client.send(
+        new PutBucketPolicyCommand({
+          Bucket: this.bucket,
+          Policy: JSON.stringify(policy),
+        }),
+      );
+    } catch (cause) {
+      this.logger.error(
+        { err: cause, bucket: this.bucket },
+        'Could not apply the public-read policy — public files will not load',
+      );
+    }
+  }
+
+  isPublicKey(key: string): boolean {
+    return key.startsWith(PUBLIC_PREFIX);
+  }
+
+  /** Stable, unsigned URL. Only valid for keys under the public prefix. */
+  publicUrl(key: string): string {
+    return `${this.endpoint.replace(/\/$/, '')}/${this.bucket}/${key}`;
   }
 
   async presignUpload(key: string, contentType: string): Promise<string> {

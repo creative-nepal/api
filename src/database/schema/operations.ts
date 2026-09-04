@@ -130,9 +130,13 @@ export const FILE_PURPOSES = [
   'business-logo',
   'product-image',
   'content-image',
+  'content-video',
   'attachment',
 ] as const;
 export type FilePurpose = (typeof FILE_PURPOSES)[number];
+
+export const FILE_VISIBILITIES = ['private', 'public'] as const;
+export type FileVisibility = (typeof FILE_VISIBILITIES)[number];
 
 export const FILE_STATUSES = ['pending', 'ready'] as const;
 export type FileStatus = (typeof FILE_STATUSES)[number];
@@ -145,6 +149,7 @@ export const storedFiles = pgTable(
       onDelete: 'cascade',
     }),
     purpose: text('purpose').notNull(),
+    visibility: text('visibility').default('private').notNull(),
     storageKey: text('storage_key').notNull().unique(),
     originalName: text('original_name').notNull(),
     contentType: text('content_type').notNull(),

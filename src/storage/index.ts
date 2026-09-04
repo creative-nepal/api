@@ -1,2 +1,6 @@
 export { StorageModule } from './storage.module';
-export { StorageService, type StoredObject } from './storage.service';
+export {
+  PUBLIC_PREFIX,
+  StorageService,
+  type StoredObject,
+} from './storage.service';

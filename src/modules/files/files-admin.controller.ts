@@ -49,7 +49,7 @@ export class FilesAdminController {
   @UserHasPermission({ permissions: { content: ['update'] } })
   async download(
     @Param('fileId') fileId: string,
-  ): Promise<{ url: string; expiresInSeconds: number }> {
+  ): Promise<{ url: string; expiresInSeconds: number | null }> {
     return this.files.downloadUrl(null, fileId);
   }
 

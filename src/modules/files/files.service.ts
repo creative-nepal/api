@@ -8,22 +8,9 @@ import { and, count, desc, eq, isNull, lt } from 'drizzle-orm';
 import type { PaginatedResult } from '../../common/dto/pagination-query.dto';
 import { type Database, InjectDatabase, schema } from '../../database';
 import type { FilePurpose, StoredFile } from '../../database/schema';
-import { StorageService } from '../../storage';
-import { type CreateUploadDto, MAX_UPLOAD_BYTES } from './dto/files.dto';
-
-const ALLOWED_TYPES: Record<FilePurpose, string[]> = {
-  prescription: ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'],
-  'business-logo': ['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml'],
-  'product-image': ['image/jpeg', 'image/png', 'image/webp'],
-  'content-image': ['image/jpeg', 'image/png', 'image/webp'],
-  attachment: [
-    'image/jpeg',
-    'image/png',
-    'image/webp',
-    'application/pdf',
-    'text/csv',
-  ],
-};
+import { PUBLIC_PREFIX, StorageService } from '../../storage';
+import type { CreateUploadDto } from './dto/files.dto';
+import { ALLOWED_TYPES, DEFAULT_VISIBILITY, maxBytesFor } from './file-rules';
 
 export interface UploadTicket {
   file: StoredFile;
@@ -53,12 +40,26 @@ export class FilesService {
       });
     }
 
+    const limit = maxBytesFor(dto.contentType);
+
+    if (dto.sizeBytes > limit) {
+      throw new BadRequestException({
+        message: 'i18n:errors.file.tooLarge',
+        limit,
+        actual: dto.sizeBytes,
+      });
+    }
+
+    const visibility = dto.visibility ?? DEFAULT_VISIBILITY[dto.purpose];
+
     const id = randomUUID();
     const extension = dto.originalName.includes('.')
       ? `.${dto.originalName.split('.').pop()?.slice(0, 8)}`
       : '';
 
-    const storageKey = `${businessId ?? 'platform'}/${dto.purpose}/${id}${extension}`;
+    const scope = `${businessId ?? 'platform'}/${dto.purpose}/${id}${extension}`;
+    const storageKey =
+      visibility === 'public' ? `${PUBLIC_PREFIX}${scope}` : scope;
 
     const [file] = await this.db
       .insert(schema.storedFiles)
@@ -66,6 +67,7 @@ export class FilesService {
         id,
         businessId,
         purpose: dto.purpose,
+        visibility,
         storageKey,
         originalName: dto.originalName,
         contentType: dto.contentType,
@@ -96,7 +98,7 @@ export class FilesService {
       });
     }
 
-    if (stored.sizeBytes > MAX_UPLOAD_BYTES) {
+    if (stored.sizeBytes > maxBytesFor(stored.contentType)) {
       await this.storage.remove(file.storageKey);
       await this.db
         .delete(schema.storedFiles)
@@ -104,7 +106,7 @@ export class FilesService {
 
       throw new BadRequestException({
         message: 'i18n:errors.file.tooLarge',
-        limit: MAX_UPLOAD_BYTES,
+        limit: maxBytesFor(stored.contentType),
         actual: stored.sizeBytes,
       });
     }
@@ -164,10 +166,15 @@ export class FilesService {
     return this.storage.presignDownload(file.storageKey);
   }
 
+  /**
+   * A public file returns its permanent address; a private one a short-lived
+   * signed URL. `expiresInSeconds` is null for the former, which is how a
+   * caller knows the URL is safe to persist in a CMS block or a theme.
+   */
   async downloadUrl(
     businessId: string | null,
     fileId: string,
-  ): Promise<{ url: string; expiresInSeconds: number }> {
+  ): Promise<{ url: string; expiresInSeconds: number | null }> {
     const file = await this.getById(businessId, fileId);
 
     if (file.status !== 'ready') {
@@ -175,6 +182,13 @@ export class FilesService {
         message: 'i18n:errors.file.notUploaded',
         fileId,
       });
+    }
+
+    if (this.storage.isPublicKey(file.storageKey)) {
+      return {
+        url: this.storage.publicUrl(file.storageKey),
+        expiresInSeconds: null,
+      };
     }
 
     return {

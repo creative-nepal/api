@@ -204,6 +204,13 @@
       "when": 1788498881880,
       "tag": "0028_settings_branch_roles",
       "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1788500708049,
+      "tag": "0029_file_visibility",
+      "breakpoints": true
     }
   ]
 }

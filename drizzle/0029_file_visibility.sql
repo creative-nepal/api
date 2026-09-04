@@ -1,0 +1,1 @@
+ALTER TABLE "stored_files" ADD COLUMN "visibility" text DEFAULT 'private' NOT NULL;

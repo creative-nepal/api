@@ -67,7 +67,7 @@ export class FilesController {
   async download(
     @CurrentBusiness() business: Business,
     @Param('fileId') fileId: string,
-  ): Promise<{ url: string; expiresInSeconds: number }> {
+  ): Promise<{ url: string; expiresInSeconds: number | null }> {
     return this.files.downloadUrl(business.id, fileId);
   }
 
