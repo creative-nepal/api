@@ -107,5 +107,14 @@
     "marketing": "Marketing",
     "supplies": "Supplies",
     "other": "Other"
+  },
+  "wastageReason": {
+    "spoilage": "Spoilage",
+    "spillage": "Spillage",
+    "expired": "Expired",
+    "preparation_error": "Preparation error",
+    "customer_return": "Customer return",
+    "staff_meal": "Staff meal",
+    "breakage": "Breakage"
   }
 }

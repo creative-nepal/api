@@ -107,5 +107,14 @@
     "marketing": "मार्केटिङ",
     "supplies": "सामग्री",
     "other": "अन्य"
+  },
+  "wastageReason": {
+    "spoilage": "बिग्रेको",
+    "spillage": "पोखिएको",
+    "expired": "म्याद सकिएको",
+    "preparation_error": "पकाउँदा बिग्रेको",
+    "customer_return": "ग्राहक फिर्ता",
+    "staff_meal": "कर्मचारी खाना",
+    "breakage": "फुटेको"
   }
 }
