@@ -73,7 +73,8 @@
     "emptyPermission": "A role needs at least one permission",
     "alreadyExists": "Role {role} already exists for this business",
     "notFound": "Role {role} not found",
-    "reserved": "Role {role} is reserved and cannot be defined"
+    "reserved": "Role {role} is reserved and cannot be defined",
+    "unknown": "{role} is not a role in this organisation"
   },
   "theme": {
     "invalidValue": "Theme value for {key} must be a non-empty string",

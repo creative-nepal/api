@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { and, eq, gt, lte, sql } from 'drizzle-orm';
+import { and, eq, gt, isNull, lte, or, sql } from 'drizzle-orm';
 import { type Database, InjectDatabase, schema } from '../../../database';
 import {
   NotificationsService,
@@ -32,10 +32,18 @@ export class StockAlertsJob {
         schema.businesses,
         eq(schema.businesses.id, schema.products.businessId),
       )
+      .leftJoin(
+        schema.businessSettings,
+        eq(schema.businessSettings.businessId, schema.businesses.id),
+      )
       .where(
         and(
           eq(schema.products.isActive, true),
           eq(schema.businesses.status, 'active'),
+          or(
+            isNull(schema.businessSettings.businessId),
+            eq(schema.businessSettings.lowStockAlertsEnabled, true),
+          ),
           gt(schema.products.lowStockThreshold, '0'),
           lte(schema.products.stockQty, schema.products.lowStockThreshold),
         ),
@@ -58,9 +66,17 @@ export class StockAlertsJob {
         schema.businesses,
         eq(schema.businesses.id, schema.productBatches.businessId),
       )
+      .leftJoin(
+        schema.businessSettings,
+        eq(schema.businessSettings.businessId, schema.businesses.id),
+      )
       .where(
         and(
           eq(schema.businesses.status, 'active'),
+          or(
+            isNull(schema.businessSettings.businessId),
+            eq(schema.businessSettings.expiryAlertsEnabled, true),
+          ),
           gt(schema.productBatches.qty, '0'),
           eq(schema.productBatches.isActive, true),
           sql`${schema.productBatches.expiryDate} <= current_date + make_interval(days => ${EXPIRY_WINDOW_DAYS})`,

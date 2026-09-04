@@ -7,6 +7,7 @@ import { and, eq } from 'drizzle-orm';
 import { roles as builtInRoles, statement } from '../../auth/access-control';
 import { type Database, InjectDatabase, schema } from '../../database';
 import type { Business } from '../../database/schema';
+import { composePermissions } from './permissions';
 
 export type PermissionMap = Record<string, string[]>;
 
@@ -129,6 +130,27 @@ export class RolesService {
     return { statements: this.statements(), roles: [...views.values()] };
   }
 
+  /** A role must exist in this organisation's catalogue to be assignable. */
+  async assertAssignable(organizationId: string, role: string): Promise<void> {
+    if (RESERVED_ROLES.has(role)) {
+      throw new BadRequestException({
+        message: 'i18n:errors.role.reserved',
+        role,
+      });
+    }
+
+    const known =
+      role in builtInRoles ||
+      (await this.stored(organizationId)).some((row) => row.role === role);
+
+    if (!known) {
+      throw new BadRequestException({
+        message: 'i18n:errors.role.unknown',
+        role,
+      });
+    }
+  }
+
   async create(
     business: Business,
     role: string,
@@ -239,33 +261,7 @@ export class RolesService {
     organizationId: string,
     memberRole: string,
   ): Promise<PermissionMap> {
-    const names = memberRole.split(',').map((part) => part.trim());
-    const rows = await this.stored(organizationId);
-    const granted: PermissionMap = {};
-
-    const add = (source: Record<string, readonly string[]>) => {
-      for (const [resource, actions] of Object.entries(source)) {
-        granted[resource] = [
-          ...new Set([...(granted[resource] ?? []), ...actions]),
-        ];
-      }
-    };
-
-    for (const name of names) {
-      const compiled = builtInRoles[name as keyof typeof builtInRoles];
-
-      if (compiled) {
-        add(compiled.statements);
-      }
-
-      const stored = rows.find((row) => row.role === name);
-
-      if (stored) {
-        add(this.parse(stored.permission));
-      }
-    }
-
-    return granted;
+    return composePermissions(memberRole, await this.stored(organizationId));
   }
 
   private parse(raw: string): PermissionMap {

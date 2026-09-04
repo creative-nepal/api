@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { and, eq, inArray } from 'drizzle-orm';
+import { and, eq, inArray, isNull, or } from 'drizzle-orm';
 import { type Database, InjectDatabase, schema } from '../../../database';
 import { EmailService } from '../../../email/email.service';
 import { NotificationsService } from '../../notifications/notifications.service';
@@ -35,10 +35,19 @@ export class NotificationDigestJob {
         eq(schema.businesses.organizationId, schema.member.organizationId),
       )
       .innerJoin(schema.user, eq(schema.user.id, schema.member.userId))
+      .leftJoin(
+        schema.businessSettings,
+        eq(schema.businessSettings.businessId, schema.businesses.id),
+      )
       .where(
         and(
           eq(schema.businesses.status, 'active'),
           inArray(schema.member.role, DIGEST_ROLES),
+          // No settings row yet means the default, which is opted in.
+          or(
+            isNull(schema.businessSettings.businessId),
+            eq(schema.businessSettings.digestEnabled, true),
+          ),
         ),
       );
 

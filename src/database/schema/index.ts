@@ -3,6 +3,7 @@ export * from './billing';
 export * from './cash';
 export * from './expenses';
 export * from './loyalty';
+export * from './settings';
 export * from './medical';
 export * from './restaurant';
 export * from './platform';
