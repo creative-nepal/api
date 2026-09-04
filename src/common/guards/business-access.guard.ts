@@ -9,13 +9,17 @@ import {
 } from '@nestjs/common';
 import { and, eq } from 'drizzle-orm';
 import { type Database, InjectDatabase, schema } from '../../database';
+import { AccessContextService } from '../access/access-context.service';
 import type { BusinessScopedRequest } from '../decorators/current-business.decorator';
 
 const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
 
 @Injectable()
 export class BusinessAccessGuard implements CanActivate {
-  constructor(@InjectDatabase() private readonly db: Database) {}
+  constructor(
+    @InjectDatabase() private readonly db: Database,
+    private readonly accessContext: AccessContextService,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<BusinessScopedRequest>();
@@ -64,6 +68,10 @@ export class BusinessAccessGuard implements CanActivate {
 
     request.business = row.business;
     request.membership = row.membership;
+
+    if (userId) {
+      request.access = await this.accessContext.resolve(row.business, userId);
+    }
 
     return true;
   }

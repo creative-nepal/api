@@ -11,6 +11,7 @@ import type {
   ListMembersQueryDto,
   SetMemberBranchesDto,
 } from './dto/member.dto';
+import { AccessContextService } from '../../common/access/access-context.service';
 import { MembersRepository } from './members.repository';
 
 export interface MemberView {
@@ -30,6 +31,7 @@ export class MembersService {
   constructor(
     @InjectDatabase() private readonly db: Database,
     private readonly membersRepository: MembersRepository,
+    private readonly accessContext: AccessContextService,
   ) {}
 
   async list(
@@ -166,6 +168,8 @@ export class MembersService {
           .filter((teamId): teamId is string => teamId !== null),
       );
     });
+
+    this.accessContext.invalidateBusiness(business.id);
 
     return {
       ...member,

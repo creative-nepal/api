@@ -3,6 +3,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { and, eq } from 'drizzle-orm';
 import { type Database, InjectDatabase, schema } from '../../database';
 import type { BranchRole, Business } from '../../database/schema';
+import { AccessContextService } from '../../common/access/access-context.service';
 import { RolesService } from '../roles/roles.service';
 
 export interface BranchRoleView {
@@ -17,6 +18,7 @@ export class BranchRolesService {
   constructor(
     @InjectDatabase() private readonly db: Database,
     private readonly rolesService: RolesService,
+    private readonly accessContext: AccessContextService,
   ) {}
 
   /** True when this business uses per-branch roles at all. */
@@ -109,6 +111,8 @@ export class BranchRolesService {
       })
       .returning();
 
+    this.accessContext.invalidateBusiness(business.id);
+
     return row;
   }
 
@@ -126,5 +130,7 @@ export class BranchRolesService {
           eq(schema.branchRoles.userId, userId),
         ),
       );
+
+    this.accessContext.invalidateBusiness(businessId);
   }
 }

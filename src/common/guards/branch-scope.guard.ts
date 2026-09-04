@@ -6,15 +6,11 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { BranchesService } from '../../modules/branches/branches.service';
-import { MembersService } from '../../modules/members/members.service';
 import type { BusinessScopedRequest } from '../decorators/current-business.decorator';
 
 @Injectable()
 export class BranchScopeGuard implements CanActivate {
-  constructor(
-    private readonly branchesService: BranchesService,
-    private readonly membersService: MembersService,
-  ) {}
+  constructor(private readonly branchesService: BranchesService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<BusinessScopedRequest>();
@@ -33,20 +29,13 @@ export class BranchScopeGuard implements CanActivate {
       requested,
     );
 
-    const userId = request.session?.user?.id;
+    const allowed = request.access?.allowedBranchIds;
 
-    if (userId) {
-      const allowed = await this.membersService.allowedBranchIds(
-        request.business.id,
-        userId,
-      );
-
-      if (allowed && !allowed.includes(branch.id)) {
-        throw new ForbiddenException({
-          message: 'i18n:errors.member.branchNotAllowed',
-          branch: branch.name,
-        });
-      }
+    if (allowed && !allowed.includes(branch.id)) {
+      throw new ForbiddenException({
+        message: 'i18n:errors.member.branchNotAllowed',
+        branch: branch.name,
+      });
     }
 
     request.branch = branch;

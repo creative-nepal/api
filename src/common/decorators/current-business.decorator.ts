@@ -1,5 +1,6 @@
 import { createParamDecorator, type ExecutionContext } from '@nestjs/common';
 import type { Branch, Business, Member } from '../../database/schema';
+import type { ResolvedAccess } from '../access/access-context.service';
 
 export interface BusinessScopedRequest {
   method: string;
@@ -9,6 +10,7 @@ export interface BusinessScopedRequest {
   business?: Business;
   membership?: Member;
   branch?: Branch;
+  access?: ResolvedAccess;
 }
 
 export const CurrentBusiness = createParamDecorator(

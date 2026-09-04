@@ -7,6 +7,7 @@ import { and, eq } from 'drizzle-orm';
 import { roles as builtInRoles, statement } from '../../auth/access-control';
 import { type Database, InjectDatabase, schema } from '../../database';
 import type { Business } from '../../database/schema';
+import { AccessContextService } from '../../common/access/access-context.service';
 import { composePermissions } from './permissions';
 
 export type PermissionMap = Record<string, string[]>;
@@ -27,7 +28,10 @@ const RESERVED_ROLES = new Set(['admin', 'member']);
 
 @Injectable()
 export class RolesService {
-  constructor(@InjectDatabase() private readonly db: Database) {}
+  constructor(
+    @InjectDatabase() private readonly db: Database,
+    private readonly accessContext: AccessContextService,
+  ) {}
 
   statements(): Record<string, string[]> {
     return Object.fromEntries(
@@ -191,6 +195,8 @@ export class RolesService {
       createdAt: new Date(),
     });
 
+    this.accessContext.invalidateOrganization(business.organizationId);
+
     return this.get(business, role);
   }
 
@@ -219,6 +225,8 @@ export class RolesService {
       });
     }
 
+    this.accessContext.invalidateOrganization(business.organizationId);
+
     return this.get(business, role);
   }
 
@@ -239,6 +247,8 @@ export class RolesService {
         role,
       });
     }
+
+    this.accessContext.invalidateOrganization(business.organizationId);
 
     return { role };
   }

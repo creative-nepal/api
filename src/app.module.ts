@@ -13,6 +13,7 @@ import { I18nModule } from './i18n/i18n.module';
 import { BranchesModule } from './modules/branches/branches.module';
 import { BusinessesModule } from './modules/businesses/businesses.module';
 import { ContentModule } from './modules/content/content.module';
+import { AccessContextModule } from './common/access/access-context.module';
 import { CashModule } from './modules/cash/cash.module';
 import { ExpensesModule } from './modules/expenses/expenses.module';
 import { LoyaltyModule } from './modules/loyalty/loyalty.module';
@@ -52,6 +53,7 @@ import { enabledSectorModules } from './sectors';
     BranchesModule,
     PlansModule,
     ContentModule,
+    AccessContextModule,
     CashModule,
     ExpensesModule,
     LoyaltyModule,
