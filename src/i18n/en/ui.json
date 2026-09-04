@@ -1056,7 +1056,11 @@
       "calendarBs": "Nepali",
       "calendarAd": "English",
       "bsMonth": "Nepali month",
-      "adMonth": "English month"
+      "adMonth": "English month",
+      "grid": "Month",
+      "list": "List",
+      "saturday": "Saturday",
+      "noPanchang": "Tithi and festival names are not included; mark your own closures as a holiday entry."
     }
   }
 }
