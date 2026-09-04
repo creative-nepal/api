@@ -33,9 +33,12 @@ export const envSchema = z.object({
   DATABASE_SSL: z.enum(['true', 'false']).optional(),
   DATABASE_POOL_SIZE: z.coerce.number().int().min(1).max(100).default(10),
 
-  LOG_LEVEL: z
-    .enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'])
-    .optional(),
+  LOG_LEVEL: z.preprocess(
+    (value) => (value === '' ? undefined : value),
+    z
+      .enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'])
+      .optional(),
+  ),
 
   SECTORS_ENABLED: z
     .string()

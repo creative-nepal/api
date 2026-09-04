@@ -1,10 +1,9 @@
-# Local backing services for creative-nepal-api. Values are read from this
-# directory's .env, which is the same file the API itself uses — so the
-# credentials cannot drift between the container and the client.
+# Backing services for running this repo on its own. The parent folder's
+# docker-compose.yml runs the whole platform (api, web, admin) and pins the
+# container names; the two bind the same host ports, so run one or the other.
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: creativenepal-pg
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -21,7 +20,6 @@ services:
 
   rustfs:
     image: rustfs/rustfs:latest
-    container_name: creativenepal-rustfs
     environment:
       RUSTFS_ACCESS_KEY: ${RUSTFS_ACCESS_KEY:-rustfsadmin}
       RUSTFS_SECRET_KEY: ${RUSTFS_SECRET_KEY:-rustfsadmin}

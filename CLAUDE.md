@@ -20,6 +20,7 @@ must be invoked via **`bunx`, never `npx`**.
 
 ```sh
 docker compose up -d     # postgres :5433 + rustfs :9000, reading this repo's .env
+                         # the parent folder's compose runs api+web+admin too
 bun run dev              # nest start --watch, port 3333
 bun run build            # nest build
 bun run lint             # eslint --fix
