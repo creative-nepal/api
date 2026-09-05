@@ -5,24 +5,28 @@ import type { SectorTheme } from '../theme';
 const navItems: WorkspaceNavItem[] = [
   {
     key: 'pos',
+    group: 'counter',
     href: '/pos',
     titleKey: 'ui.web.nav.pos',
     permission: { order: ['create'] },
   },
   {
     key: 'products',
+    group: 'stock',
     href: '/products',
     titleKey: 'ui.web.nav.products',
     permission: { product: ['create'] },
   },
   {
     key: 'stock-takes',
+    group: 'stock',
     href: '/stock-takes',
     titleKey: 'ui.web.nav.stockTakes',
     permission: { stocktake: ['count'] },
   },
   {
     key: 'wastage',
+    group: 'stock',
     href: '/wastage',
     titleKey: 'ui.web.nav.wastage',
     permission: { wastage: ['view'] },

@@ -31,7 +31,8 @@
     "disable": "Disable",
     "rename": "Rename",
     "restore": "Restore",
-    "copy": "Copy"
+    "copy": "Copy",
+    "search": "Search"
   },
   "field": {
     "name": "Name",
@@ -446,7 +447,8 @@
       "notePlaceholder": "Note for the kitchen…",
       "token": "Token",
       "promisedAt": "Ready by",
-      "promisedHint": "For an advance order — leave blank for right now."
+      "promisedHint": "For an advance order — leave blank for right now.",
+      "noProductsHint": "Try a different name, SKU or barcode."
     },
     "products": {
       "title": "Products",
@@ -736,7 +738,13 @@
       "production": "Production",
       "frontDesk": "Front desk",
       "rooms": "Rooms",
-      "housekeeping": "Housekeeping"
+      "housekeeping": "Housekeeping",
+      "group": {
+        "counter": "Counter",
+        "stock": "Stock",
+        "money": "Money",
+        "setup": "Setup"
+      }
     },
     "services": {
       "title": "Services",
@@ -1200,7 +1208,8 @@
         "sale": "Sale",
         "wastage": "Wastage",
         "adjustment": "Adjustment"
-      }
+      },
+      "liveDescription": "The day's takings for this branch, in the business timezone."
     },
     "production": {
       "title": "Production",

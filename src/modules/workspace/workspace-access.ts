@@ -12,6 +12,7 @@ export type EffectivePermissions = Record<string, string[]>;
 
 export interface WorkspaceNavItemView {
   key: string;
+  group: string;
   href: string;
   titleKey: string;
 }
@@ -75,5 +76,5 @@ export function navForSector(
 
   return items
     .filter((item) => isAllowed(granted, item.permission))
-    .map(({ key, href, titleKey }) => ({ key, href, titleKey }));
+    .map(({ key, group, href, titleKey }) => ({ key, group, href, titleKey }));
 }

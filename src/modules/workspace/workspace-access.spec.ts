@@ -69,8 +69,18 @@ describe('navForSector', () => {
 
   it('gives a chef the kitchen board and wastage, nothing else', () => {
     expect(navForSector('restaurant', permissionsForRole('chef'))).toEqual([
-      { key: 'kitchen', href: '/kitchen', titleKey: 'ui.web.nav.kitchen' },
-      { key: 'wastage', href: '/wastage', titleKey: 'ui.web.nav.wastage' },
+      {
+        key: 'kitchen',
+        group: 'counter',
+        href: '/kitchen',
+        titleKey: 'ui.web.nav.kitchen',
+      },
+      {
+        key: 'wastage',
+        group: 'stock',
+        href: '/wastage',
+        titleKey: 'ui.web.nav.wastage',
+      },
     ]);
   });
 

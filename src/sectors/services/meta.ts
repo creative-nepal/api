@@ -5,24 +5,28 @@ import type { SectorTheme } from '../theme';
 const navItems: WorkspaceNavItem[] = [
   {
     key: 'appointments',
+    group: 'counter',
     href: '/appointments',
     titleKey: 'ui.web.nav.appointments',
     permission: { appointment: ['complete'] },
   },
   {
     key: 'services',
+    group: 'setup',
     href: '/services',
     titleKey: 'ui.web.nav.services',
     permission: { membership: ['manage'] },
   },
   {
     key: 'availability',
+    group: 'setup',
     href: '/availability',
     titleKey: 'ui.web.nav.availability',
     permission: { membership: ['manage'] },
   },
   {
     key: 'pos',
+    group: 'counter',
     href: '/pos',
     titleKey: 'ui.web.nav.pos',
     permission: { order: ['create'] },

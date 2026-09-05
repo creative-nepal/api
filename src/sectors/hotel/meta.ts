@@ -5,24 +5,28 @@ import type { SectorTheme } from '../theme';
 const navItems: WorkspaceNavItem[] = [
   {
     key: 'front-desk',
+    group: 'counter',
     href: '/front-desk',
     titleKey: 'ui.web.nav.frontDesk',
     permission: { booking: ['book'] },
   },
   {
     key: 'rooms',
+    group: 'counter',
     href: '/rooms',
     titleKey: 'ui.web.nav.rooms',
     permission: { room: ['manage'] },
   },
   {
     key: 'housekeeping',
+    group: 'counter',
     href: '/housekeeping',
     titleKey: 'ui.web.nav.housekeeping',
     permission: { housekeeping: ['view'] },
   },
   {
     key: 'pos',
+    group: 'counter',
     href: '/pos',
     titleKey: 'ui.web.nav.pos',
     permission: { order: ['create'] },
