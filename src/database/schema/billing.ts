@@ -2,6 +2,7 @@ import { relations, sql } from 'drizzle-orm';
 import {
   type AnyPgColumn,
   boolean,
+  date,
   index,
   integer,
   jsonb,
@@ -396,6 +397,8 @@ export const orders = pgTable(
     }),
     status: text('status').default('placed').notNull(),
     tableId: text('table_id'),
+    tokenNumber: integer('token_number'),
+    promisedAt: timestamp('promised_at', { withTimezone: true }),
     source: text('source').default('staff').notNull(),
     channelId: text('channel_id'),
     channelCommissionCents: integer('channel_commission_cents')
@@ -475,6 +478,30 @@ export const orderItems = pgTable(
       table.businessId,
       table.productId,
     ),
+  ],
+);
+
+export const orderTokenCounters = pgTable(
+  'order_token_counters',
+  {
+    businessId: text('business_id')
+      .notNull()
+      .references(() => businesses.id, { onDelete: 'cascade' }),
+    branchId: text('branch_id')
+      .notNull()
+      .references(() => branches.id, { onDelete: 'restrict' }),
+    businessDate: date('business_date').notNull(),
+    lastToken: integer('last_token').default(0).notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    primaryKey({
+      name: 'order_token_counters_pk',
+      columns: [table.businessId, table.branchId, table.businessDate],
+    }),
   ],
 );
 

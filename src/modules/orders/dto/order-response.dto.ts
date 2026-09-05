@@ -44,6 +44,8 @@ export class OrderResponseDto {
   @Expose() businessId: string;
   @Expose() customerId: string | null;
   @Expose() status: string;
+  @Expose() tokenNumber: number | null;
+  @Expose() promisedAt: Date | null;
   @Expose() tableId: string | null;
   @Expose() source: string;
   @Expose() subtotalCents: number;
@@ -67,6 +69,8 @@ export class OrderResponseDto {
     this.businessId = order.businessId;
     this.customerId = order.customerId;
     this.status = order.status;
+    this.tokenNumber = order.tokenNumber;
+    this.promisedAt = order.promisedAt;
     this.tableId = order.tableId;
     this.source = order.source;
     this.subtotalCents = order.subtotalCents;

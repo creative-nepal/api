@@ -4,6 +4,7 @@ import {
   IsBoolean,
   IsArray,
   IsIn,
+  IsISO8601,
   IsInt,
   IsNotEmpty,
   IsNumber,
@@ -192,6 +193,10 @@ export class CreateOrderDto {
   @IsOptional()
   @IsString()
   tableId?: string;
+
+  @IsOptional()
+  @IsISO8601({ strict: true })
+  promisedAt?: string;
 
   @IsOptional()
   @IsIn(ORDER_SOURCES)

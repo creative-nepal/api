@@ -45,6 +45,7 @@ describe('navForSector', () => {
       'customers',
       'cash',
       'expenses',
+      'production',
       'reports',
       'invoices',
       'branches',

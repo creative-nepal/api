@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { OrdersExportService } from './orders-export.service';
+import { OrderTokensService } from './order-tokens.service';
 import { BranchesCoreModule } from '../branches/branches-core.module';
 import { CashCoreModule } from '../cash/cash-core.module';
 import { LoyaltyCoreModule } from '../loyalty/loyalty-core.module';
@@ -38,6 +39,7 @@ import { SectorPluginRegistry } from './sector-plugins/registry';
     ServicesSectorPlugin,
     SectorPluginRegistry,
     OrdersExportService,
+    OrderTokensService,
   ],
   exports: [OrdersService],
 })

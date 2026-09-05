@@ -443,7 +443,10 @@
       "inStock": "मौज्दात",
       "expiresFrom": "म्याद सुरु",
       "addToCart": "बिक्रीमा थप्नुहोस्",
-      "notePlaceholder": "भान्साका लागि टिप्पणी…"
+      "notePlaceholder": "भान्साका लागि टिप्पणी…",
+      "token": "टोकन",
+      "promisedAt": "तयार हुने समय",
+      "promisedHint": "अग्रिम अर्डरका लागि — अहिलेकै भए खाली छोड्नुहोस्।"
     },
     "products": {
       "title": "सामानहरू",
@@ -729,7 +732,8 @@
       "wastage": "खेर",
       "expenses": "खर्च",
       "calendar": "क्यालेन्डर",
-      "reports": "रिपोर्ट"
+      "reports": "रिपोर्ट",
+      "production": "उत्पादन"
     },
     "services": {
       "title": "सेवाहरू",
@@ -1194,6 +1198,26 @@
         "wastage": "खेर",
         "adjustment": "समायोजन"
       }
+    },
+    "production": {
+      "title": "उत्पादन",
+      "description": "दैनिक के बनाउने योजना गर्नुहोस् र वास्तवमा कति बन्यो दर्ता गर्नुहोस्।",
+      "plan": "योजना बनाउनुहोस्",
+      "item": "वस्तु",
+      "plannedFor": "मिति",
+      "planned": "योजना",
+      "produced": "बनेको",
+      "wasted": "खेर",
+      "shortfall": "कम",
+      "record": "उत्पादन दर्ता",
+      "emptyTitle": "कुनै योजना छैन",
+      "emptyBody": "योजना बनाएपछि यहाँ देखिनेछ, कति बनाउन बाँकी छ सहित।",
+      "recorded": "उत्पादन दर्ता भयो",
+      "planned_status": "योजना",
+      "in_progress": "बन्दै",
+      "done": "सकियो",
+      "cancelled": "रद्द",
+      "doneAddsStock": "रन सकियो भनेपछि बनेको परिमाण स्टकमा थपिन्छ।"
     }
   }
 }

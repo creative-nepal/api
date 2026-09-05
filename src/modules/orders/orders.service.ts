@@ -39,6 +39,7 @@ import { CustomersService } from '../customers/customers.service';
 import { LoyaltyService } from '../loyalty/loyalty.service';
 import { unitCostFor } from './unit-cost';
 import { ReferralsService } from '../referrals/referrals.service';
+import { OrderTokensService } from './order-tokens.service';
 import { SectorPluginRegistry } from './sector-plugins/registry';
 import type {
   CheckoutContext,
@@ -96,6 +97,7 @@ export class OrdersService {
     private readonly cash: CashService,
     private readonly loyalty: LoyaltyService,
     private readonly referrals: ReferralsService,
+    private readonly orderTokens: OrderTokensService,
   ) {}
 
   async getById(businessId: string, id: string): Promise<OrderDetail> {
@@ -199,12 +201,23 @@ export class OrdersService {
         await this.assertMayDiscount(business, headers);
       }
 
+      const tokenNumber = dto.tableId
+        ? null
+        : await this.orderTokens.next(
+            tx,
+            business.id,
+            branch.id,
+            await this.timezoneFor(tx, business.id),
+          );
+
       const order = await this.ordersRepository.insertOrder(tx, {
         id: randomUUID(),
         businessId: business.id,
         branchId: branch.id,
         customerId: customer?.id ?? null,
         tableId: dto.tableId ?? null,
+        tokenNumber,
+        promisedAt: dto.promisedAt ? new Date(dto.promisedAt) : null,
         source: dto.source ?? 'staff',
         channelId: dto.channelId ?? null,
         channelCommissionCents,
@@ -439,6 +452,19 @@ export class OrdersService {
       taxCents,
       totalCents,
     };
+  }
+
+  private async timezoneFor(
+    executor: DatabaseExecutor,
+    businessId: string,
+  ): Promise<string> {
+    const [row] = await executor
+      .select({ timezone: schema.businessSettings.timezone })
+      .from(schema.businessSettings)
+      .where(eq(schema.businessSettings.businessId, businessId))
+      .limit(1);
+
+    return row?.timezone ?? 'Asia/Kathmandu';
   }
 
   async listForTable(businessId: string, tableId: string): Promise<Order[]> {

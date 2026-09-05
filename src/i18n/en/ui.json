@@ -443,7 +443,10 @@
       "inStock": "In stock",
       "expiresFrom": "Expires from",
       "addToCart": "Add to sale",
-      "notePlaceholder": "Note for the kitchen…"
+      "notePlaceholder": "Note for the kitchen…",
+      "token": "Token",
+      "promisedAt": "Ready by",
+      "promisedHint": "For an advance order — leave blank for right now."
     },
     "products": {
       "title": "Products",
@@ -729,7 +732,8 @@
       "wastage": "Wastage",
       "expenses": "Expenses",
       "calendar": "Calendar",
-      "reports": "Reports"
+      "reports": "Reports",
+      "production": "Production"
     },
     "services": {
       "title": "Services",
@@ -1194,6 +1198,26 @@
         "wastage": "Wastage",
         "adjustment": "Adjustment"
       }
+    },
+    "production": {
+      "title": "Production",
+      "description": "Plan what gets made each day and record what actually came out.",
+      "plan": "Plan a run",
+      "item": "Item",
+      "plannedFor": "For",
+      "planned": "Planned",
+      "produced": "Produced",
+      "wasted": "Wasted",
+      "shortfall": "Short",
+      "record": "Record output",
+      "emptyTitle": "Nothing planned",
+      "emptyBody": "Plan a run and it will show here with what still has to be made.",
+      "recorded": "Output recorded",
+      "planned_status": "Planned",
+      "in_progress": "In progress",
+      "done": "Done",
+      "cancelled": "Cancelled",
+      "doneAddsStock": "Marking a run done adds what was produced to stock."
     }
   }
 }
