@@ -4,7 +4,8 @@
     "mart": "Mart",
     "medical": "Pharmacy",
     "restaurant": "Restaurant",
-    "services": "Services"
+    "services": "Services",
+    "hotel": "Hotel & resort"
   },
   "role": {
     "owner": "Owner",

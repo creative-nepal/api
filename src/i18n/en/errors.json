@@ -6,7 +6,8 @@
     "idMismatch": "X-Business-Id header does not match the :businessId route parameter",
     "tablesRestaurantOnly": "Tables are a restaurant feature; this business is {actual}",
     "menuRestaurantOnly": "A menu is a restaurant feature; this business is {actual}",
-    "wrongSector": "This feature is not available for a {sector} business"
+    "wrongSector": "This feature is not available for a {sector} business",
+    "roomsHotelOnly": "Rooms are only available in a hotel business, not a {actual} one"
   },
   "permission": {
     "denied": "Your role does not permit this action for this business",
@@ -204,5 +205,8 @@
     "selfReferral": "A customer cannot refer themselves",
     "circular": "Those two customers have already referred each other",
     "notANewCustomer": "A referral can only be claimed before the first purchase"
+  },
+  "booking": {
+    "roomTaken": "Room already booked for {guestName} from {from} to {to}"
   }
 }

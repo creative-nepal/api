@@ -11,6 +11,7 @@ export * from './platform';
 export * from './purchasing';
 export * from './services';
 export * from './stock-takes';
+export * from './hotel';
 export * from './production';
 export * from './wastage';
 export * from './operations';

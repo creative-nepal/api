@@ -733,7 +733,10 @@
       "expenses": "Expenses",
       "calendar": "Calendar",
       "reports": "Reports",
-      "production": "Production"
+      "production": "Production",
+      "frontDesk": "Front desk",
+      "rooms": "Rooms",
+      "housekeeping": "Housekeeping"
     },
     "services": {
       "title": "Services",
@@ -1218,6 +1221,82 @@
       "done": "Done",
       "cancelled": "Cancelled",
       "doneAddsStock": "Marking a run done adds what was produced to stock."
+    },
+    "hotel": {
+      "frontDeskTitle": "Front desk",
+      "frontDeskDescription": "Bookings from arrival to check-out, with everything charged to the room.",
+      "roomsTitle": "Rooms",
+      "roomsDescription": "Rooms and their types, rates and occupancy.",
+      "housekeepingTitle": "Housekeeping",
+      "housekeepingDescription": "What needs cleaning, who is on it, and which rooms are ready to sell.",
+      "book": "New booking",
+      "guest": "Guest",
+      "room": "Room",
+      "roomType": "Room type",
+      "nights": "Nights",
+      "rate": "Rate / night",
+      "folio": "Folio",
+      "folioTotal": "Folio total",
+      "roomCharge": "Room",
+      "extras": "Extras",
+      "checkIn": "Check in",
+      "checkOut": "Check out",
+      "cancel": "Cancel booking",
+      "postCharge": "Post a charge",
+      "arrival": "Arrival",
+      "departure": "Departure",
+      "unassigned": "No room yet",
+      "addRoom": "Add room",
+      "addRoomType": "Add room type",
+      "roomNo": "Room no.",
+      "floor": "Floor",
+      "baseRate": "Base rate",
+      "maxOccupancy": "Sleeps",
+      "noRooms": "No rooms yet",
+      "noRoomsHint": "Add a room type first, then the rooms that belong to it.",
+      "noBookings": "No bookings",
+      "noBookingsHint": "Take a booking and it will appear here.",
+      "noTasks": "Nothing to clean",
+      "noTasksHint": "A task appears here when a guest checks out.",
+      "markClean": "Mark clean",
+      "assignRoom": "Room to give them",
+      "checkedIn": "Checked in — the room is now occupied",
+      "checkedOut": "Checked out, bill issued",
+      "chargePosted": "Charge added to the folio",
+      "status": {
+        "vacant_clean": "Ready",
+        "vacant_dirty": "Needs cleaning",
+        "occupied": "Occupied",
+        "out_of_service": "Out of service"
+      },
+      "booking": {
+        "booked": "Booked",
+        "checked_in": "In house",
+        "checked_out": "Checked out",
+        "cancelled": "Cancelled",
+        "no_show": "No show"
+      },
+      "source": {
+        "room": "Room",
+        "restaurant": "Restaurant",
+        "room_service": "Room service",
+        "laundry": "Laundry",
+        "banquet": "Banquet",
+        "minibar": "Minibar",
+        "other": "Other"
+      },
+      "mealPlan": {
+        "room_only": "Room only",
+        "bb": "Bed & breakfast",
+        "half_board": "Half board",
+        "full_board": "Full board"
+      },
+      "task": {
+        "pending": "Pending",
+        "in_progress": "In progress",
+        "done": "Done",
+        "inspected": "Inspected"
+      }
     }
   }
 }

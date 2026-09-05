@@ -27,6 +27,12 @@ import {
   servicesStatements,
 } from '../sectors/services/access';
 import {
+  createHotelRoles,
+  hotelManagerGrants,
+  hotelOwnerGrants,
+  hotelStatements,
+} from '../sectors/hotel/access';
+import {
   createRestaurantRoles,
   restaurantManagerGrants,
   restaurantOwnerGrants,
@@ -54,6 +60,7 @@ export const statement = {
   ...medicalStatements,
   ...restaurantStatements,
   ...servicesStatements,
+  ...hotelStatements,
 } as const;
 
 export const ac = createAccessControl(statement);
@@ -81,6 +88,7 @@ export const ownerRole = ac.newRole({
   ...medicalOwnerGrants,
   ...restaurantOwnerGrants,
   ...servicesOwnerGrants,
+  ...hotelOwnerGrants,
 });
 
 export const managerRole = ac.newRole({
@@ -98,6 +106,7 @@ export const managerRole = ac.newRole({
   ...medicalManagerGrants,
   ...restaurantManagerGrants,
   ...servicesManagerGrants,
+  ...hotelManagerGrants,
 });
 
 export const cashierRole = ac.newRole({
@@ -113,6 +122,7 @@ const sectorRoles = {
   ...createMedicalRoles(ac),
   ...createRestaurantRoles(ac),
   ...createServicesRoles(ac),
+  ...createHotelRoles(ac),
 };
 
 export const pharmacistRole = sectorRoles.pharmacist;

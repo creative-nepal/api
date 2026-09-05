@@ -3,6 +3,7 @@ import {
   SECTOR_KEYS,
   type SectorKey,
 } from '../database/schema/sector-keys';
+import { hotelMeta } from './hotel/meta';
 import { martMeta } from './mart/meta';
 import { medicalMeta } from './medical/meta';
 import { restaurantMeta } from './restaurant/meta';
@@ -14,6 +15,7 @@ export const SECTOR_CATALOG: Record<SectorKey, SectorMeta> = {
   medical: medicalMeta,
   restaurant: restaurantMeta,
   services: servicesMeta,
+  hotel: hotelMeta,
 };
 
 export function parseEnabledSectorKeys(raw: string | undefined): SectorKey[] {

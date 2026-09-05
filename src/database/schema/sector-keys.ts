@@ -3,6 +3,7 @@ export const SECTOR_KEYS = [
   'medical',
   'restaurant',
   'services',
+  'hotel',
 ] as const;
 
 export type SectorKey = (typeof SECTOR_KEYS)[number];

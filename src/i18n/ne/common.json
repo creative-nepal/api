@@ -4,7 +4,8 @@
     "mart": "पसल",
     "medical": "औषधि पसल",
     "restaurant": "रेस्टुरेन्ट",
-    "services": "सेवा"
+    "services": "सेवा",
+    "hotel": "होटल र रिसोर्ट"
   },
   "role": {
     "owner": "मालिक",

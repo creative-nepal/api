@@ -1,6 +1,7 @@
 import type { Type } from '@nestjs/common';
 import type { SectorKey } from '../database/schema/sector-keys';
 import { parseEnabledSectorKeys, SECTOR_CATALOG } from './catalog';
+import { hotelModules } from './hotel/sector';
 import { martModules } from './mart/sector';
 import { medicalModules } from './medical/sector';
 import { restaurantModules } from './restaurant/sector';
@@ -12,6 +13,7 @@ export const SECTOR_REGISTRY: Record<SectorKey, SectorDefinition> = {
   medical: { ...SECTOR_CATALOG.medical, modules: medicalModules },
   restaurant: { ...SECTOR_CATALOG.restaurant, modules: restaurantModules },
   services: { ...SECTOR_CATALOG.services, modules: servicesModules },
+  hotel: { ...SECTOR_CATALOG.hotel, modules: hotelModules },
 };
 
 export function enabledSectors(): SectorDefinition[] {

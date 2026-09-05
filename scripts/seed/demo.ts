@@ -26,6 +26,29 @@ interface DemoProduct {
 }
 
 const DEMO_PRODUCTS: Record<SectorKey, DemoProduct[]> = {
+  hotel: [
+    {
+      name: 'Laundry — shirt',
+      sku: 'LAUNDRY-SHIRT',
+      priceCents: 15_000,
+      costPriceCents: 4_000,
+      stockQty: '0',
+    },
+    {
+      name: 'Minibar water 1L',
+      sku: 'MINIBAR-WATER',
+      priceCents: 8_000,
+      costPriceCents: 3_000,
+      stockQty: '200',
+    },
+    {
+      name: 'Airport pickup',
+      sku: 'TRANSFER',
+      priceCents: 250_000,
+      costPriceCents: 150_000,
+      stockQty: '0',
+    },
+  ],
   mart: [
     {
       name: 'Basmati Rice 5kg',
@@ -152,6 +175,7 @@ const DEMO_PRODUCTS: Record<SectorKey, DemoProduct[]> = {
 };
 
 const DEMO_LEGAL_NAME: Record<SectorKey, string> = {
+  hotel: 'Demo Resort Pvt. Ltd.',
   mart: 'Demo Mart Pvt. Ltd.',
   medical: 'Demo Pharmacy Pvt. Ltd.',
   restaurant: 'Demo Restaurant Pvt. Ltd.',

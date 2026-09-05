@@ -733,7 +733,10 @@
       "expenses": "खर्च",
       "calendar": "क्यालेन्डर",
       "reports": "रिपोर्ट",
-      "production": "उत्पादन"
+      "production": "उत्पादन",
+      "frontDesk": "फ्रन्ट डेस्क",
+      "rooms": "कोठा",
+      "housekeeping": "हाउसकिपिङ"
     },
     "services": {
       "title": "सेवाहरू",
@@ -1218,6 +1221,82 @@
       "done": "सकियो",
       "cancelled": "रद्द",
       "doneAddsStock": "रन सकियो भनेपछि बनेको परिमाण स्टकमा थपिन्छ।"
+    },
+    "hotel": {
+      "frontDeskTitle": "फ्रन्ट डेस्क",
+      "frontDeskDescription": "आगमनदेखि चेक–आउटसम्मको बुकिङ, कोठामै चार्ज गरिने सबै सेवासहित।",
+      "roomsTitle": "कोठा",
+      "roomsDescription": "कोठा र तिनका प्रकार, दर र ओगटाइ।",
+      "housekeepingTitle": "हाउसकिपिङ",
+      "housekeepingDescription": "कुन कोठा सफा गर्न बाँकी छ, कसले गर्दैछ, र कुन बेच्न तयार छ।",
+      "book": "नयाँ बुकिङ",
+      "guest": "पाहुना",
+      "room": "कोठा",
+      "roomType": "कोठाको प्रकार",
+      "nights": "रात",
+      "rate": "दर / रात",
+      "folio": "फोलियो",
+      "folioTotal": "फोलियो जम्मा",
+      "roomCharge": "कोठा",
+      "extras": "अतिरिक्त",
+      "checkIn": "चेक इन",
+      "checkOut": "चेक आउट",
+      "cancel": "बुकिङ रद्द",
+      "postCharge": "चार्ज थप्नुहोस्",
+      "arrival": "आगमन",
+      "departure": "प्रस्थान",
+      "unassigned": "कोठा तोकिएको छैन",
+      "addRoom": "कोठा थप्नुहोस्",
+      "addRoomType": "कोठाको प्रकार थप्नुहोस्",
+      "roomNo": "कोठा नं.",
+      "floor": "तल्ला",
+      "baseRate": "आधार दर",
+      "maxOccupancy": "क्षमता",
+      "noRooms": "कुनै कोठा छैन",
+      "noRoomsHint": "पहिले कोठाको प्रकार बनाउनुहोस्, त्यसपछि कोठाहरू थप्नुहोस्।",
+      "noBookings": "कुनै बुकिङ छैन",
+      "noBookingsHint": "बुकिङ लिएपछि यहाँ देखिनेछ।",
+      "noTasks": "सफा गर्न केही छैन",
+      "noTasksHint": "पाहुना चेक–आउट भएपछि काम यहाँ देखिन्छ।",
+      "markClean": "सफा भयो",
+      "assignRoom": "दिने कोठा",
+      "checkedIn": "चेक इन भयो — कोठा अब ओगटिएको छ",
+      "checkedOut": "चेक आउट भयो, बिल जारी",
+      "chargePosted": "फोलियोमा चार्ज थपियो",
+      "status": {
+        "vacant_clean": "तयार",
+        "vacant_dirty": "सफा गर्न बाँकी",
+        "occupied": "ओगटिएको",
+        "out_of_service": "सेवामा छैन"
+      },
+      "booking": {
+        "booked": "बुक",
+        "checked_in": "भित्र",
+        "checked_out": "चेक आउट",
+        "cancelled": "रद्द",
+        "no_show": "आएनन्"
+      },
+      "source": {
+        "room": "कोठा",
+        "restaurant": "रेस्टुरेन्ट",
+        "room_service": "रुम सर्भिस",
+        "laundry": "लुगा धुलाइ",
+        "banquet": "भोज",
+        "minibar": "मिनिबार",
+        "other": "अन्य"
+      },
+      "mealPlan": {
+        "room_only": "कोठा मात्र",
+        "bb": "बेड र ब्रेकफास्ट",
+        "half_board": "हाफ बोर्ड",
+        "full_board": "फुल बोर्ड"
+      },
+      "task": {
+        "pending": "बाँकी",
+        "in_progress": "गर्दै",
+        "done": "सकियो",
+        "inspected": "जाँचियो"
+      }
     }
   }
 }
